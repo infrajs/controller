@@ -3,11 +3,11 @@
 use infrajs\controller\Controller;
 
 $ans = array();
-$ans['title'] = 'проверка функции infrajs::check';
+$ans['title'] = 'проверка функции Controller::check';
 
 infra_html('<div id="oh"></div>');
 
-infra_require('*infrajs/make.php');
+infra_require('*controller/make.php');
 $layer = array('tpl' => array('хой'),'div' => 'oh');
 Controller::check($layer);
 

@@ -10,7 +10,7 @@ $l = array('tpl' => 'asdf','test' => 'bad');
 $layers = array(&$l);
 $msg = 'Maybe good';
 
-infra_require('*infrajs/make.php');
+infra_require('*controller/make.php');
 $layer = &Controller::run($layers, function &(&$layer) use ($msg) {
 	$layer['test'] = $msg;
 

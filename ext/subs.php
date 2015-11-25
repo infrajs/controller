@@ -23,7 +23,7 @@ class subs
 	{
 		global $infra,$infrajs;
 		infra_wait($infrajs, 'oninit', function () {
-			infrajs::runAddKeys('subs');
+			Controller::runAddKeys('subs');
 			/*
 			 * subs, указанное в external, объединяется с основным описанием также, как свойство divs (как именно не помню)
 			 */

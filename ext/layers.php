@@ -11,7 +11,7 @@ class layers
 	{
 		global $infrajs;
 		infra_wait($infrajs, 'oninit', function () {
-			infrajs::runAddList('layers');
+			Controller::runAddList('layers');
 		});
 	}
 }

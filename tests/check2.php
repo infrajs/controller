@@ -3,7 +3,7 @@
 use infrajs\controller\Controller;
 
 itlife\infra\ext\Crumb::change('test');
-infra_require('*infrajs/make.php');
+infra_require('*controller/make.php');
 
 $ans = array();
 $ans['title'] = 'проверка чек';

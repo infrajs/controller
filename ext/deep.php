@@ -7,7 +7,7 @@ class deep
 {
 	public function init()
 	{
-		infrajs::isAdd('check', function ($layer) {
+		Controller::isAdd('check', function ($layer) {
 			$deep = (int) $layer['deep'];
 			if (!$deep) {
 				return;

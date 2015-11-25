@@ -15,7 +15,7 @@ class env
 			//external::add('env', '');//Никак не обрабатывается.. будет установлено только если нечего небыло
 			external::add('envs', 'childs');//Объединяется так же как childs
 
-			infrajs::runAddKeys('envs');//Теперь бегаем и по envs свойству
+			Controller::runAddKeys('envs');//Теперь бегаем и по envs свойству
 		});
 	}
 	public static function check(&$layer)
@@ -23,18 +23,18 @@ class env
 		if (@!$layer['env']) {
 			return;
 		}
-		$store = &infrajs::store();
+		$store = &Controller::store();
 		$r = null;
 		//Слои myenv надо показывать тогдаже когда и показывается сам слой
 		$myenv = null;
 		$ll = null;
-		infrajs::run(infrajs::getWorkLayers(), function (&$l) use (&$layer, &$myenv, &$ll) {
+		Controller::run(Controller::getWorkLayers(), function (&$l) use (&$layer, &$myenv, &$ll) {
 			//Есть окружение и мы не нашли ни одного true для него
 			if (!isset($l['myenv'])) {
 				return;
 			}
 
-			if (!infrajs::is('check', $l)) {
+			if (!Controller::is('check', $l)) {
 				return;
 			}//В back режиме выйти нельзя.. смотрятся все слои
 
@@ -50,7 +50,7 @@ class env
 				return;
 			}
 
-			if (infrajs::is('show', $l)) {
+			if (Controller::is('show', $l)) {
 				//Ищим последнюю установку на счёт env
 				$myenv = $l['myenv'][$layer['env']];
 				$ll = &$l;
@@ -64,7 +64,7 @@ class env
 				$r = true;
 			} else {
 				$r = false;
-				infrajs::isSaveBranch($layer, !!infrajs::isParent($ll, $layer));
+				Controller::isSaveBranch($layer, !!Controller::isParent($ll, $layer));
 				//infrajs_isSaveBranch($layer,false);
 			}
 		}
@@ -78,7 +78,7 @@ class env
 				} else {
 					//Если слой по умолчанию скрыт его детей не показываем
 					$r = false;
-					infrajs::isSaveBranch($layer, false);
+					Controller::isSaveBranch($layer, false);
 				}
 			}
 		}

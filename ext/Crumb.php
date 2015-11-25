@@ -48,8 +48,8 @@ class Crumb
 
 				return $layer[$i];
 			});
-			infrajs::runAddKeys('childs');
-			infrajs::runAddList('child');
+			Controller::runAddKeys('childs');
+			Controller::runAddList('child');
 
 });
 	}

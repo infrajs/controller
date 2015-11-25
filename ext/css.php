@@ -12,7 +12,7 @@ class css
 		if (!isset($layer['css'])) {
 			return;
 		}
-		$sotre = infrajs::store();
+		$sotre = Controller::store();
 		if (!$store['css']) {
 			$store['css'] = array();
 		}

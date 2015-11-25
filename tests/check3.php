@@ -6,7 +6,7 @@ use infrajs\infra;
 $ans = array();
 $ans['title'] = 'check3';
 
-infra_require('*infrajs/make.php');
+infra_require('*controller/make.php');
 
 infra_html('<div id="main"></div>', true);
 

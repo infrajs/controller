@@ -33,10 +33,10 @@ infra_seq_set($infra_template_scope, infra_seq_right('infrajs.unicks'), unick::$
 	}
 	public static function &find($name, $value)
 	{
-		$layers = infrajs::getAllLayers();
+		$layers = Controller::getAllLayers();
 		$right = infra_seq_right($name);
 
-		return infrajs::run($layers, function &(&$layer) use ($right, $value) {
+		return Controller::run($layers, function &(&$layer) use ($right, $value) {
 			if (infra_seq_get($layer, $right) == $value) {
 				return $layer;
 			}

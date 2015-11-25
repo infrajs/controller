@@ -39,7 +39,7 @@ infra_listen($infra, 'layer.oninit', function (&$layer) {
 });
 infra_listen($infra, 'layer.oninit', function (&$layer) {
 	//infrajs
-	$store = &infrajs::store();
+	$store = &Controller::store();
 	$layer['store'] = array('counter' => $store['counter']);
 });
 infra_listen($infra, 'layer.oninit', function (&$layer) {
@@ -95,19 +95,19 @@ infra_listen($infra, 'layer.oninit', function (&$layer) {
 //layer is check
 //========================
 
-infrajs::isAdd('check', function (&$layer) {
+Controller::isAdd('check', function (&$layer) {
 	//может быть у любого слоя в том числе и у не iswork, и когда нет старого значения
 
 	//infrajs это исключение
 	if (!$layer) {
 		return false;
 	}//Может быть когда вернулись с check к родителю который ещё ниразу небыл в работе
-	if (!infrajs::isWork($layer)) {
+	if (!Controller::isWork($layer)) {
 		return false;
 	}//Нет сохранённого результата, и слой не в работе, если работа началась с infrajs.check(layer) и у layer есть родитель, который не в работе
 
 });
-infrajs::isAdd('check', function (&$layer) {
+Controller::isAdd('check', function (&$layer) {
 	//crumb
 	if (!$layer['crumb']->is) {
 		return false;
@@ -217,68 +217,68 @@ infra_listen($infra, 'layer.oncheck', function (&$layer) {
 //========================
 //layer is show
 //========================
-infrajs::isAdd('show', function (&$layer) {
+Controller::isAdd('show', function (&$layer) {
 	//infrajs
-	if (!infrajs::is('check', $layer)) {
+	if (!Controller::is('check', $layer)) {
 		return false;
 	}
 });
-infrajs::isAdd('show', function (&$layer) {
+Controller::isAdd('show', function (&$layer) {
 	//is
 	ext\is::istpl($layer);
 
 	return ext\is::check($layer);
 });
-infrajs::isAdd('show', function (&$layer) {
+Controller::isAdd('show', function (&$layer) {
 	//tpl
 	if (@$layer['tpl']) {
 		return;
 	}
-	//infrajs::isSaveBranch($layer,true);//Когда нет шаблона слой скрывается, но не скрывает свою ветку
+	//Controller::isSaveBranch($layer,true);//Когда нет шаблона слой скрывается, но не скрывает свою ветку
 
 	$r = true;
 	if (!empty($layer['parent'])) {
 		//Пустой слой не должен обрывать наследования если какой=то родитель скрывает всю ветку
-		$r = infrajs::isSaveBranch($layer['parent']);
+		$r = Controller::isSaveBranch($layer['parent']);
 		if (is_null($r)) {
 			$r = true;
 		}
 	}
-	infrajs::isSaveBranch($layer, $r);
+	Controller::isSaveBranch($layer, $r);
 
 	return false;
 });
 
-infrajs::isAdd('show', function (&$layer) {
+Controller::isAdd('show', function (&$layer) {
 	//Родитель скрывает ребёнка если у родителя нет опции что ветка остаётся целой
 	//infrajs
 	if (@!$layer['parent']) {
 		return;
 	}
-	if (infrajs::is('show', $layer['parent'])) {
+	if (Controller::is('show', $layer['parent'])) {
 		return;
 	}
 
-	if (infrajs::isSaveBranch($layer['parent'])) {
+	if (Controller::isSaveBranch($layer['parent'])) {
 		return;
 	}//Какой-то родитель таки не показывается, например пустой слой, теперь нужно узнать скрывает родитель свою ветку или нет
 	//echo $layer['tplroot'].':'.$layer['parent']['tplroot'].'<br>';
 
 	return false;
 });
-infrajs::isAdd('show', function (&$layer) {
+Controller::isAdd('show', function (&$layer) {
 	//div
 	
 	if (empty($layer['div'])&&!empty($layer['parent'])) return false;
 	//Такой слой игнорируется, события onshow не будет, но обработка пройдёт дальше у других дивов
 });
-infrajs::isAdd('show', function (&$layer) {
+Controller::isAdd('show', function (&$layer) {
 	//div
 	return ext\div::divcheck($layer);
 });
 
 
-infrajs::isAdd('show', function (&$layer) {
+Controller::isAdd('show', function (&$layer) {
 	//tpl depricated
 	if (is_string(@$layer['tpl']) && @$layer['tplcheck']) {
 		//Мы не можем делать проверку пока другой плагин не подменит tpl
@@ -288,7 +288,7 @@ infrajs::isAdd('show', function (&$layer) {
 		}
 	}
 });
-infrajs::isAdd('show', function (&$layer) {
+Controller::isAdd('show', function (&$layer) {
 	//tpl depricated
 	if (ext\tpl::onlyclient($layer)) {
 		return;
@@ -297,15 +297,15 @@ infrajs::isAdd('show', function (&$layer) {
 	return ext\tpl::jsoncheck($layer);
 });
 
-infrajs::isAdd('show', function (&$layer) {
+Controller::isAdd('show', function (&$layer) {
 	//counter должно быть до getHtml
 	++$layer['counter'];
 });
-infrajs::isAdd('show', function (&$layer) {
+Controller::isAdd('show', function (&$layer) {
 	//env
 	return ext\env::check($layer);
 });
-//infrajs::isAdd('show', function (&$layer) {
+//Controller::isAdd('show', function (&$layer) {
 	//tpl
 	//if(@$layer['onlyclient'])return false;
 //});

@@ -5,24 +5,24 @@ namespace infrajs\controller;
 require_once __DIR__.'/../infra/Infra.php';
 
 /*//Функции для написания плагинов
-infrajs::store();
-infrajs::storeLayer(layer)
-infrajs::getWorkLayers();
-infrajs::getAllLayers();
+Controller::store();
+Controller::storeLayer(layer)
+Controller::getWorkLayers();
+Controller::getAllLayers();
 
-infrajs::run(layers,callback);
-infrajs::runAddList('layers')
-infrajs::runAddKeys('divs');
+Controller::run(layers,callback);
+Controller::runAddList('layers')
+Controller::runAddKeys('divs');
 
-infrajs::isSaveBranch(layer,val);
-infrajs::isParent(layer,parent);
-infrajs::isWork(layer);
+Controller::isSaveBranch(layer,val);
+Controller::isParent(layer,parent);
+Controller::isWork(layer);
 
-infrajs::is('rest|show|check',layer);
-infrajs::isAdd('rest|show|check',callback(layer));
+Controller::is('rest|show|check',layer);
+Controller::isAdd('rest|show|check',callback(layer));
 
-infrajs::check(layer);
-infrajs::checkAdd(layer);
+Controller::check(layer);
+Controller::checkAdd(layer);
 
 
 */
@@ -31,7 +31,7 @@ global $infrajs;
 /*if (!$infrajs) {
 	$infrajs=array();
 }*/
-class Infrajs
+class Controller
 {
 	public static function &storeLayer(&$layer)
 	{
@@ -105,7 +105,7 @@ class Infrajs
 				$layer['parent'] = &$parent;
 			}
 			infra_fire($layer, 'layer.oninit');
-			if (!infrajs::is('check', $layer)) {
+			if (!Controller::is('check', $layer)) {
 				return;
 			}
 			infra_fire($layer, 'layer.oncheck');
@@ -115,7 +115,7 @@ class Infrajs
 
 		self::run(self::getWorkLayers(), function (&$layer) {
 			//С чего вдруг oncheck у всех слоёв.. надо только у активных
-			if (infrajs::is('show', $layer)) {
+			if (Controller::is('show', $layer)) {
 				//Событие в котором вставляется html
 				infra_fire($layer, 'layer.onshow');//при клике делается отметка в конфиге слоя и слой парсится... в oncheck будут подстановки tpl и isRest вернёт false
 				infra_fire($layer, 'onshow');
@@ -189,7 +189,7 @@ class Infrajs
 	}
 	public static function &run(&$layers, $callback, &$parent = null)
 	{
-		$store = &infrajs::store();
+		$store = &Controller::store();
 		if (!$store['run']) {
 			$store['run'] = array();
 		}
@@ -205,13 +205,13 @@ class Infrajs
 			$r = &infra_foro($layer, function &(&$val, $name) use (&$layer, $callback, $props) {
 				$r = null;
 				if (isset($props['list'][$name])) {
-					$r = &infrajs::run($val, $callback, $layer);
+					$r = &Controller::run($val, $callback, $layer);
 					if (!is_null($r)) {
 						return $r;
 					}
 				} else if (isset($props['keys'][$name])) {
 					$r = &infra_foro($val, function &(&$v, $i) use (&$layer, $callback) {
-						$r = &infrajs::run($v, $callback, $layer);
+						$r = &Controller::run($v, $callback, $layer);
 						if (!is_null($r)) {
 							return $r;
 						}
@@ -231,7 +231,7 @@ class Infrajs
 	}
 	/*public static function &run(&$layers, $callback, &$parent = null)
 	{
-		$store = &infrajs::store();
+		$store = &Controller::store();
 		if (!$store['run']) {
 			$store['run'] = array();
 		}
@@ -247,7 +247,7 @@ class Infrajs
 			$r = &infra_foro($layer, function &(&$val, $name) use (&$layer, $callback, $props) {
 				$r = null;
 				if (isset($props['list'][$name])) {
-					$r = &infrajs::run($val, $callback, $layer);
+					$r = &Controller::run($val, $callback, $layer);
 					if (!is_null($r)) {
 						return $r;
 					}
@@ -263,7 +263,7 @@ class Infrajs
 				$r = null;
 				if (isset($props['keys'][$name])) {
 					$r = &infra_foro($val, function &(&$v, $i) use (&$layer, $callback) {
-						$r = &infrajs::run($v, $callback, $layer);
+						$r = &Controller::run($v, $callback, $layer);
 						if (!is_null($r)) {
 							return $r;
 						}
@@ -325,7 +325,7 @@ class Infrajs
 	public static function init($index, $div, $src)
 	{
 		\itlife\infra\Infra::init();
-		infra_require('*infrajs/make.php');
+		infra_require('*controller/make.php');
 		infra_admin_modified();//Здесь уже выход если у браузера сохранена версия
 		@header('Infrajs-Cache: true');//Афигенный кэш, когда используется infrajs не подгружается даже
 		$query=infra_toutf($_SERVER['QUERY_STRING']);
@@ -352,9 +352,9 @@ class Infrajs
 
 				//$crumb=infra\ext\Crumb::getInstance();
 
-				infrajs::checkAdd($layers);
+				Controller::checkAdd($layers);
 
-				infrajs::check();//В infra_html были добавленыs все указаные в layers слои
+				Controller::check();//В infra_html были добавленыs все указаные в layers слои
 			}
 			$html = infra_html();
 
@@ -392,7 +392,7 @@ END;
 	{
 		\itlife\infra\Infra::init();
 
-		infra_require('*infrajs/make.php');
+		infra_require('*controller/make.php');
 		infra_admin_modified();//Здесь уже выход если у браузера сохранена версия
 		@header('Infrajs-Cache: true');//Афигенный кэш, когда используется infrajs не подгружается даже
 		$query=infra_toutf($_SERVER['QUERY_STRING']);
@@ -406,9 +406,9 @@ END;
 			
 			if ($conf['infrajs']['server']) {
 
-				infrajs::checkAdd($layer);
+				Controller::checkAdd($layer);
 
-				infrajs::check();//В infra_html были добавленыs все указаные в layers слои
+				Controller::check();//В infra_html были добавленыs все указаные в layers слои
 			}
 			$html = infra_html();
 
