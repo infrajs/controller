@@ -2,10 +2,10 @@
 
 //Свойство dyn, state, crumb
 //infra.load('*infrajs/ext/external.js');//Уже должен быть
-namespace itlife\infrajs\ext;
+namespace infrajs\infrajs\ext;
 
 use infrajs\controller\Controller;
-use itlife\infra;
+use infrajs\infra;
 
 class Crumb
 {

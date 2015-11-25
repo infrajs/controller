@@ -1,7 +1,7 @@
 <?php
 
 //Свойство layers
-namespace itlife\infrajs\ext;
+namespace infrajs\infrajs\ext;
 
 use infrajs\controller\Controller;
 

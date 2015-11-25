@@ -5,7 +5,7 @@
 	configinherit:(bool)
 */
 
-namespace itlife\infrajs\ext;
+namespace infrajs\infrajs\ext;
 
 class config
 {

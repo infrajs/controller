@@ -1,6 +1,6 @@
 <?php
 
-namespace itlife\infrajs\ext;
+namespace infrajs\infrajs\ext;
 
 //autosave, autosaveclient, autosavename
 

@@ -1,6 +1,6 @@
 <?php
 
-	use itlife\infrajs\ext\seojson;
+	use infrajs\infrajs\ext\seojson;
 
 $src = $_SERVER['QUERY_STRING'];
 	$seo = seojson::load($src);

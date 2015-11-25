@@ -1,7 +1,7 @@
 <?php
 
 use infrajs\controller\Controller;
-use itlife\infrajs\ext;
+use infrajs\infrajs\ext;
 
 //========================
 global $infrajs,$infra;

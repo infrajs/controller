@@ -5,7 +5,7 @@
 //infrajs_parsed
 
 
-namespace itlife\infrajs\ext;
+namespace infrajs\infrajs\ext;
 
 global $infra;
 global $infrajs;

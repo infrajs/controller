@@ -19,7 +19,7 @@ infra_listen($infra,'layer.onshow',function(&$layer){
 });
 */
 
-namespace itlife\infrajs\ext;
+namespace infrajs\infrajs\ext;
 
 use infrajs\controller\Controller;
 

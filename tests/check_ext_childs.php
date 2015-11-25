@@ -1,7 +1,7 @@
 <?php
 
 use infrajs\controller\Controller;
-use itlife\infra;
+use infrajs\infra;
 
 $ans = array();
 $ans['title'] = 'check_ext_childs';

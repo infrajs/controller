@@ -13,7 +13,7 @@
  * object значит что subs будет восприниматься как объект свойства которого это массивы слоёв.
  */
 
-namespace itlife\infrajs\ext;
+namespace infrajs\infrajs\ext;
 
 use infrajs\controller\Controller;
 

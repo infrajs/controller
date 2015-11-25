@@ -1,8 +1,8 @@
 <?php
 
-namespace itlife\infrajs\ext;
+namespace infrajs\infrajs\ext;
 
-use itlife\infra;
+use infrajs\infra;
 infra_require('*session/session.php');
 class session
 {

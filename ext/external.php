@@ -2,7 +2,7 @@
 
 //Свойство external
 //
-namespace itlife\infrajs\ext;
+namespace infrajs\infrajs\ext;
 
 class external
 {
