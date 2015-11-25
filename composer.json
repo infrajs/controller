@@ -1,18 +1,14 @@
 {
-	"name":"itlife/infrajs",
-	"description": "javascript php framework",
+	"name":"infrajs/controller",
+	"description": "Layer controller for php and javascript",
 	"license": "GPL3",
-	"authors": [{
-		"name": "itlife",
-		"email": "info@itlife-studio.ru"
-	}],
 	"require": {
 		"components/jquery": "~2",
+		"twbs/bootstrap": "~3",
 		"malsup/form": "~3",
-		"itlife/phpdate":"~1",
-		"itlife/infra":"~1",
-		"itlife/session":"~1",
-		"vsn4ik/bootstrap-checkbox": "~1"
+		"vsn4ik/bootstrap-checkbox": "~1",
+		"infrajs/phpdate":"~1",
+		"infrajs/infra":"~1"
 	},
 	"config": {
 		"component-dir": "vendor"
