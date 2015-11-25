@@ -1,6 +1,6 @@
 <?php
 
-namespace itlife\infrajs;
+namespace infrajs\controller;
 
 require_once __DIR__.'/../infra/Infra.php';
 
@@ -388,7 +388,7 @@ END;
 		//@header('HTTP/1.1 200 Ok'); Приводит к появлению странных 4х символов в начале страницы guard-service
 		echo $html;
 	}
-	public static function controller($layer)
+	public static function init($layer)
 	{
 		\itlife\infra\Infra::init();
 

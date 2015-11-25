@@ -1,6 +1,6 @@
 <?php
 
-use itlife\infrajs\Infrajs;
+use infrajs\controller\Controller;
 
 $ans = array();
 $ans['title'] = 'isEqual';
@@ -11,7 +11,7 @@ $layers = array(&$l);
 $msg = 'Maybe good';
 
 infra_require('*infrajs/make.php');
-$layer = &Infrajs::run($layers, function &(&$layer) use ($msg) {
+$layer = &Controller::run($layers, function &(&$layer) use ($msg) {
 	$layer['test'] = $msg;
 
 	return $layer;

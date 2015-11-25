@@ -2,7 +2,7 @@
 
 namespace itlife\infrajs\ext;
 
-use itlife\infrajs\Infrajs;
+use infrajs\controller\Controller;
 
 class env
 {

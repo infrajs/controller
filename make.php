@@ -1,6 +1,6 @@
 <?php
 
-use itlife\infrajs\Infrajs;
+use infrajs\controller\Controller;
 use itlife\infrajs\ext;
 
 //========================

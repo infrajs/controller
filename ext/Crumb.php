@@ -4,7 +4,7 @@
 //infra.load('*infrajs/ext/external.js');//Уже должен быть
 namespace itlife\infrajs\ext;
 
-use itlife\infrajs\Infrajs;
+use infrajs\controller\Controller;
 use itlife\infra;
 
 class Crumb

@@ -21,7 +21,7 @@ infra_listen($infra,'layer.onshow',function(&$layer){
 
 namespace itlife\infrajs\ext;
 
-use itlife\infrajs\Infrajs;
+use infrajs\controller\Controller;
 
 class div
 {
