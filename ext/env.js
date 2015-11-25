@@ -4,7 +4,7 @@
 		infrajs.externalAdd('envs','childs');//Объединяется так же как childs
 		infrajs.runAddKeys('envs');//Теперь бегаем и по envs свойству
 	});
-	/*infrajs.envSet=function(env,val){
+	/*controller.envSet=function(env,val){
 		//Функция вызывается после того как все слои показаны и нужно среди рабочих слоёв проверить было ли показан слои указанного env
 		if(infrajs.ignoreDOM())return;
 		var layers=[];

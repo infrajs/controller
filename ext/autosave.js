@@ -17,7 +17,7 @@ infra.wait(infrajs,'oninit',function(){
 		}
 		return now;
 	});
-	/*infrajs.parsedAdd(function(layer){
+	/*controller.parsedAdd(function(layer){
 		//Работы в itlife выбранная работа сохраняется но дальше слой не должен перепарсиваться... всё обрабатывается на кликах
 		if(!layer.autosavename)return '';
 		if(!window.JSON)return '';
@@ -148,7 +148,7 @@ infra.wait(infrajs,'oninit',function(){
 		}
 	};
 
-	/*infrajs.autosaveRestore=function(layer){
+	/*controller.autosaveRestore=function(layer){
 		return;
 		if(layer.autosavenametpl)layer.autosavename=infra.template.parse([layer.autosavenametpl],layer);
 		var defautosave={};

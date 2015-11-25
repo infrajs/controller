@@ -1,6 +1,6 @@
 <?php
 
-namespace infrajs\infrajs\ext;
+namespace infrajs\controller\ext;
 
 class seojson
 {

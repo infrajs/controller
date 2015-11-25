@@ -1,7 +1,7 @@
 <?php
 
 use infrajs\controller\Controller;
-use infrajs\infrajs\ext;
+use infrajs\controller\ext;
 
 //========================
 global $infrajs,$infra;
@@ -23,7 +23,6 @@ infra_wait($infrajs, 'oninit', function () {
 	ext\div::init();
 	ext\config::init();
 	ext\parsed::init();
-	ext\session::init();
 });
 //========================
 //layer oninit

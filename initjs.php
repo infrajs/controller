@@ -27,43 +27,43 @@ $html = infra_admin_cache('infra_initjs_php', function ($str) {
 
 	$html = '';
 
-	$html .= $require('*infrajs/ext/once.js');//
+	$html .= $require('*controller/ext/once.js');//
 
-	$html .= $require('*infrajs/ext/Crumb.js');//
-	$html .= $require('*infrajs/ext/external.js');//
-	$html .= $require('*infrajs/ext/env.js');//
+	$html .= $require('*controller/ext/Crumb.js');//
+	$html .= $require('*controller/ext/external.js');//
+	$html .= $require('*controller/ext/env.js');//
 
-	$html .= $require('*infrajs/ext/subs.js');
-	$html .= $require('*infrajs/ext/divparent.js');
+	$html .= $require('*controller/ext/subs.js');
+	$html .= $require('*controller/ext/divparent.js');
 
-	//$html.=$require('*infrajs/ext/proptpl.js');//После external
-	$html .= $require('*infrajs/ext/tpl.js');//
-	$html .= $require('*infrajs/ext/parsed.js');//
-	$html .= $require('*infrajs/ext/div.js');//После subs, до tpl
-	$html .= $require('*infrajs/ext/autoview.js');
-	$html .= $require('*infrajs/ext/code.js');
-	$html .= $require('*infrajs/ext/css.js');
-	$html .= $require('*infrajs/ext/js.js');
-	$html .= $require('*infrajs/ext/layers.js');
-	$html .= $require('*infrajs/ext/unick.js');//
-	$html .= $require('*infrajs/ext/is.js');//
-	$html .= $require('*infrajs/ext/show.js');//
-	$html .= $require('*infrajs/ext/config.js');//
+	//$html.=$require('*controller/ext/proptpl.js');//После external
+	$html .= $require('*controller/ext/tpl.js');//
+	$html .= $require('*controller/ext/parsed.js');//
+	$html .= $require('*controller/ext/div.js');//После subs, до tpl
+	$html .= $require('*controller/ext/autoview.js');
+	$html .= $require('*controller/ext/code.js');
+	$html .= $require('*controller/ext/css.js');
+	$html .= $require('*controller/ext/js.js');
+	$html .= $require('*controller/ext/layers.js');
+	$html .= $require('*controller/ext/unick.js');//
+	$html .= $require('*controller/ext/is.js');//
+	$html .= $require('*controller/ext/show.js');//
+	$html .= $require('*controller/ext/config.js');//
 
 
 	$html .= $require('*infra/ext/tablecommon.js');
 
 	$html .= $require('*seo/seo.ext.js');
-	$html .= $require('*infrajs/ext/global.js');
+	$html .= $require('*controller/ext/global.js');
 
-	$html .= $require('*infrajs/ext/onsubmit.js');
-	$html .= $require('*infrajs/ext/autosave.js');
+	$html .= $require('*controller/ext/onsubmit.js');
+	$html .= $require('*controller/ext/autosave.js');
 	$html .= $require('*popup/popup.js');
 	$html .= $require('*contacts/showContacts.js');
 	$html .= $require('*session/session.js');
-	$html .= $require('*infrajs/ext/session.js');
-	$html .= $require('*infrajs/ext/autofocus.js');
-	$html .= $require('*infrajs/make.js');
+	$html .= $require('*controller/ext/session.js');
+	$html .= $require('*controller/ext/autofocus.js');
+	$html .= $require('*controller/make.js');
 
 	$conf=infra_config();
 	foreach ($conf['infrajs_jsexts'] as $path => $val) {

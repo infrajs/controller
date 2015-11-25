@@ -8,7 +8,7 @@ $ans['title'] = 'check4';
 infra_require('*controller/make.php');
 
 infra_html('<div id="main1"></div><div id="main2"></div>', true);
-$layers = infra_loadJSON('*infrajs/tests/resources/check4.json');
+$layers = infra_loadJSON('*controller/tests/resources/check4.json');
 infra\ext\Crumb::change('test');
 Controller::check($layers);
 

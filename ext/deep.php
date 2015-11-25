@@ -1,7 +1,7 @@
 <?php
 
 //deep:(number),//Для crumb определяет на каком уровне от текущего будет тру... пропускает родителей. Только когда что-то будет на нужном уровне от указанного crumb
-namespace infrajs\infrajs\ext;
+namespace infrajs\controller\ext;
 
 class deep
 {

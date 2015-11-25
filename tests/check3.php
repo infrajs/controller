@@ -10,7 +10,7 @@ infra_require('*controller/make.php');
 
 infra_html('<div id="main"></div>', true);
 
-$layers = infra_loadJSON('*infrajs/tests/resources/check3.json');
+$layers = infra_loadJSON('*controller/tests/resources/check3.json');
 
 infra\ext\Crumb::change('test');
 

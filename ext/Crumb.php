@@ -1,8 +1,8 @@
 <?php
 
 //Свойство dyn, state, crumb
-//infra.load('*infrajs/ext/external.js');//Уже должен быть
-namespace infrajs\infrajs\ext;
+//infra.load('*controller/ext/external.js');//Уже должен быть
+namespace infrajs\controller\ext;
 
 use infrajs\controller\Controller;
 use infrajs\infra;

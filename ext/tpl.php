@@ -5,7 +5,7 @@
 //infrajs_parsed
 
 
-namespace infrajs\infrajs\ext;
+namespace infrajs\controller\ext;
 
 global $infra;
 global $infrajs;

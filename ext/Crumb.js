@@ -1,5 +1,5 @@
 //Свойство dyn, setCrumb
-//infra.load('*infrajs/props/external.js');//Уже должен быть
+//infra.load('*controller/props/external.js');//Уже должен быть
 infra.wait(infrajs,'oninit',function(){
 	infra.seq.set(infra.template.scope,infra.seq.right('infra.Crumb'),infra.Crumb);
 	infrajs.externalAdd('child','layers');

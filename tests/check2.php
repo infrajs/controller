@@ -2,7 +2,7 @@
 
 use infrajs\controller\Controller;
 
-itlife\infra\ext\Crumb::change('test');
+infrajs\infra\ext\Crumb::change('test');
 infra_require('*controller/make.php');
 
 $ans = array();
@@ -10,7 +10,7 @@ $ans['title'] = 'проверка чек';
 
 infra_html('<div id="main"></div>');
 
-$layers = infra_loadJSON('*infrajs/tests/resources/check2.json');
+$layers = infra_loadJSON('*controller/tests/resources/check2.json');
 Controller::check($layers);
 
 $layer = &$layers['layers'];

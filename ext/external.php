@@ -2,7 +2,7 @@
 
 //Свойство external
 //
-namespace infrajs\infrajs\ext;
+namespace infrajs\controller\ext;
 
 class external
 {

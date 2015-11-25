@@ -1,9 +1,9 @@
 //divparent
-/*infrajs.isAdd('show',function(layer){//Слой в divparent обязательно должен показываться, ветка скрывается
+/*controller.isAdd('show',function(layer){//Слой в divparent обязательно должен показываться, ветка скрывается
 		//divparent
 		return infrajs.divparentIsShow(layer);
 	});
-/*infrajs.divparentIsShow=function(layer){
+/*controller.divparentIsShow=function(layer){
 	if(!layer.divparent)return;
 	var store=infrajs.store();
 	var l=store.divs[layer.divparent];
