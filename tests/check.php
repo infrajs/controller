@@ -1,6 +1,6 @@
 <?php
 
-use itlife\infrajs\Infrajs;
+use infrajs\controller\Controller;
 
 $ans = array();
 $ans['title'] = 'проверка функции infrajs::check';
@@ -9,7 +9,7 @@ infra_html('<div id="oh"></div>');
 
 infra_require('*infrajs/make.php');
 $layer = array('tpl' => array('хой'),'div' => 'oh');
-Infrajs::check($layer);
+Controller::check($layer);
 
 $html = infra_html();
 

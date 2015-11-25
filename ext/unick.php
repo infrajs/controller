@@ -4,7 +4,7 @@ namespace itlife\infrajs\ext;
 
 //unick:(number),//Уникальное обозначение слоя
 //Нужно для уникальной идентификации какого-то слоя. Для хранения данных слоя в глобальной области при генерации слоя на сервере и его отсутствия на клиенте. Slide
-use itlife\infrajs\Infrajs;
+use infrajs\controller\Controller;
 
 class unick
 {

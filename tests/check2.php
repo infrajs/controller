@@ -1,6 +1,6 @@
 <?php
 
-use itlife\infrajs\Infrajs;
+use infrajs\controller\Controller;
 
 itlife\infra\ext\Crumb::change('test');
 infra_require('*infrajs/make.php');
@@ -11,7 +11,7 @@ $ans['title'] = 'проверка чек';
 infra_html('<div id="main"></div>');
 
 $layers = infra_loadJSON('*infrajs/tests/resources/check2.json');
-Infrajs::check($layers);
+Controller::check($layers);
 
 $layer = &$layers['layers'];
 

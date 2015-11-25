@@ -1,6 +1,6 @@
 <?php
 
-use itlife\infrajs\Infrajs;
+use infrajs\controller\Controller;
 use itlife\infra;
 
 $ans = array();
@@ -10,7 +10,7 @@ infra_require('*infrajs/make.php');
 infra_html('<div id="main1"></div><div id="main2"></div>', true);
 $layers = infra_loadJSON('*infrajs/tests/resources/check_ext_childs.json');
 infra\ext\Crumb::change('test');
-Infrajs::check($layers);
+Controller::check($layers);
 
 $html = infra_html();
 preg_match_all('/x/', $html, $matches);
