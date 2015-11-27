@@ -1,8 +1,11 @@
 {
-	"infrajs":{
+	"controller":{
 		"pub":["server"],
 		"server":true,
-		"client":true
+		"client":true,
+		"index":{
+			"external":"index/index.json"
+		}
 	},
 	"infrajs_jsexts":{
 

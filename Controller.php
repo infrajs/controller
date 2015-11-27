@@ -337,7 +337,7 @@ class Controller
 			
 			$conf = infra_config();
 			
-			if ($conf['infrajs']['server']) {
+			if ($conf['controller']['server']) {
 
 				Controller::checkAdd($layer);
 
@@ -345,7 +345,7 @@ class Controller
 			}
 			$html = infra_html();
 
-			if ($conf['infrajs']['client']) {
+			if ($conf['controller']['client']) {
 				$script = '<script src="?*infra/js.php"></script>';
 
 				$html = str_replace('<head>', '<head>'."\n\t".$script, $html);

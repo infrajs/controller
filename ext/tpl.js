@@ -151,7 +151,7 @@
 		var conf=infra.conf;
 		
 
-		if(!conf.infrajs.server)return false;//Значит сервера небыло впринципе
+		if(!conf.controller.server)return false;//Значит сервера небыло впринципе
 
 		if(layer&&infrajs.tplonlyclient(layer))return false;
 		
