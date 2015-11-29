@@ -1,6 +1,6 @@
 {
 	"controller":{
-		"pub":["server"],
+		"pub":["server","index"],
 		"server":true,
 		"client":true,
 		"index":{

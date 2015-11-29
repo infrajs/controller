@@ -25,7 +25,7 @@ $html = infra_admin_cache('infra_initjs_php', function ($str) {
 	$infra['loadJSON']=$loadJSON;
 	$infra['loadTEXT']=$loadTEXT;
 
-	$html = '';
+	$html = 'define(["?*once/once.js","?*infra/js.php"], function(){ ';
 
 	$html .= $require('*controller/ext/once.js');//
 
@@ -91,6 +91,7 @@ $html = infra_admin_cache('infra_initjs_php', function ($str) {
 	}
 	$infra['js'] = $html;
 	infra_fire($infra, 'oninitjs');
+	$infra['js'] .= '; return infrajs })';
 	return $infra['js'];
 }, array($_SERVER['QUERY_STRING']), $re);
 @header('content-type: text/javascript; charset=utf-8');

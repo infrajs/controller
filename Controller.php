@@ -346,22 +346,26 @@ class Controller
 			$html = infra_html();
 
 			if ($conf['controller']['client']) {
-				$script = '<script src="?*infra/js.php"></script>';
+				$script = <<<END
+\n<script type="text/javascript">
+	require([
+		'?*once/once.js', 
+		'?*infra/js.php',
+		'?*controller/initjs.php',
+		'?*jquery/jquery.min.js'
+	], function (once, infra, infrajs) {
 
-				$html = str_replace('<head>', '<head>'."\n\t".$script, $html);
-				$script = '';
-				$script .= <<<END
-\n<script src="?*controller/initjs.php"></script>
-<script type="text/javascript">
-	infrajs.checkAdd({$strlayer});
-	infra.listen(infra.Crumb, 'onchange', function(){
-		infrajs.check();
+		infrajs.checkAdd(infra.conf.controller.index);
+
+		infra.handle(infra.Crumb, 'onchange', function(){
+			infrajs.check();
+		});
+
+		require(['vendor/twbs/bootstrap/dist/js/bootstrap.min.js']);
 	});
 </script>
 END;
 				$html = str_replace('</body>', "\n\t".$script.'</body>', $html);
-
-				//$html .= $script;
 			}
 
 			return $html;
