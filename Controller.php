@@ -1,8 +1,10 @@
 <?php
 
 namespace infrajs\controller;
+use infrajs\infra\Infra;
+use infrajs\crumb\Crumb;
 
-require_once __DIR__.'/../infra/Infra.php';
+//require_once __DIR__.'/../infra/Infra.php';
 
 /*//Функции для написания плагинов
 Controller::store();
@@ -323,8 +325,8 @@ class Controller
 	}
 	public static function init($layer)
 	{
-		\infrajs\infra\Infra::init();
-
+		Infra::init();
+		Crumb::init();
 		infra_require('*controller/make.php');
 		infra_admin_modified();//Здесь уже выход если у браузера сохранена версия
 		@header('Infrajs-Cache: true');//Афигенный кэш, когда используется infrajs не подгружается даже
