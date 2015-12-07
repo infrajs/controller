@@ -5,7 +5,7 @@ use infrajs\controller\ext;
 use infrajs\event\Event;
 
 //========================
-global $infrajs, $infra;
+
 /*if (!$infrajs) {
 		$infrajs = array();
 }*/
@@ -13,10 +13,7 @@ global $infrajs, $infra;
 //infrajs oninit
 //========================
 //=======wait=====//
-
 Event::waitg('oninit', function () {
-	ext\external::init();
-	ext\Crumb::init();
 	ext\subs::init();
 	ext\layers::init();
 	ext\unick::init();
@@ -28,92 +25,28 @@ Event::waitg('oninit', function () {
 //========================
 //layer oninit
 //========================
-Event::listeng('layer.oninit', function (&$layer) {
-	//external
-	ext\external::check($layer);
 
-});
-Event::listeng('layer.oninit', function (&$layer) {
+Event::listeng('layer.oninit.external', function (&$layer) {
 	//config
 	ext\config::configinherit($layer);
 });
-Event::listeng('layer.oninit', function (&$layer) {
+Event::listeng('layer.oninit.external', function (&$layer) {
 	//infrajs
 	$store = &Controller::store();
 	$layer['store'] = array('counter' => $store['counter']);
 });
-Event::listeng('layer.oninit', function (&$layer) {
+Event::listeng('layer.oninit.external', function (&$layer) {
 	//unick
 	ext\unick::check($layer);
 });
 
-Event::listeng('layer.oninit', function (&$layer) {
-	//это из-за child// всё что после child начинает плыть. по этому надо crumb каждый раз определять, брать от родителя.
-	//crumb
-	if (!isset($layer['dyn'])) {
-		//Делается только один раз
-		ext\Crumb::set($layer, 'crumb', $layer['crumb']);
-	}
-});
-Event::listeng('layer.oninit', function (&$layer) {
-	//crumb
-	if (empty($layer['parent'])) {
-		return;
-	}
-	ext\Crumb::set($layer, 'crumb', $layer['dyn']['crumb']);//Возможно у родителей обновился crumb из-за child у детей тоже должен обновиться хотя они не в child
-});
 
-Event::listeng('layer.oninit', function (&$layer) {
-
-	//crumb child
-	if (@!$layer['child']) {
-		return;//Это услвие после Crumb::set
-	}
-
-	$crumb = &$layer['crumb']->child;
-	if ($crumb) {
-		$name = $crumb->name;
-	} else {
-		$name = '###child###';
-	}
-
-	Each::fora($layer['child'], function (&$l) use (&$name) {
-		ext\Crumb::set($l, 'crumb', $name);
-	});
-});
-Event::listeng('layer.oninit', function (&$layer) {
-	//Должно быть после external, чтобы все свойства у слоя появились
-	//crumb childs
-	Event::forx($layer['childs'], function (&$l, $key) {
-		//У этого childs ещё не взять external
-		if (empty($l['crumb'])) {
-			ext\Crumb::set($l, 'crumb', $key);
-		}
-	});
-});
 //========================
 //layer is check
 //========================
 
-Controller::isAdd('check', function (&$layer) {
-	//может быть у любого слоя в том числе и у не iswork, и когда нет старого значения
 
-	//infrajs это исключение
-	if (!$layer) {
-		return false;
-	}//Может быть когда вернулись с check к родителю который ещё ниразу небыл в работе
-	if (!Controller::isWork($layer)) {
-		return false;
-	}//Нет сохранённого результата, и слой не в работе, если работа началась с infrajs.check(layer) и у layer есть родитель, который не в работе
 
-});
-Controller::isAdd('check', function (&$layer) {
-	//crumb
-	if (!$layer['crumb']->is) {
-		return false;
-	}
-
-});
 
 //========================
 //layer oncheck
@@ -135,7 +68,7 @@ Event::listeng('layer.oncheck', function (&$layer) {
 Event::listeng('layer.oncheck', function (&$layer) {
 	//Без этого не показывается окно cо стилями.. только его заголовок..
 	//div
-	Event::forx($layer['divs'], function (&$l, $div) {
+	Each::forx($layer['divs'], function (&$l, $div) {
 		if (@!$l['div']) {
 			$l['div'] = $div;
 		}
@@ -332,7 +265,6 @@ Event::listeng('layer.onshow', function (&$layer) {
 	if (ext\tpl::onlyclient($layer)) {
 		return;
 	}
-	global $infrajs;
 
 	$r = View::html($layer['html'], $layer['div']);
 	if (!$r && (!isset($layer['divcheck']) || !$layer['divcheck'])) {

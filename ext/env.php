@@ -116,7 +116,7 @@ class env
 		if (empty($layer['envs'])) {
 			return;
 		}
-		Event::forx($layer['envs'], function (&$l, $env) {
+		Each::forx($layer['envs'], function (&$l, $env) {
 			//Из-за забегания вперёд external не применился а в external могут быть вложенные слои
 			$l['env'] = $env;
 			$l['envtochild'] = true;

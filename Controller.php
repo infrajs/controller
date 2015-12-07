@@ -2,7 +2,6 @@
 
 namespace infrajs\controller;
 use infrajs\infra\Infra;
-use infrajs\crumb\Crumb;
 use infrajs\event\Event;
 
 //require_once __DIR__.'/../infra/Infra.php';
@@ -162,19 +161,8 @@ class Controller
 		$cache = &self::storeLayer($layer);//кэш сбрасываемый каждый iswork
 
 
-		if (!self::isWork($layer)) {
-			$cache[$name] = $oldval;
-			if (!is_null($cache[$name])) {
-				//Результат уже есть
-						return $cache[$name];//Хранить результат для каждого слоя
-			} else {
-				return;
-						//die('Слой ни разу не был в работе и у него запрос is');
-			}
-		}
-		//слой проверили по всей очередь
 
-		if (@!is_null($cache[$name])) {
+		if (isset($cache[$name])&&!is_null($cache[$name])) {
 			//Результат уже есть
 			return $cache[$name];//Хранить результат для каждого слоя
 		}
