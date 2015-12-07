@@ -6,18 +6,18 @@ $re = isset($_GET['re']);
 $html = infra_admin_cache('infra_initjs_php', function ($str) {
 	global $infra;
 	$loadTEXT = function ($path) {
-		$html = infra_loadTEXT($path);
+		$html = Load::loadTEXT($path);
 		$html = 'infra.store("loadTEXT")["'.$path.'"]={value:"'.$html.'",status:"pre"};'; //код отметки о выполненных файлах
 		return $html;
 	};
 	$loadJSON = function ($path) {
-		$obj = infra_loadJSON($path);
+		$obj = Load::loadJSON($path);
 		$html = 'infra.store("loadJSON")["'.$path.'"]={value:'.infra_json_encode($obj).',status:"pre"};'; //код отметки о выполненных файлах
 		return $html;
 	};
 	$require = function ($path) {
 		$html = "\n\n".'//requrie '.$path."\n";
-		$html .= infra_loadTEXT($path).';';
+		$html .= Load::loadTEXT($path).';';
 		$html .= 'infra.store("require")["'.$path.'"]={value:true};'; //код отметки о выполненных файлах
 		return $html;
 	};
@@ -65,7 +65,7 @@ $html = infra_admin_cache('infra_initjs_php', function ($str) {
 	$html .= $require('*controller/ext/autofocus.js');
 	$html .= $require('*controller/make.js');
 
-	$conf=infra_config();
+	$conf=Infra::config();
 	foreach ($conf['infrajs_jsexts'] as $path => $val) {
 		$html .= $require($path);
 	}
@@ -90,7 +90,7 @@ $html = infra_admin_cache('infra_initjs_php', function ($str) {
 		}
 	}
 	$infra['js'] = $html;
-	infra_fire($infra, 'oninitjs');
+	Event::fireg('oninitjs');
 	$infra['js'] .= '; return infrajs })';
 	return $infra['js'];
 }, array($_SERVER['QUERY_STRING']), $re);

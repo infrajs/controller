@@ -5,20 +5,20 @@ use infrajs\infra;
 
 $ans = array();
 $ans['title'] = 'check4';
-infra_require('*controller/make.php');
+Path::req('*controller/make.php');
 
-infra_html('<div id="main1"></div><div id="main2"></div>', true);
-$layers = infra_loadJSON('*controller/tests/resources/check4.json');
-infra\ext\Crumb::change('test');
+View::html('<div id="main1"></div><div id="main2"></div>', true);
+$layers = Load::loadJSON('*controller/tests/resources/check4.json');
+controller\ext\Crumb::change('test');
 Controller::check($layers);
 
-$html = infra_html();
+$html = View::html();
 preg_match_all('/x/', $html, $matches);
 $count = sizeof($matches[0]);
 $countneed = 2;
 
 if ($count == $countneed) {
-	return infra_ret($ans, 'ret');
+	return Ans::ret($ans, 'ret');
 }
 
-return infra_err($ans, 'err');
+return Ans::err($ans, 'err');

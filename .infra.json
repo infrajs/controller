@@ -6,11 +6,5 @@
 		"index":{
 			"external":"index/index.json"
 		}
-	},
-	"infrajs_jsexts":{
-
-	},
-	"infrajs_phpexts":{
-		
 	}
 }

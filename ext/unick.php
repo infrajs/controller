@@ -12,15 +12,15 @@ class unick
 	public static function init()
 	{
 		global $infra,$infrajs;
-		infra_wait($infrajs, 'oninit', function () {
+		Event::waitg('oninit', function () {
 			//session и template
 			global $infra_template_scope;
 			$fn = function ($name, $value) {
 				return unick::find($name, $value);
 			};
-			infra_seq_set($infra_template_scope, infra_seq_right('infrajs.find'), $fn);
+			Sequence::set($infra_template_scope, Sequence::right('infrajs.find'), $fn);
 
-infra_seq_set($infra_template_scope, infra_seq_right('infrajs.unicks'), unick::$unicks);
+Sequence::set($infra_template_scope, Sequence::right('infrajs.unicks'), unick::$unicks);
 		});
 	}
 	public static $unicks = array();
@@ -34,10 +34,10 @@ infra_seq_set($infra_template_scope, infra_seq_right('infrajs.unicks'), unick::$
 	public static function &find($name, $value)
 	{
 		$layers = Controller::getAllLayers();
-		$right = infra_seq_right($name);
+		$right = Sequence::right($name);
 
 		return Controller::run($layers, function &(&$layer) use ($right, $value) {
-			if (infra_seq_get($layer, $right) == $value) {
+			if (Sequence::get($layer, $right) == $value) {
 				return $layer;
 			}
 			$r = null;

@@ -17,7 +17,7 @@ class seojson
 			return;
 		}
 
-		$html = infra_html();
+		$html = View::html();
 
 		if (!empty($item['image_src'])) {
 			self::meta($html, $item, 'link', 'image_src');
@@ -69,11 +69,11 @@ class seojson
 			}
 		}
 
-		infra_html($html, true);
+		View::html($html, true);
 	}
 	public function load($src)
 	{
-		$item = infra_loadJSON($src);
+		$item = Load::loadJSON($src);
 		if (!$item) {
 			$item = array();
 		}

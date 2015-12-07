@@ -22,7 +22,7 @@ class subs
 	public static function init()
 	{
 		global $infra,$infrajs;
-		infra_wait($infrajs, 'oninit', function () {
+		Event::waitg('oninit', function () {
 			Controller::runAddKeys('subs');
 			/*
 			 * subs, указанное в external, объединяется с основным описанием также, как свойство divs (как именно не помню)
@@ -41,7 +41,7 @@ class subs
 		if (@$layer['parent']['subs']) {
 			//forx бежим по свойствам объекта, как по массивам. Массивы могут быть вложенные
 			//var_dump($layer['parent']['subs']);
-			$key = infra_forx($layer['parent']['subs'], function (&$l, $key) use (&$layer) {//Такую пробежку у родителя сразу для всех детей делать не нельзя, так как external у детей ещё не сделан.
+			$key = Event::forx($layer['parent']['subs'], function (&$l, $key) use (&$layer) {//Такую пробежку у родителя сразу для всех детей делать не нельзя, так как external у детей ещё не сделан.
 				if (infra_isEqual($layer, $l)) {
 					return $key;
 				}//Ага, текущей слой описан у родителя в subs. Любой return останавливает цикл и возвращает иначе key был бы undefined.

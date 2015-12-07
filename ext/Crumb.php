@@ -1,37 +1,37 @@
 <?php
 
 //Свойство dyn, state, crumb
-//infra.load('*controller/ext/external.js');//Уже должен быть
 namespace infrajs\controller\ext;
 
 use infrajs\controller\Controller;
-use infrajs\infra;
+use infrajs\event\Event;
+use infrajs\sequence\Sequence;
+use infrajs\template\Template;
 
 class Crumb
 {
 	public static function init()
 	{
-		global $infra,$infrajs;
 
-		infra_wait($infrajs, 'oninit', function () {
+		Event::waitg('oninit', function () {
 
-			$root = infra\ext\Crumb::getInstance();
-			global $infra_template_scope;
-			infra_seq_set($infra_template_scope, infra_seq_right('infra.Crumb.query'), $root->query);
-			infra_seq_set($infra_template_scope, infra_seq_right('infra.Crumb.params'), infra\ext\Crumb::$params);
-			infra_seq_set($infra_template_scope, infra_seq_right('infra.Crumb.get'), infra\ext\Crumb::$get);
+			$root = \infrajs\crumb\Crumb::getInstance();
+			
+			Sequence::set(Template::$scope, Sequence::right('infra.Crumb.query'), $root->query);
+			Sequence::set(Template::$scope, Sequence::right('infra.Crumb.params'), \infrajs\crumb\Crumb::$params);
+			Sequence::set(Template::$scope, Sequence::right('infra.Crumb.get'), \infrajs\crumb\Crumb::$get);
 
 			$cl = function ($mix = null) {
-				return infra\ext\Crumb::getInstance($mix);
+				return ext\Crumb::getInstance($mix);
 			};
-			infra_seq_set($infra_template_scope, infra_seq_right('infra.Crumb.getInstance'), $cl);
+			Sequence::set(Template::$scope, Sequence::right('infra.Crumb.getInstance'), $cl);
 			external::add('child', 'layers');
 			external::add('childs', function (&$now, &$ext) {
 				//Если уже есть значения этого свойства то дополняем
 				if (!$now) {
 					$now = array();
 				}
-				infra_forx($ext, function (&$n, $key) use (&$now) {
+				Event::forx($ext, function (&$n, $key) use (&$now) {
 					if (@$now[$key]) {
 						return;
 					}
@@ -44,7 +44,7 @@ class Crumb
 				return $now;
 			});
 			external::add('crumb', function (&$now, &$ext, &$layer, &$external, $i) {//проверка external в onchange
-				Crumb::set($layer, 'crumb', $ext);
+				\infrajs\crumb\Crumb::set($layer, 'crumb', $ext);
 
 				return $layer[$i];
 			});
@@ -62,7 +62,7 @@ class Crumb
 		if (isset($layer['parent'])) {
 			$root = &$layer['parent'][$name];
 		} else {
-			$root = &infra\ext\Crumb::getInstance();
+			$root = &ext\Crumb::getInstance();
 		}
 		if ($layer['dyn'][$name]) {
 			$layer[$name] = &$root->getInst($layer['dyn'][$name]);

@@ -1,10 +1,11 @@
 <?php
 
-use infrajs\controller\Controller;
+namespace infrajs\controller;
 use infrajs\controller\ext;
+use infrajs\event\Event;
 
 //========================
-global $infrajs,$infra;
+global $infrajs, $infra;
 /*if (!$infrajs) {
 		$infrajs = array();
 }*/
@@ -13,7 +14,7 @@ global $infrajs,$infra;
 //========================
 //=======wait=====//
 
-infra_wait($infrajs, 'oninit', function () {
+Event::waitg('oninit', function () {
 	ext\external::init();
 	ext\Crumb::init();
 	ext\subs::init();
@@ -27,26 +28,26 @@ infra_wait($infrajs, 'oninit', function () {
 //========================
 //layer oninit
 //========================
-infra_listen($infra, 'layer.oninit', function (&$layer) {
+Event::listeng('layer.oninit', function (&$layer) {
 	//external
 	ext\external::check($layer);
 
 });
-infra_listen($infra, 'layer.oninit', function (&$layer) {
+Event::listeng('layer.oninit', function (&$layer) {
 	//config
 	ext\config::configinherit($layer);
 });
-infra_listen($infra, 'layer.oninit', function (&$layer) {
+Event::listeng('layer.oninit', function (&$layer) {
 	//infrajs
 	$store = &Controller::store();
 	$layer['store'] = array('counter' => $store['counter']);
 });
-infra_listen($infra, 'layer.oninit', function (&$layer) {
+Event::listeng('layer.oninit', function (&$layer) {
 	//unick
 	ext\unick::check($layer);
 });
 
-infra_listen($infra, 'layer.oninit', function (&$layer) {
+Event::listeng('layer.oninit', function (&$layer) {
 	//это из-за child// всё что после child начинает плыть. по этому надо crumb каждый раз определять, брать от родителя.
 	//crumb
 	if (!isset($layer['dyn'])) {
@@ -54,7 +55,7 @@ infra_listen($infra, 'layer.oninit', function (&$layer) {
 		ext\Crumb::set($layer, 'crumb', $layer['crumb']);
 	}
 });
-infra_listen($infra, 'layer.oninit', function (&$layer) {
+Event::listeng('layer.oninit', function (&$layer) {
 	//crumb
 	if (empty($layer['parent'])) {
 		return;
@@ -62,7 +63,7 @@ infra_listen($infra, 'layer.oninit', function (&$layer) {
 	ext\Crumb::set($layer, 'crumb', $layer['dyn']['crumb']);//Возможно у родителей обновился crumb из-за child у детей тоже должен обновиться хотя они не в child
 });
 
-infra_listen($infra, 'layer.oninit', function (&$layer) {
+Event::listeng('layer.oninit', function (&$layer) {
 
 	//crumb child
 	if (@!$layer['child']) {
@@ -76,14 +77,14 @@ infra_listen($infra, 'layer.oninit', function (&$layer) {
 		$name = '###child###';
 	}
 
-	infra_fora($layer['child'], function (&$l) use (&$name) {
+	Each::fora($layer['child'], function (&$l) use (&$name) {
 		ext\Crumb::set($l, 'crumb', $name);
 	});
 });
-infra_listen($infra, 'layer.oninit', function (&$layer) {
+Event::listeng('layer.oninit', function (&$layer) {
 	//Должно быть после external, чтобы все свойства у слоя появились
 	//crumb childs
-	infra_forx($layer['childs'], function (&$l, $key) {
+	Event::forx($layer['childs'], function (&$l, $key) {
 		//У этого childs ещё не взять external
 		if (empty($l['crumb'])) {
 			ext\Crumb::set($l, 'crumb', $key);
@@ -118,88 +119,88 @@ Controller::isAdd('check', function (&$layer) {
 //layer oncheck
 //========================
 
-infra_listen($infra, 'layer.oncheck', function (&$layer) {
+Event::listeng('layer.oncheck', function (&$layer) {
 	//counter
 	if (@!$layer['counter']) {
 		$layer['counter'] = 0;
 	}
 });
-infra_listen($infra, 'layer.oncheck', function (&$layer) {
+Event::listeng('layer.oncheck', function (&$layer) {
 	//В onchange слоя может не быть див// Это нужно чтобы в external мог быть определён div перед тем как наследовать div от родителя
 	//div
 	if (@!$layer['div'] && @$layer['parent']) {
 		$layer['div'] = $layer['parent']['div'];
 	}
 });
-infra_listen($infra, 'layer.oncheck', function (&$layer) {
+Event::listeng('layer.oncheck', function (&$layer) {
 	//Без этого не показывается окно cо стилями.. только его заголовок..
 	//div
-	infra_forx($layer['divs'], function (&$l, $div) {
+	Event::forx($layer['divs'], function (&$l, $div) {
 		if (@!$l['div']) {
 			$l['div'] = $div;
 		}
 	});
 });
 
-//infra_listen($infra, 'layer.oncheck', function (&$layer) {
+//Event::listeng('layer.oncheck', function (&$layer) {
 	//autosave на сервере нет такого объекта у слоёв autosave и это не приводит к запрету кэширования
 	//if(infrajs_tplonlyclient($layer))return;
 	//infrajs_autosaveRestore($layer);
 //});
 
 
-/*infra_listen($infra, 'layer.oncheck', function (&$layer) {//Заменяем пустые слои иначе они считаются пустыми массивами в которых слоёв нет
+/*Event::listeng('layer.oncheck', function (&$layer) {//Заменяем пустые слои иначе они считаются пустыми массивами в которых слоёв нет
 	//subs
 	if(@!$layer['subs'])return;
-	infra_foro($layer['subs'], function (&$val){
+	Each::foro($layer['subs'], function (&$val){
 		if(!$val||!is_array($val))$val=array('_'=>'notempty');
 	});
 });*/
-infra_listen($infra, 'layer.oncheck', function (&$layer) {
+Event::listeng('layer.oncheck', function (&$layer) {
 	//external уже проверен
 	//subs
 	ext\subs::check($layer);
 });
 
-infra_listen($infra, 'layer.oncheck', function (&$layer) {
+Event::listeng('layer.oncheck', function (&$layer) {
 	//external уже проверен
 	//config
 	ext\config::configtpl($layer);
 });
 
-infra_listen($infra, 'layer.oncheck', function (&$layer) {
+Event::listeng('layer.oncheck', function (&$layer) {
 	//external то ещё не применился у вложенных слоёв, по этому используется свойство envtochild
 	//env envs
 	ext\env::checkinit($layer);
 });
-infra_listen($infra, 'layer.oncheck', function (&$layer) {
+Event::listeng('layer.oncheck', function (&$layer) {
 	//external то ещё не применился нельзя
 	//env envtochild
 	ext\env::envtochild($layer);
 
 });
-infra_listen($infra, 'layer.oncheck', function (&$layer) {
+Event::listeng('layer.oncheck', function (&$layer) {
 	//env envframe
 	ext\env::envframe($layer);
 });
-infra_listen($infra, 'layer.oncheck', function (&$layer) {
+Event::listeng('layer.oncheck', function (&$layer) {
 	//env envframe
 	ext\env::envframe2($layer);
 });
-infra_listen($infra, 'layer.oncheck', function (&$layer) {
+Event::listeng('layer.oncheck', function (&$layer) {
 	//external уже есть
 	//env myenvtochild
 	ext\env::envmytochild($layer);
 });
 
 
-infra_listen($infra, 'layer.oncheck', function (&$layer) {
+Event::listeng('layer.oncheck', function (&$layer) {
 	//div
 	ext\div::divtpl($layer);
 
 });
 
-infra_listen($infra, 'layer.oncheck', function (&$layer) {
+Event::listeng('layer.oncheck', function (&$layer) {
 	//tpl
 	ext\tpl::tplroottpl($layer);
 	ext\tpl::dataroottpl($layer);
@@ -281,7 +282,7 @@ Controller::isAdd('show', function (&$layer) {
 	//tpl depricated
 	if (is_string(@$layer['tpl']) && @$layer['tplcheck']) {
 		//Мы не можем делать проверку пока другой плагин не подменит tpl
-		$res = infra_loadTEXT($layer['tpl']);
+		$res = Load::loadTEXT($layer['tpl']);
 		if (!$res) {
 			return false;
 		}
@@ -312,35 +313,35 @@ Controller::isAdd('show', function (&$layer) {
 //layeext/
 //====::init====================
 
-infra_listen($infra, 'layer.onshow', function (&$layer) {
+Event::listeng('layer.onshow', function (&$layer) {
 	//tpl
 	if (ext\tpl::onlyclient($layer)) {
 		return;
 	}
 	$layer['html'] = ext\tpl::getHtml($layer);
 });
-infra_listen($infra, 'layer.onshow', function (&$layer) {
+Event::listeng('layer.onshow', function (&$layer) {
 	//css
 	if (ext\tpl::onlyclient($layer)) {
 		return;
 	}
 	ext\css::check($layer);
 });
-infra_listen($infra, 'layer.onshow', function (&$layer) {
+Event::listeng('layer.onshow', function (&$layer) {
 	//tpl
 	if (ext\tpl::onlyclient($layer)) {
 		return;
 	}
 	global $infrajs;
 
-	$r = infra_html($layer['html'], $layer['div']);
+	$r = View::html($layer['html'], $layer['div']);
 	if (!$r && (!isset($layer['divcheck']) || !$layer['divcheck'])) {
 		echo 'Не найден div '.$layer['div'].' infra_html<br>';
 	}
 	unset($layer['html']);//нефиг в памяти весеть
 });
 
-infra_listen($infra, 'layer.onshow', function (&$layer) {
+Event::listeng('layer.onshow', function (&$layer) {
 	//seojson
 	if (ext\tpl::onlyclient($layer)) {
 		return;
@@ -350,9 +351,3 @@ infra_listen($infra, 'layer.onshow', function (&$layer) {
 //========================
 //infrajs onshow
 //========================
-
-//Add externals
-$conf=infra_config();
-foreach ($conf['infrajs_phpexts'] as $path) {
-	infra_require($path);
-}

@@ -17,7 +17,7 @@
 	$html = infra_template_exec($alltpls, $obj['data'], @$layer['tplroot'], @$layer['dataroot']);
 
 	if ($html != '12') {
-		return infra_err($ans, 'err');
+		return Ans::err($ans, 'err');
 	}
 
-	return infra_ret($ans, 'ret');
+	return Ans::ret($ans, 'ret');

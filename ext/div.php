@@ -13,7 +13,7 @@ function layerindiv($div,&$layer=null){//Функция в любой момен
 	return $store['divs'][$div];
 }
 global $infra;
-infra_listen($infra,'layer.onshow',function(&$layer){
+Event::listeng('layer.onshow',function(&$layer){
 	if(!Controller::is('show',$layer))return;
 	layerindiv($layer['div'],$layer);
 });
@@ -37,7 +37,7 @@ class div
 					continue;
 				}
 				$now[$i] = array();
-				infra_fora($ext[$i], function (&$l) use (&$now, $i) {
+				Each::fora($ext[$i], function (&$l) use (&$now, $i) {
 					array_push($now[$i], array('external' => $l));
 				});
 			}

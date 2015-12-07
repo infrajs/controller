@@ -91,11 +91,11 @@ class tpl
 			return $layer['data'];
 		}
 		$data = @$layer['json'];
-		if (infra_isAssoc($data) === false) {
+		if (Each::isAssoc($data) === false) {
 			//Если массив то это просто строка в виде данных
-			$data = infra_loadTEXT($data[0]);
+			$data = Load::loadTEXT($data[0]);
 		} elseif (is_string($data)) {
-			$data = &infra_loadJSON($data);//Забираем для текущего клиента что-то..
+			$data = &Load::loadJSON($data);//Забираем для текущего клиента что-то..
 		}
 
 		return $data;
@@ -104,7 +104,7 @@ class tpl
 	{
 		$tpl = $layer['tpl'];
 		if (is_string($tpl)) {
-			$tpl = infra_loadTEXT($tpl);//M доп параметры после :
+			$tpl = Load::loadTEXT($tpl);//M доп параметры после :
 		} elseif (is_array($tpl)) {
 			$tpl = $tpl[0];
 		} else {
@@ -160,7 +160,7 @@ class tpl
 			global $infra,$infrajs;
 			$infrajs['com'] = @$infra['com'];
 			$repls = array();//- подшаблоны для замены, Важно, что оригинальный распаршеный шаблон не изменяется
-			infra_fora($layer['tplsm'], function ($tm) use (&$repls) {
+			Each::fora($layer['tplsm'], function ($tm) use (&$repls) {
 				//mix tpl
 				$t = infra_template_make($tm);//С кэшем перепарсивания
 				array_push($repls, $t);

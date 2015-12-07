@@ -16,11 +16,11 @@ class external
 			'layers' => function (&$now, &$ext) {
 				if (!$now) {
 					$now = array();
-				} elseif (infra_isAssoc($now) !== false) {
+				} elseif (Each::isAssoc($now) !== false) {
 					$now = array($now);
 				}
 
-infra_fora($ext, function ($j) use (&$now) {
+Each::fora($ext, function ($j) use (&$now) {
 					//array_unshift($now,array('external'=>&$ext));
 					array_push($now, array('external' => &$j));
 				});
@@ -30,7 +30,7 @@ infra_fora($ext, function ($j) use (&$now) {
 			'external' => function (&$now, &$ext) {//Используется в global.js, css
 				if (!$now) {
 					$now = array();
-				} elseif (infra_isAssoc($now) !== false) {
+				} elseif (Each::isAssoc($now) !== false) {
 					$now = array(&$now);
 				}
 				array_push($now, $ext);
@@ -38,7 +38,7 @@ infra_fora($ext, function ($j) use (&$now) {
 				return $now;
 			},
 			'config' => function (&$now, &$ext, &$layer) {//object|string any
-				if (infra_isAssoc($ext) === true) {
+				if (Each::isAssoc($ext) === true) {
 					if (!$now) {
 						$now = array();
 					}
@@ -92,9 +92,9 @@ infra_fora($ext, function ($j) use (&$now) {
 			return;
 		}
 		unset($layer['external']);
-		infra_fora($external, function (&$exter) use (&$layer) {
+		Each::fora($external, function (&$exter) use (&$layer) {
 			if (is_string($exter)) {
-				$external = &infra_loadJSON($exter);
+				$external = &Load::loadJSON($exter);
 			} else {
 				$external = $exter;
 			}

@@ -19,10 +19,10 @@ class css
 		if ($store['css'][$css]) {
 			return;
 		}
-		infra_fora($layer['css'], function ($css) use (&$layer, &$store) {
+		Each::fora($layer['css'], function ($css) use (&$layer, &$store) {
 			$store['css'][$css] = true;
-			$code = infra_loadTEXT($css);
-			infra_html('<style>'.$code.'</style>', $layer['div']);
+			$code = Load::loadTEXT($css);
+			View::html('<style>'.$code.'</style>', $layer['div']);
 		});
 	}
 }

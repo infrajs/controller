@@ -3,6 +3,7 @@
 namespace infrajs\controller;
 use infrajs\infra\Infra;
 use infrajs\crumb\Crumb;
+use infrajs\event\Event;
 
 //require_once __DIR__.'/../infra/Infra.php';
 
@@ -99,7 +100,7 @@ class Controller
 			$store['wlayers'] = $store['alayers'];
 		}
 
-		infra_fire($infrajs, 'oninit');//сборка событий
+		Event::fireg('oninit');//сборка событий
 
 		self::run(self::getWorkLayers(), function (&$layer, &$parent) use (&$store) {
 			//Запускается у всех слоёв в работе которые wlayers
@@ -113,7 +114,7 @@ class Controller
 			infra_fire($layer, 'layer.oncheck');
 		});//разрыв нужен для того чтобы можно было наперёд определить показывается слой или нет. oncheck у всех. а потом по порядку.
 
-		infra_fire($infrajs, 'oncheck');//момент когда доступны слои по getUnickLayer
+		Event::fireg('oncheck');//момент когда доступны слои по getUnickLayer
 
 		self::run(self::getWorkLayers(), function (&$layer) {
 			//С чего вдруг oncheck у всех слоёв.. надо только у активных
@@ -126,7 +127,7 @@ class Controller
 		});//у родительского слоя showed будет реальное а не старое
 
 
-		infra_fire($infrajs, 'onshow');
+		Event::fireg('onshow');
 		//loader, setA, seo добавить в html, можно зациклить check
 		//$store['process']=false;
 	}
@@ -197,14 +198,14 @@ class Controller
 		}
 		$props = &$store['run'];
 
-		$r = &infra_fora($layers, function &(&$layer) use (&$parent, $callback, $props) {
+		$r = &Each::fora($layers, function &(&$layer) use (&$parent, $callback, $props) {
 
 			$r = &$callback($layer, $parent);
 			if (!is_null($r)) {
 				return $r;
 			}
 
-			$r = &infra_foro($layer, function &(&$val, $name) use (&$layer, $callback, $props) {
+			$r = &Each::foro($layer, function &(&$val, $name) use (&$layer, $callback, $props) {
 				$r = null;
 				if (isset($props['list'][$name])) {
 					$r = &Controller::run($val, $callback, $layer);
@@ -212,7 +213,7 @@ class Controller
 						return $r;
 					}
 				} else if (isset($props['keys'][$name])) {
-					$r = &infra_foro($val, function &(&$v, $i) use (&$layer, $callback) {
+					$r = &Each::foro($val, function &(&$v, $i) use (&$layer, $callback) {
 						$r = &Controller::run($v, $callback, $layer);
 						if (!is_null($r)) {
 							return $r;
@@ -239,14 +240,14 @@ class Controller
 		}
 		$props = &$store['run'];
 
-		$r = &infra_fora($layers, function &(&$layer) use (&$parent, $callback, $props) {
+		$r = &Each::fora($layers, function &(&$layer) use (&$parent, $callback, $props) {
 
 			$r = &$callback($layer, $parent);
 			if (!is_null($r)) {
 				return $r;
 			}
 
-			$r = &infra_foro($layer, function &(&$val, $name) use (&$layer, $callback, $props) {
+			$r = &Each::foro($layer, function &(&$val, $name) use (&$layer, $callback, $props) {
 				$r = null;
 				if (isset($props['list'][$name])) {
 					$r = &Controller::run($val, $callback, $layer);
@@ -261,10 +262,10 @@ class Controller
 				return $r;
 			}
 
-			$r = &infra_foro($layer, function &(&$val, $name) use (&$layer, $callback, $props) {
+			$r = &Each::foro($layer, function &(&$val, $name) use (&$layer, $callback, $props) {
 				$r = null;
 				if (isset($props['keys'][$name])) {
-					$r = &infra_foro($val, function &(&$v, $i) use (&$layer, $callback) {
+					$r = &Each::foro($val, function &(&$v, $i) use (&$layer, $callback) {
 						$r = &Controller::run($v, $callback, $layer);
 						if (!is_null($r)) {
 							return $r;
@@ -327,17 +328,17 @@ class Controller
 	{
 		Infra::init();
 		Crumb::init();
-		infra_require('*controller/make.php');
+		Path::req('*controller/make.php');
 		infra_admin_modified();//Здесь уже выход если у браузера сохранена версия
 		@header('Infrajs-Cache: true');//Афигенный кэш, когда используется infrajs не подгружается даже
-		$query=infra_toutf($_SERVER['QUERY_STRING']);
+		$query=Path::toutf($_SERVER['QUERY_STRING']);
 		$args=array($layer, $query);
 		$html = infra_admin_cache('index.php', function ($layer, $query) {
 			@header('Infrajs-Cache: false');//Афигенный кэш, когда используется infrajs не подгружается даже
 			$strlayer=json_encode($layer);
 			global $infrajs;
 			
-			$conf = infra_config();
+			$conf = Infra::config();
 			
 			if ($conf['controller']['server']) {
 
@@ -345,7 +346,7 @@ class Controller
 
 				Controller::check();//В infra_html были добавленыs все указаные в layers слои
 			}
-			$html = infra_html();
+			$html = View::html();
 
 			if ($conf['controller']['client']) {
 				$script = <<<END

@@ -10,7 +10,7 @@ class layers
 	public static function init()
 	{
 		global $infrajs;
-		infra_wait($infrajs, 'oninit', function () {
+		Event::waitg('oninit', function () {
 			Controller::runAddList('layers');
 		});
 	}

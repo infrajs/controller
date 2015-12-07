@@ -2,26 +2,26 @@
 
 use infrajs\controller\Controller;
 
-infrajs\infra\ext\Crumb::change('test');
-infra_require('*controller/make.php');
+infrajs\controller\ext\Crumb::change('test');
+Path::req('*controller/make.php');
 
 $ans = array();
 $ans['title'] = 'проверка чек';
 
-infra_html('<div id="main"></div>');
+View::html('<div id="main"></div>');
 
-$layers = infra_loadJSON('*controller/tests/resources/check2.json');
+$layers = Load::loadJSON('*controller/tests/resources/check2.json');
 Controller::check($layers);
 
 $layer = &$layers['layers'];
 
-$html = infra_html();
+$html = View::html();
 
 preg_match_all('/x/', $html, $matches);
 $count = sizeof($matches[0]);
 
 if ($count != 4) {
-	return infra_err($ans, 'нууль '.$count);
+	return Ans::err($ans, 'нууль '.$count);
 }
 
-return infra_ret($ans, 'daa');
+return Ans::ret($ans, 'daa');
