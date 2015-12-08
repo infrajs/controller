@@ -75,20 +75,6 @@ Event::listeng('layer.oncheck', function (&$layer) {
 	});
 });
 
-//Event::listeng('layer.oncheck', function (&$layer) {
-	//autosave на сервере нет такого объекта у слоёв autosave и это не приводит к запрету кэширования
-	//if(infrajs_tplonlyclient($layer))return;
-	//infrajs_autosaveRestore($layer);
-//});
-
-
-/*Event::listeng('layer.oncheck', function (&$layer) {//Заменяем пустые слои иначе они считаются пустыми массивами в которых слоёв нет
-	//subs
-	if(@!$layer['subs'])return;
-	Each::foro($layer['subs'], function (&$val){
-		if(!$val||!is_array($val))$val=array('_'=>'notempty');
-	});
-});*/
 Event::listeng('layer.oncheck', function (&$layer) {
 	//external уже проверен
 	//subs

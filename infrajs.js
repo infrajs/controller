@@ -211,7 +211,7 @@ infrajs.check=function(layers){//Пробежка по слоям
 
 };// child, layers
 
-infrajs.checkAdd=function(layers){//Два раза вызов добавит слой повторно
+infrajs.checkAdd=function(layers){
 	var store=infrajs.store();
 	infra.fora(layers,function(layer){
 		if(infra.fora(store.alayers,function(rl){

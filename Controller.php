@@ -139,45 +139,7 @@ class Controller
 		$store['alayers'][] = &$layers;//Только если рассматриваемый слой ещё не добавлен
 	}
 
-	public static function isAdd($name, $callback)
-	{
-		//def undefined быть не может
-		$store = &self::store();
-		if (!isset($store[$name])) {
-			$store[$name] = array();
-		}//Если ещё нет создали очередь
-		return $store[$name][] = $callback;
-	}
-	public static function &is($name, &$layer = null)
-	{
-		$store = &self::store();
-		if (!$store[$name]) {
-			$store[$name] = array();
-		}//Если ещё нет создали очередь
-		//Обновлять с новым check нужно только результат в слое, подписки в store сохраняются, Обновлять только в случае когда слой в работе
-		if (!is_array($layer) && !$layer) {
-			return $store[$name];
-		}//Без параметров возвращается массив подписчиков
-		$cache = &self::storeLayer($layer);//кэш сбрасываемый каждый iswork
-
-
-
-		if (isset($cache[$name])&&!is_null($cache[$name])) {
-			//Результат уже есть
-			return $cache[$name];//Хранить результат для каждого слоя
-		}
-
-		$cache[$name] = true;//взаимозависимость не мешает, Защита от рекурсии, повторный вызов вернёт true как предварительный кэш
-		for ($i = 0, $l = sizeof($store[$name]); $i < $l; ++$i) {
-			$r = $store[$name][$i]($layer);
-			if (!is_null($r) && !$r) {
-				$cache[$name] = $r;
-				break;
-			}
-		}
-
-		return $cache[$name];
-	}
+	
 	public static function &run(&$layers, $callback, &$parent = null)
 	{
 		$store = &Controller::store();
