@@ -3,7 +3,7 @@
 require_once __DIR__.'/../infra/Infra.php';
 infra_admin_modified();
 $re = isset($_GET['re']);
-$html = infra_admin_cache('infra_initjs_php', function ($str) {
+$html = Access::adminCache('infra_initjs_php', function ($str) {
 	global $infra;
 	$loadTEXT = function ($path) {
 		$html = Load::loadTEXT($path);
@@ -90,7 +90,6 @@ $html = infra_admin_cache('infra_initjs_php', function ($str) {
 		}
 	}
 	$infra['js'] = $html;
-	Event::fireg('oninitjs');
 	$infra['js'] .= '; return infrajs })';
 	return $infra['js'];
 }, array($_SERVER['QUERY_STRING']), $re);

@@ -3,14 +3,13 @@
 namespace infrajs\controller;
 use infrajs\infra\Infra;
 use infrajs\event\Event;
+use infrajs\view\View;
 
 //require_once __DIR__.'/../infra/Infra.php';
 
 /*//Функции для написания плагинов
 Controller::store();
 Controller::storeLayer(layer)
-Controller::getWorkLayers();
-Controller::getAllLayers();
 
 Controller::run(layers,callback);
 Controller::runAddList('layers')
@@ -18,23 +17,36 @@ Controller::runAddKeys('divs');
 
 Controller::isSaveBranch(layer,val);
 Controller::isParent(layer,parent);
-Controller::isWork(layer);
 
-Controller::is('rest|show|check',layer);
+Event::fire('layer.is rest|show|check',layer);
 Controller::isAdd('rest|show|check',callback(layer));
 
 Controller::check(layer);
-Controller::checkAdd(layer);
 
 
 */
-
-global $infrajs;
 /*if (!$infrajs) {
 	$infrajs=array();
 }*/
 class Controller
 {
+	public static $counter = 0;//Счётчик сколько раз перепарсивался сайт, посмотреть можно в firebug
+	public static $store = array(
+		'timer' => false,
+		'run' => array('keys' => array(),'list' => array()),
+		'waits' => array(),
+		'process' => false
+		
+	);
+	public static $layers;
+	public static function reset(){
+		static::$store = array(
+			'timer' => false,
+			'run' => array('keys' => array(),'list' => array()),
+			'waits' => array(),
+			'process' => false
+		);	
+	}
 	public static function &storeLayer(&$layer)
 	{
 		if (@!$layer['store']) {
@@ -44,21 +56,7 @@ class Controller
 	}
 	public static function &store()
 	{
-		//Для единобразного доступа в php, набор глобальных переменных
-		global $infrajs_store;
-		if (!$infrajs_store) {
-			$infrajs_store = array(
-				'timer' => false,
-				'run' => array('keys' => array(),'list' => array()),
-				'waits' => array(),
-				'process' => false,
-				'counter' => 0,//Счётчик сколько раз перепарсивался сайт, посмотреть можно в firebug
-				'alayers' => array(),//Записываются только слои у которых нет родителя...
-				'wlayers' => array(),//Записываются обрабатываемые сейчас слои
-			);
-		}
-
-		return $infrajs_store;
+		return static::$store;
 	}
 
 	public static function getAllLayers()
@@ -66,12 +64,6 @@ class Controller
 		$store = &self::store();
 
 		return $store['alayers'];
-	}
-	public static function &getWorkLayers()
-	{
-		$store = &self::store();
-
-		return $store['wlayers'];
 	}
 	/*
 		в check вызывается check// игнор
@@ -82,64 +74,47 @@ class Controller
 		Гипотетически можем работать вне клиента.. дай один html дай другой... выдай клиенту третий
 		без mainrun мы не считаем env
 	*/
-	public static function check(&$layers = null)
+	public static function check(&$layers)
 	{
+		static::$layers=$layers;
+		static::$counter++;
 		//Пробежка по слоям
 		$store = &self::store();
-		global $infrajs;
-		//if($store['process'])return;//Уже выполняется
-		//$store['process']=true;
-		//процесс характеризуется двумя переменными process и timer... true..true..false.....false
-		++$store['counter'];
-			$store['ismainrun'] = is_null($layers);
 
-		if (!is_null($layers)) {
-			$store['wlayers'] = array(&$layers);
-		} else {
-			$store['wlayers'] = $store['alayers'];
-		}
+		Event::fire('oninit');//сборка событий
 
-		Event::fireg('oninit');//сборка событий
-
-		self::run(self::getWorkLayers(), function (&$layer, &$parent) use (&$store) {
-			//Запускается у всех слоёв в работе которые wlayers
-			if ($parent) {
-				$layer['parent'] = &$parent;
-			}
-			infra_fire($layer, 'layer.oninit');
-			if (!Controller::is('check', $layer)) {
+		self::run(static::$layers, function (&$layer, &$parent) {
+			//Запускается у всех слоёв в работе
+			if ($parent) $layer['parent'] = &$parent;
+			Event::fire('layer.oninit', $layer);
+			if (!Event::fire('layer.ischeck', $layer)) {
 				return;
 			}
-			infra_fire($layer, 'layer.oncheck');
+			Event::fire('layer.oncheck', $layer);
 		});//разрыв нужен для того чтобы можно было наперёд определить показывается слой или нет. oncheck у всех. а потом по порядку.
 
-		Event::fireg('oncheck');//момент когда доступны слои по getUnickLayer
+		Event::fire('oncheck');//момент когда доступны слои по getUnickLayer
 
-		self::run(self::getWorkLayers(), function (&$layer) {
+		self::run(static::$layers, function (&$layer) {
 			//С чего вдруг oncheck у всех слоёв.. надо только у активных
-			if (Controller::is('show', $layer)) {
+			if (Event::fire('layer.isshow', $layer)) {
 				//Событие в котором вставляется html
-				infra_fire($layer, 'layer.onshow');//при клике делается отметка в конфиге слоя и слой парсится... в oncheck будут подстановки tpl и isRest вернёт false
-				infra_fire($layer, 'onshow');
+				Event::fire('layer.onshow', $layer);//при клике делается отметка в конфиге слоя и слой парсится... в oncheck будут подстановки tpl и isRest вернёт false
 				//onchange показанный слой не реагирует на изменение адресной строки, нельзя привязывать динамику интерфейса к адресной строке, только черещ перепарсивание
 			}
 		});//у родительского слоя showed будет реальное а не старое
 
 
-		Event::fireg('onshow');
+		Event::fire('onshow');
 		//loader, setA, seo добавить в html, можно зациклить check
 		//$store['process']=false;
-	}
-	public static function checkAdd(&$layers)
-	{
-		//Два раза вызов добавит слой повторно
-		//Чтобы сработал check без аргументов нужно передать слои в add
-		//Слои переданные в check напрямую не сохраняются
-		$store = &self::store();
-		$store['alayers'][] = &$layers;//Только если рассматриваемый слой ещё не добавлен
-	}
+		$html=View::html();
 
-	
+		View::html('',true);
+		static::reset();
+
+		return $html; 
+	}
 	public static function &run(&$layers, $callback, &$parent = null)
 	{
 		$store = &Controller::store();
@@ -149,7 +124,6 @@ class Controller
 		$props = &$store['run'];
 
 		$r = &Each::fora($layers, function &(&$layer) use (&$parent, $callback, $props) {
-
 			$r = &$callback($layer, $parent);
 			if (!is_null($r)) {
 				return $r;
@@ -179,63 +153,11 @@ class Controller
 			if (!is_null($r)) {
 				return $r;
 			}
+			$r=null;
+			return $r;
 		});
 		return $r;
 	}
-	/*public static function &run(&$layers, $callback, &$parent = null)
-	{
-		$store = &Controller::store();
-		if (!$store['run']) {
-			$store['run'] = array();
-		}
-		$props = &$store['run'];
-
-		$r = &Each::fora($layers, function &(&$layer) use (&$parent, $callback, $props) {
-
-			$r = &$callback($layer, $parent);
-			if (!is_null($r)) {
-				return $r;
-			}
-
-			$r = &Each::foro($layer, function &(&$val, $name) use (&$layer, $callback, $props) {
-				$r = null;
-				if (isset($props['list'][$name])) {
-					$r = &Controller::run($val, $callback, $layer);
-					if (!is_null($r)) {
-						return $r;
-					}
-				}
-
-				return $r;
-			});
-			if (!is_null($r)) {
-				return $r;
-			}
-
-			$r = &Each::foro($layer, function &(&$val, $name) use (&$layer, $callback, $props) {
-				$r = null;
-				if (isset($props['keys'][$name])) {
-					$r = &Each::foro($val, function &(&$v, $i) use (&$layer, $callback) {
-						$r = &Controller::run($v, $callback, $layer);
-						if (!is_null($r)) {
-							return $r;
-						}
-					});
-					if (!is_null($r)) {
-						return $r;
-					}
-				}
-
-				return $r;
-			});
-			if (!is_null($r)) {
-				return $r;
-			}
-
-		});
-
-		return $r;
-	}*/
 	public static function runAddKeys($name)
 	{
 		$store = &self::store();
@@ -250,14 +172,13 @@ class Controller
 	public static function isWork($layer)
 	{
 		//val для отладки, делает метку что слой в работе
-		$store = &self::store();
 		$cache = &self::storeLayer($layer);//work
-		return $cache['counter'] && $cache['counter'] == $store['counter'];//Если слой в работе метки будут одинаковые
+		return $cache['counter'] && $cache['counter'] == static::$counter;//Если слой в работе метки будут одинаковые
 	}
 	public static function isParent(&$layer, &$parent)
 	{
 		while ($layer) {
-			if (infra_isEqual($parent, $layer)) {
+			if (Each::isEqual($parent, $layer)) {
 				return true;
 			}
 			$layer = &$layer['parent'];
@@ -283,22 +204,19 @@ class Controller
 		@header('Infrajs-Cache: true');//Афигенный кэш, когда используется infrajs не подгружается даже
 		$query=Path::toutf($_SERVER['QUERY_STRING']);
 		$args=array($layer, $query);
-		$html = infra_admin_cache('index.php', function ($layer, $query) {
+		$html = Access::adminCache('index.php', function ($layer, $query) {
 			@header('Infrajs-Cache: false');//Афигенный кэш, когда используется infrajs не подгружается даже
 			$strlayer=json_encode($layer);
-			global $infrajs;
 			
-			$conf = Infra::config();
+			$conf = Infra::config('controller');
 			
-			if ($conf['controller']['server']) {
+			if ($conf['server']) {
 
-				Controller::checkAdd($layer);
-
-				Controller::check();//В infra_html были добавленыs все указаные в layers слои
+				Controller::check($layer);//В infra_html были добавленыs все указаные в layers слои
 			}
 			$html = View::html();
 
-			if ($conf['controller']['client']) {
+			if ($conf['client']) {
 				$script = <<<END
 \n<script type="text/javascript">
 	require([
