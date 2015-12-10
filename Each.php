@@ -105,11 +105,8 @@ class Each {
 	public static function isAssoc(&$array)
 	{
 		//(c) Kohana http://habrahabr.ru/qa/7689/
-		if (!is_array($array)) {
-			return;
-		}
+		if (!is_array($array)) return;
 		$keys = array_keys($array);
-
 		return array_keys($keys) !== $keys;
 	}
 	public static function &foro(&$obj, $callback, $back = false)

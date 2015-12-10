@@ -1,19 +1,45 @@
 <?php
 namespace infrajs\controller;
 use infrajs\event\Event;
+use infrajs\template\Template;
+use infrajs\sequence\Sequence;
 
+/**
+ * У слоя созданы свойства
+ * counter, parsed, unick, external, parsedtpl, onlyclient, parent, is_save_branch, onlyclient
+ * 
+ **/
 
 Event::$classes['layer']=function($obj){
-	if(!isset($obj['unick'])) return '';
-	return $obj['unick'];
+	if(!isset($obj['id'])) return '';
+	return $obj['id'];
 };
 
+Event::handler('oninit', function () {
+	Layer::parsedAdd('parsed');
+	Layer::parsedAdd(function ($layer) {
+		if (!isset($layer['parsedtpl'])) {
+			return '';
+		}
+		return Template::parse(array($layer['parsedtpl']), $layer);
+	});
+});
+Event::handler('oninit', function () {
+	Template::$scope;
+	$fn = function ($name, $value) {
+		return Layer::find($name, $value);
+	};
+	Sequence::set(Template::$scope, Sequence::right('infrajs.find'), $fn);
+	Sequence::set(Template::$scope, Sequence::right('infrajs.ids'), Layer::$ids);
+});
 
 Event::handler('layer.oninit', function (&$layer) {
-	$layer['store'] = array('counter' => Controller::$counter);
-},'layer');
+	Layer::setId($layer);
+}, 'layer');
+
+
 Event::handler('layer.oninit', function (&$layer) {
-	while (@$layer['external'] && (!isset($layer['onlyclient']) || !$layer['onlyclient'])) {
+	while (@$layer['external'] && !Layer::pop($layer, 'onlyclient')) {
 		$ext = &$layer['external'];
 		self::checkExt($layer, $ext);
 	}
@@ -28,7 +54,7 @@ Event::handler('layer.isshow', function (&$layer) {
 	if (Event::handler('layer.isshow', $layer['parent'])) return;
 
 	//Какой-то родитель таки не показывается, например пустой слой, теперь нужно узнать скрывает родитель свою ветку или нет
-	if (Controller::isSaveBranch($layer['parent'])) return;
+	if (!empty($layer['parent']['is_save_branch'])) return;
 
 	return false;
 },'layer');
@@ -41,3 +67,4 @@ Event::handler('layer.oncheck', function (&$layer) {
 Event::handler('layer.onshow', function (&$layer) {
 	$layer['counter']++;
 },'layer');
+

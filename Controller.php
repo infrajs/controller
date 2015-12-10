@@ -7,83 +7,27 @@ use infrajs\view\View;
 
 //require_once __DIR__.'/../infra/Infra.php';
 
-/*//Функции для написания плагинов
-Controller::store();
-Controller::storeLayer(layer)
+/*//
 
-Controller::run(layers,callback);
-Controller::runAddList('layers')
-Controller::runAddKeys('divs');
 
-Controller::isSaveBranch(layer,val);
-Controller::isParent(layer,parent);
 
-Event::fire('layer.is rest|show|check',layer);
-Controller::isAdd('rest|show|check',callback(layer));
+
+Event::fire('layer.is|on show|check|init',layer);
 
 Controller::check(layer);
 
-
 */
-/*if (!$infrajs) {
-	$infrajs=array();
-}*/
 class Controller
 {
-	public static $counter = 0;//Счётчик сколько раз перепарсивался сайт, посмотреть можно в firebug
-	public static $store = array(
-		'timer' => false,
-		'run' => array('keys' => array(),'list' => array()),
-		'waits' => array(),
-		'process' => false
-		
-	);
 	public static $layers;
-	public static function reset(){
-		static::$store = array(
-			'timer' => false,
-			'run' => array('keys' => array(),'list' => array()),
-			'waits' => array(),
-			'process' => false
-		);	
-	}
-	public static function &storeLayer(&$layer)
-	{
-		if (@!$layer['store']) {
-			$layer['store'] = array('counter' => 0);
-		}//Кэш используется во всех is функциях... iswork кэш, ischeck кэш используется для определения iswork слоя.. путём сравнения ))
-		return $layer['store']; //Очищается кэш в checkNow
-	}
-	public static function &store()
-	{
-		return static::$store;
-	}
-
-	public static function getAllLayers()
-	{
-		$store = &self::store();
-
-		return $store['alayers'];
-	}
-	/*
-		в check вызывается check// игнор
-		два check подряд будет два выполнения.
-
-		###mainrun всегда check всегда один на php, но для совместимости..., для тестов.. нужно помнить что каждый check работает с одним и тем же infra_html
-
-		Гипотетически можем работать вне клиента.. дай один html дай другой... выдай клиенту третий
-		без mainrun мы не считаем env
-	*/
 	public static function check(&$layers)
 	{
 		static::$layers=$layers;
-		static::$counter++;
 		//Пробежка по слоям
-		$store = &self::store();
 
 		Event::fire('oninit');//сборка событий
 
-		self::run(static::$layers, function (&$layer, &$parent) {
+		Run::exec(static::$layers, function (&$layer, &$parent) {
 			//Запускается у всех слоёв в работе
 			if ($parent) $layer['parent'] = &$parent;
 			Event::fire('layer.oninit', $layer);
@@ -95,7 +39,7 @@ class Controller
 
 		Event::fire('oncheck');//момент когда доступны слои по getUnickLayer
 
-		self::run(static::$layers, function (&$layer) {
+		Run::exec(static::$layers, function (&$layer) {
 			//С чего вдруг oncheck у всех слоёв.. надо только у активных
 			if (Event::fire('layer.isshow', $layer)) {
 				//Событие в котором вставляется html
@@ -107,93 +51,11 @@ class Controller
 
 		Event::fire('onshow');
 		//loader, setA, seo добавить в html, можно зациклить check
-		//$store['process']=false;
 		$html=View::html();
 
 		View::html('',true);
-		static::reset();
 
 		return $html; 
-	}
-	public static function &run(&$layers, $callback, &$parent = null)
-	{
-		$store = &Controller::store();
-		if (!$store['run']) {
-			$store['run'] = array();
-		}
-		$props = &$store['run'];
-
-		$r = &Each::fora($layers, function &(&$layer) use (&$parent, $callback, $props) {
-			$r = &$callback($layer, $parent);
-			if (!is_null($r)) {
-				return $r;
-			}
-
-			$r = &Each::foro($layer, function &(&$val, $name) use (&$layer, $callback, $props) {
-				$r = null;
-				if (isset($props['list'][$name])) {
-					$r = &Controller::run($val, $callback, $layer);
-					if (!is_null($r)) {
-						return $r;
-					}
-				} else if (isset($props['keys'][$name])) {
-					$r = &Each::foro($val, function &(&$v, $i) use (&$layer, $callback) {
-						$r = &Controller::run($v, $callback, $layer);
-						if (!is_null($r)) {
-							return $r;
-						}
-					});
-					if (!is_null($r)) {
-						return $r;
-					}
-				}
-
-				return $r;
-			});
-			if (!is_null($r)) {
-				return $r;
-			}
-			$r=null;
-			return $r;
-		});
-		return $r;
-	}
-	public static function runAddKeys($name)
-	{
-		$store = &self::store();
-		$store['run']['keys'][$name] = true;
-	}
-	public static function runAddList($name)
-	{
-		$store = &self::store();
-		$store['run']['list'][$name] = true;
-	}
-
-	public static function isWork($layer)
-	{
-		//val для отладки, делает метку что слой в работе
-		$cache = &self::storeLayer($layer);//work
-		return $cache['counter'] && $cache['counter'] == static::$counter;//Если слой в работе метки будут одинаковые
-	}
-	public static function isParent(&$layer, &$parent)
-	{
-		while ($layer) {
-			if (Each::isEqual($parent, $layer)) {
-				return true;
-			}
-			$layer = &$layer['parent'];
-		}
-
-		return false;
-	}
-	public static function isSaveBranch(&$layer, $val = null)
-	{
-		$cache = &self::storeLayer($layer);
-		if (!is_null($val)) {
-			$cache['is_save_branch'] = $val;
-		}
-
-		return @$cache['is_save_branch'];
 	}
 	public static function init($layer)
 	{

@@ -11,7 +11,7 @@ $layers = array(&$l);
 $msg = 'Maybe good';
 
 Path::req('*controller/make.php');
-$layer = &Controller::run($layers, function &(&$layer) use ($msg) {
+$layer = &Run::exec($layers, function &(&$layer) use ($msg) {
 	$layer['test'] = $msg;
 
 	return $layer;

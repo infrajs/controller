@@ -247,7 +247,7 @@
 			if(typeof(r)=='undefined')r=true;
 		}
 		if(layer['gist']){
-			alert(infrajs.isSaveBranch(infrajs.find('unick','gist')));
+			alert(infrajs.isSaveBranch(infrajs.find('id','gist')));
 			exit;
 		}
 		infrajs.isSaveBranch(layer,r);
