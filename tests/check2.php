@@ -1,27 +1,41 @@
 <?php
 
 use infrajs\controller\Controller;
+use infrajs\view\View;
+use infrajs\ans\Ans;
+use infrajs\crumb\Crumb;
+use infrajs\path\Path;
+use infrajs\load\Load;
 
-infrajs\controller\ext\Crumb::change('test');
-Path::req('*controller/make.php');
+
+
+if (!is_file('vendor/autoload.php')) {
+    chdir('../../../../');
+    require_once('vendor/autoload.php');
+}
+
+$r=Path::reqif('*controller/infra.php');
+
+if(!$r) Ans::err($ans, 'Требуется infrajs/controller');
+echo 1;
+Path::req('*crumb/infra.php');
+exit;
+Crumb::change('test');
+
 
 $ans = array();
-$ans['title'] = 'проверка чек';
+$ans['title'] = 'Проверка чек';
 
 View::html('<div id="main"></div>');
 
-$layers = Load::loadJSON('*controller/tests/resources/check2.json');
-Controller::check($layers);
-
-$layer = &$layers['layers'];
-
-$html = View::html();
+$layers = Load::loadJSON('*crumb/tests/resources/check2.json');
+$html = Controller::check($layers);
 
 preg_match_all('/x/', $html, $matches);
 $count = sizeof($matches[0]);
 
 if ($count != 4) {
-	return Ans::err($ans, 'нууль '.$count);
+	return Ans::err($ans, 'Нет '.$count);
 }
 
 return Ans::ret($ans, 'daa');

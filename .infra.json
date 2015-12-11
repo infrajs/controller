@@ -5,6 +5,7 @@
 		"client":true,
 		"index":{
 			"external":"index/index.json"
-		}
+		},
+		"require":"*controller/infra.php"
 	}
 }

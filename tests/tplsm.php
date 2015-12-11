@@ -1,23 +1,35 @@
 <?php
+namespace infrajs\controller;
 
-	require_once __DIR__.'/../../infra/Infra.php';
+use infrajs\controller\Controller;
+use infrajs\controller\Run;
+use infrajs\view\View;
+use infrajs\ans\Ans;
+use infrajs\template\Template;
+use infrajs\path\Path;
 
-	$obj = array();
-	$obj['tpl'] = array('1{:add}');
-	$obj['tplsm'] = array('{add:}2');
-	$obj['data'] = array('asdf' => 1);
+if (!is_file('vendor/autoload.php')) {
+    chdir('../../../../');
+    require_once('vendor/autoload.php');
+}
+$ans=array();
 
-	$tpls = infra_template_make($obj['tpl']);//С кэшем перепарсивания
+$obj = array();
+$obj['tpl'] = array('1{:add}');
+$obj['tplsm'] = array('{add:}2');
+$obj['data'] = array('asdf' => 1);
 
-	$repls = array();
-	$t = infra_template_make($obj['tplsm']);
-	$repls[] = $t;
-	$alltpls = array(&$repls,&$tpls);
+$tpls = Template::make($obj['tpl']);//С кэшем перепарсивания
 
-	$html = infra_template_exec($alltpls, $obj['data'], @$layer['tplroot'], @$layer['dataroot']);
+$repls = array();
+$t = Template::make($obj['tplsm']);
+$repls[] = $t;
+$alltpls = array(&$repls,&$tpls);
 
-	if ($html != '12') {
-		return Ans::err($ans, 'err');
-	}
+$html = Template::exec($alltpls, $obj['data']);
 
-	return Ans::ret($ans, 'ret');
+if ($html != '12') {
+	return Ans::err($ans, 'err');
+}
+
+return Ans::ret($ans, 'ret');

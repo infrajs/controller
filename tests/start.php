@@ -3,6 +3,7 @@ namespace infrajs\controller;
 use infrajs\ans\Ans;
 use infrajs\path\Path;
 use infrajs\view\View;
+use infrajs\load\Load;
 
 if (!is_file('vendor/autoload.php')) {
 	chdir('../../../../');	
@@ -12,9 +13,8 @@ if (!is_file('vendor/autoload.php')) {
 $ans = array('title' => 'Проверки контроллера');
 
 
+
 Path::req('*controller/infra.php');
-Path::req('*layer-div/infra.php');
-Path::req('*layer-tpl/infra.php');
 
 $layer = array(
 	'data' => 1,

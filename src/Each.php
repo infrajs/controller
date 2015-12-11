@@ -51,17 +51,34 @@ class Each {
 
 		return $r;
 	}
+	public static function &exec(&$el, $callback, &$_group = null, $_key = null)
+	{
+		//Бежим по массиву рекурсивно
+		if (Each::isAssoc($el) === false) {
+			for ($i = 0, $l = sizeof($el); $i < $l; $i++) {
+				$r = &Each::fora($el[$i], $callback, $el, $i);
+				return $r;
+			}
+		} elseif (!is_null($el)) {
+			//Если undefined callback не вызывается, Таким образом можно безжать по переменной не проверя определена она или нет.
+			$r=&$callback($el, $_key, $_group);
+			return $r;
+		} else {
+			return $el;
+		}
+	}
 	public static function &fora(&$el, $callback, $back = false, &$_group = null, $_key = null)
 	{
 		//Бежим по массиву рекурсивно
 		if (Each::isAssoc($el) === false) {
 			return Each::forr($el, function &(&$v, $i) use (&$el, $callback, $back) {
-				return Each::fora($v, $callback, $back, $el, $i);
+				$r=&Each::fora($v, $callback, $back, $el, $i);
+				return $r;
 			}, $back);
 		} elseif (!is_null($el)) {
 			//Если undefined callback не вызывается, Таким образом можно безжать по переменной не проверя определена она или нет.
-			return $callback($el, $_key, $_group);
-			//return infra_forcall($callback,$nar,$el,$_key,$_group);
+			$r=&$callback($el, $_key, $_group);
+			return $r;
 		} else {
 			return $el;
 		}
@@ -153,7 +170,6 @@ class Each {
 		return Each::foro($obj, function &(&$v, $key) use (&$obj, $callback, $back) {
 			return Each::fora($v, function &(&$el, $i, &$group) use ($callback, $key) {
 				$r = &$callback($el, $key, $group, $i);
-
 				return $r;
 			}, $back);
 		}, $back);

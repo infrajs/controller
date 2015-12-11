@@ -1,6 +1,16 @@
 <?php
+namespace infrajs\controller;
 
 use infrajs\controller\Controller;
+use infrajs\controller\Run;
+use infrajs\view\View;
+use infrajs\ans\Ans;
+use infrajs\path\Path;
+
+if (!is_file('vendor/autoload.php')) {
+    chdir('../../../../');
+    require_once('vendor/autoload.php');
+}
 
 $ans = array();
 $ans['title'] = 'isEqual';
@@ -10,7 +20,7 @@ $l = array('tpl' => 'asdf','test' => 'bad');
 $layers = array(&$l);
 $msg = 'Maybe good';
 
-Path::req('*controller/make.php');
+
 $layer = &Run::exec($layers, function &(&$layer) use ($msg) {
 	$layer['test'] = $msg;
 

@@ -33,6 +33,7 @@ class External {
 		}
 		unset($layer['external']);
 		Each::fora($external, function (&$exter) use (&$layer) {
+
 			if (is_string($exter)) {
 				$external = &Load::loadJSON($exter);
 			} else {
@@ -44,7 +45,8 @@ class External {
 					external::merge($layer, $external, $i);
 				}
 			}
-
+			$r=null;
+			return $r;
 		});
 	}
 }
@@ -66,6 +68,7 @@ External::$props = array(
 		Each::fora($ext, function ($j) use (&$now) {
 			//array_unshift($now,array('external'=>&$ext));
 			array_push($now, array('external' => &$j));
+			$r=null; return $r;
 		});
 
 		return $now;

@@ -16,25 +16,16 @@ class Run {
 				$r = null;
 				if (isset($props['list'][$name])) {
 					$r = &Run::exec($val, $callback, $layer);
-					if (!is_null($r)) {
-						return $r;
-					}
+					if (!is_null($r)) return $r;
 				} else if (isset($props['keys'][$name])) {
 					$r = &Each::foro($val, function &(&$v, $i) use (&$layer, $callback) {
-						$r = &Run::exec($v, $callback, $layer);
-						if (!is_null($r)) {
-							return $r;
-						}
+						return Run::exec($v, $callback, $layer);
 					});
-					if (!is_null($r)) {
-						return $r;
-					}
+					if (!is_null($r)) return $r;
 				}
 
 				return $r;
 			});
-			if (!is_null($r)) return $r;
-			$r=null;
 			return $r;
 		});
 		return $r;
