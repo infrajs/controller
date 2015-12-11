@@ -18,6 +18,6 @@
 		"url":"https://github.com/malsup/form"
 	}],
 	"autoload": {
-		"psr-4": { "infrajs\\controller\\": "", "infrajs\\controller\\": "src/" }
+		"psr-4": { "infrajs\\controller\\": "src/" }
 	}
 }
