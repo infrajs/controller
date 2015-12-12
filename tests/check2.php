@@ -1,9 +1,8 @@
 <?php
-
-use infrajs\controller\Controller;
+namespace infrajs\controller;
 use infrajs\view\View;
 use infrajs\ans\Ans;
-use infrajs\crumb\Crumb;
+use infrajs\infra\Infra;
 use infrajs\path\Path;
 use infrajs\load\Load;
 
@@ -14,12 +13,8 @@ if (!is_file('vendor/autoload.php')) {
     require_once('vendor/autoload.php');
 }
 
-$r=Path::reqif('*controller/infra.php');
+Infra::req('controller');
 
-if(!$r) Ans::err($ans, 'Требуется infrajs/controller');
-echo 1;
-Path::req('*crumb/infra.php');
-exit;
 Crumb::change('test');
 
 
@@ -28,7 +23,7 @@ $ans['title'] = 'Проверка чек';
 
 View::html('<div id="main"></div>');
 
-$layers = Load::loadJSON('*crumb/tests/resources/check2.json');
+$layers = Load::loadJSON('*controller/tests/resources/check2.json');
 $html = Controller::check($layers);
 
 preg_match_all('/x/', $html, $matches);

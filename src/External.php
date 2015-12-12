@@ -1,5 +1,6 @@
 <?php
 namespace infrajs\controller;
+use infrajs\infra\Each;
 /**
  * Свойство layer.external
  **/

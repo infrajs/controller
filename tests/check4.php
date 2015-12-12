@@ -1,10 +1,9 @@
 <?php
 
-use infrajs\controller\Controller;
-use infrajs\infra;
+namespace infrajs\controller;
+use infrajs\infra\Infra;
 use infrajs\path\Path;
 use infrajs\view\View;
-use infrajs\crumb\Crumb;
 use infrajs\load\Load;
 use infrajs\ans\Ans;
 
@@ -20,10 +19,7 @@ $ans = array();
 $ans['title'] = 'check4';
 
 
-$r=Path::reqif('*controller/infra.php');
-if(!$r) Ans::err($ans, 'Требуется infrajs/controller');
-Path::req('*crumb/infra.php');
-
+Infra::req('controller');
 
 
 View::html('<div id="main1"></div><div id="main2"></div>', true);

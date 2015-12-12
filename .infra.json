@@ -6,6 +6,9 @@
 		"index":{
 			"external":"index/index.json"
 		},
-		"require":"*controller/infra.php"
+		"require":[
+			"*controller/init/controller.php",
+			"*controller/init/crumb.php"
+		]
 	}
 }

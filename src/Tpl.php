@@ -1,10 +1,10 @@
 <?php
 
-namespace infrajs\controller\ext;
+namespace infrajs\controller;
 use infrajs\controller\Layer;
 use infrajs\access\Access;
 use infrajs\template\Template;
-use infrajs\controller\Each;
+use infrajs\infra\Each;
 
 class Tpl
 {

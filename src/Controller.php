@@ -22,9 +22,8 @@ class Controller
 	public static $layers;
 	public static function check(&$layers)
 	{
-		static::$layers=$layers;
+		static::$layers=&$layers;
 		//Пробежка по слоям
-
 
 		Event::fire('oninit');//сборка событий
 

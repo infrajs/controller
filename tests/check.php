@@ -1,11 +1,10 @@
 <?php
 namespace infrajs\controller;
 
-use infrajs\controller\Controller;
 use infrajs\view\View;
 use infrajs\ans\Ans;
 use infrajs\path\Path;
-use infrajs\crumb\Crumb;
+use infrajs\infra\Infra;
 
 if (!is_file('vendor/autoload.php')) {
     chdir('../../../../');
@@ -18,8 +17,7 @@ $ans['title'] = 'Проверка функции Controller::check';
 
 View::html('<div id="oh"></div>');
 
-
-Path::req('*controller/infra.php');
+Infra::req('controller');
 
 //Нужно инициализировать Crumb с Контроллером, crumb может работать самостоятельно.
 Crumb::init();

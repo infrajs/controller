@@ -1,8 +1,9 @@
 <?php
 
-namespace infrajs\crumb;
+namespace infrajs\controller;
 use infrajs\sequence\Sequence;
 use infrajs\path\Path;
+use infrajs\infra\Each;
 
 
 class Crumb

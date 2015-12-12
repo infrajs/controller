@@ -4,14 +4,18 @@ use infrajs\event\Event;
 use infrajs\template\Template;
 use infrajs\path\Path;
 use infrajs\view\View;
+use infrajs\infra\Each;
+use infrajs\infra\Infra;
 use infrajs\sequence\Sequence;
-use infrajs\controller\ext\Tpl;
+use infrajs\controller\Tpl;
 
 /**
  * У слоя созданы свойства
  * counter, parsed, unick, external, parsedtpl, onlyclient, parent, is_save_branch, onlyclient
  * 
  **/
+Infra::req('infra');
+
 Event::$classes['layer']=function($obj){
 	if(!isset($obj['id'])) return '';
 	return $obj['id'];
@@ -211,7 +215,7 @@ Event::handler('layer.isshow', function (&$layer) {
 		return;
 	}
 	$p = $layer[$proptpl];
-	$p = infra_template_parse(array($p), $layer);
+	$p = Template::parse(array($p), $layer);
 	$layer[$prop] = $p;
 	if (!isset($layer['is']) || is_null($layer['is'])) {
 		$is = true;

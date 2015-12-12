@@ -1,5 +1,6 @@
 <?php
 namespace infrajs\controller;
+use infrajs\infra\Each;
 class Run {
 	/**
 	 * Пробежка по слоям

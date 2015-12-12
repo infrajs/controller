@@ -1,14 +1,11 @@
 <?php
-namespace infrajs\crumb;
-use infrajs\controller\Controller;
-use infrajs\controller\Each;
-use infrajs\controller\Run;
-use infrajs\controller\Layer;
+namespace infrajs\controller;
 use infrajs\path\Path;
 use infrajs\event\Event;
 use infrajs\sequence\Sequence;
 use infrajs\template\Template;
 use infrajs\controller\External;
+use infrajs\infra\Each;
 
 Path::reqif('*controller/infra.php');
 
