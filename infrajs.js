@@ -94,7 +94,7 @@ infrajs.getAllLayers=function(){
 	 return store.alayers;
 };
 
-/*controller.check=function(layers){//Пробежка по слоям
+/-controller.check=function(layers){//Пробежка по слоям
 
 	var store=infrajs.store();
 
@@ -291,7 +291,7 @@ infrajs.run=function(layers,callback,parent){
 	});
 	return r;
 }
-/*controller.run=function(layers,callback,parent){
+/-controller.run=function(layers,callback,parent){
 	var r;
 	var props=infrajs.store();
 	props=props['run'];
@@ -347,7 +347,7 @@ infrajs.isSaveBranch=function(layer,val){
 	if(typeof(val)!=='undefined')cache.is_save_branch=val;
 	return cache.is_save_branch;
 }
-/*controller.getParent=function(layer){//пробежка по infrajs_getWorkLayers не гарантирует правильного родителя
+/-controller.getParent=function(layer){//пробежка по infrajs_getWorkLayers не гарантирует правильного родителя
 	if(typeof(layer['parent']))!='undefined')return layer['parent'];
 	var ls=[infrajs.getAllLayers(),infrajs.getWorkLayers()];
 	layer['parent']=infrajs.run(ls,function(l,parent){

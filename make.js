@@ -94,7 +94,7 @@
 
 	});
 
-	/*infra.listen(infra,'layer.oninit',function(layer){
+	/* infra.listen(infra,'layer.oninit',function(layer){
 		//crumb link
 		if(!layer['link']&&!layer['linktpl'])layer['linktpl']='{crumb}';
 	});*/
@@ -146,7 +146,7 @@
 	//});
 
 
-	/*infra.listen(infra,'layer.oncheck',function(layer){//php {} возвращает как []
+	/* infra.listen(infra,'layer.oncheck',function(layer){//php {} возвращает как []
 		//subs
 		infra.foro(layer.subs,function(val,key,group){
 			if(typeof(val)!=='object')group[key]={};
@@ -161,7 +161,7 @@
 		//config
 		infrajs.configtpl(layer);
 	});
-	/*infra.listen(infra,'layer.oncheck',function(layer){
+	/* infra.listen(infra,'layer.oncheck',function(layer){
 		//crumb link
 		if(layer['linktpl'])layer['link']=infra.template.parse([layer['linktpl']],layer);
 	});	*/
@@ -397,7 +397,7 @@
 		store.divs[layer.div]=layer;
 	});
 
-	/*infra.listen(infra,'layer.onshow',function(layer){
+	/* infra.listen(infra,'layer.onshow',function(layer){
 		//popup
 		//layer.showmsg='popup';
 		//popup.layeronshow(layer);

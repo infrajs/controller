@@ -7,8 +7,8 @@
 			"external":"index/index.json"
 		},
 		"require":[
-			"*controller/init/controller.php",
-			"*controller/init/crumb.php"
+			"-controller/init/controller.php",
+			"-controller/init/crumb.php"
 		]
 	}
 }

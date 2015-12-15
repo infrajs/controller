@@ -77,7 +77,7 @@ class Controller
 			$html = View::html();
 
 			if ($conf['client']) {
-				$script = '<script>require("?*controller/init.js")</script>';
+				$script = '<script>require("?-controller/init.js")</script>';
 				$html = str_replace('</body>', "\n\t".$script.'</body>', $html);
 			}
 			return $html;

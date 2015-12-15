@@ -107,7 +107,7 @@ infra.Crumb.change=function(query){
 infra.Crumb.init=function(){
 	var listen=function(){
 		var query=decodeURI(location.search.slice(1));
-		if(query[0]=='*'){
+		if(query[0] == '-'){
 			var q=query.split('?');
 			infra.Crumb.prefix='?'+q.shift();
 			query=q.join('?');
@@ -137,9 +137,9 @@ infra.Crumb.isInternal = function(href){
 		if(!/^\?/.test(href))return false;
 		href=href.replace(/^\?/,'');	
 	}
-	if(href[0]=='*') return false;
-	if(href[0]=='|') return false;
-	if(href[0]=='~') return false;
+	if(href[0] == '-') return false;
+	if(href[0] == '!') return false;
+	if(href[0] == '~') return false;
 
 	
 	return true;
