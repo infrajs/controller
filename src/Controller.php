@@ -3,23 +3,24 @@
 namespace infrajs\controller;
 use infrajs\infra\Infra;
 use infrajs\event\Event;
+use infrajs\path\Path;
+use infrajs\access\Access;
+use infrajs\load\Load;
 use infrajs\view\View;
-
-//require_once __DIR__.'/../infra/Infra.php';
-
 /*//
-
-
-
-
 Event::fire('layer.is|on show|check|init',layer);
-
 Controller::check(layer);
-
 */
 class Controller
 {
 	public static $layers;
+	public static $conf=array(
+		"server" => true,
+		"client" => true,
+		"index" => array(
+			"external" => "index.json"
+		)
+	);
 	public static function check(&$layers)
 	{
 		static::$layers=&$layers;
@@ -56,22 +57,24 @@ class Controller
 
 		return $html; 
 	}
-	public static function init($layer)
+	public static function init()
 	{
 		Infra::init();
 		Crumb::init();
 
 		header('Infrajs-Cache: true');//Афигенный кэш, когда используется infrajs не подгружается даже
+
+		$conf=static::$conf;
+		$layer=$conf['index'];
 		$query=Path::toutf($_SERVER['QUERY_STRING']);
 		$args=array($layer, $query);
 		$html = Access::adminCache('index.php', function ($layer, $query) {
 			header('Infrajs-Cache: false');//Афигенный кэш, когда используется infrajs не подгружается даже
 			$strlayer=json_encode($layer);
 			
-			$conf = Infra::config('controller');
-			
-			if ($conf['server']) {
+			$conf = Controller::$conf;
 
+			if ($conf['server']) {
 				Controller::check($layer);//В infra_html были добавленыs все указаные в layers слои
 			}
 			$html = View::html();
@@ -80,6 +83,7 @@ class Controller
 				$script = '<script>require("?-controller/init.js")</script>';
 				$html = str_replace('</body>', "\n\t".$script.'</body>', $html);
 			}
+			View::html($html, true);
 			return $html;
 		}, $args);//Если не кэшировать то будет reparse
 

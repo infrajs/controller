@@ -1,11 +1,12 @@
 <?php
+namespace infrajs\controller;
 
-chdir('../../../');
+if (!is_file('vendor/autoload.php')) {
+	chdir('../../../');	
+}
 require_once('vendor/autoload.php');
 
 
-require_once('vendor/infrajs/infra/Infra.php');
+$html=Controller::init();
 
-$conf=Infra::config();
-
-infrajs\controller\Controller::init($conf['controller']['index']);
+echo $html;

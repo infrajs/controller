@@ -14,7 +14,13 @@ use infrajs\controller\Tpl;
  * counter, parsed, unick, external, parsedtpl, onlyclient, parent, is_save_branch, onlyclient
  * 
  **/
+
 Infra::req('infra');
+
+$conf=&Infra::config('controller');
+Controller::$conf=array_merge(Controller::$conf, $conf);
+$conf=Controller::$conf;
+
 
 Event::$classes['layer']=function($obj){
 	if(!isset($obj['id'])) return '';
@@ -244,3 +250,52 @@ Event::handler('layer.isshow', function (&$layer) {
 	if (Layer::pop($layer, 'onlyclient')) return;
 	return Tpl::jsoncheck($layer);
 }, 'jsoncheck:is');
+
+
+
+
+
+
+
+
+
+
+
+
+
+Event::handler('onjs', function() {
+	View::js('-once/once.js');
+	View::js('-controller/src/crumb.js');
+	View::js('-controller/src/external.js');
+	View::js('-layer-env/env.js');
+
+	View::js('-layer-subs/subs.js');
+	View::js('-controller/src/divparent.js');
+
+	View::js('-controller/src/tpl.js');
+	View::js('-controller/src/parsed.js');
+	View::js('-controller/src/div.js');
+	View::js('-layer-autoview/autoview.js');
+	View::js('-Memcode/memcode.js');
+	View::js('-layer-css/css.js');
+	View::js('-controller/src/layers.js');
+	View::js('-controller/src/is.js');
+	View::js('-layer-showanimate/show.js');
+	View::js('-layer-config/config.js');
+
+	View::js('-layer-global/global.js');
+
+	View::js('-layer-onsubmit/onsubmit.js');
+	View::js('-layer-autosave/autosave.js');
+	View::js('-popup/popup.js');
+	View::js('-contacts/showContacts.js');
+	View::js('-session/session.js');
+	View::js('-session/infra.js');
+	View::js('-layer-autofocus/autofocus.js');
+	View::js('-controller/make.js');
+});
+
+
+
+	
+	

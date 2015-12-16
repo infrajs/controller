@@ -4,7 +4,7 @@
 		"server":true,
 		"client":true,
 		"index":{
-			"external":"index/index.json"
+			"external":"index.json"
 		},
 		"require":[
 			"-controller/init/controller.php",
