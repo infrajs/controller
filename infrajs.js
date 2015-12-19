@@ -94,7 +94,7 @@ infrajs.getAllLayers=function(){
 	 return store.alayers;
 };
 
-/-controller.check=function(layers){//Пробежка по слоям
+/* controller.check=function(layers){//Пробежка по слоям
 
 	var store=infrajs.store();
 

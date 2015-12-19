@@ -71,19 +71,10 @@ class Controller
 		$html = Access::adminCache('index.php', function ($layer, $query) {
 			header('Infrajs-Cache: false');//Афигенный кэш, когда используется infrajs не подгружается даже
 			$strlayer=json_encode($layer);
-			
 			$conf = Controller::$conf;
-
 			if ($conf['server']) {
-				Controller::check($layer);//В infra_html были добавленыs все указаные в layers слои
+				$html=Controller::check($layer);//В infra_html были добавленыs все указаные в layers слои
 			}
-			$html = View::html();
-
-			if ($conf['client']) {
-				$script = '<script>require("?-controller/init.js")</script>';
-				$html = str_replace('</body>', "\n\t".$script.'</body>', $html);
-			}
-			View::html($html, true);
 			return $html;
 		}, $args);//Если не кэшировать то будет reparse
 

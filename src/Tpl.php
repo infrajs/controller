@@ -5,6 +5,7 @@ use infrajs\controller\Layer;
 use infrajs\access\Access;
 use infrajs\template\Template;
 use infrajs\infra\Each;
+use infrajs\load\Load;
 
 class Tpl
 {

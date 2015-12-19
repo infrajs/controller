@@ -1,3 +1,4 @@
+define('?-controller/make.js', ['?-controller/src/crumb.js','?-event/event.js','?-sequence/sequence.js'], function (Crumb, Event, Seq) {
 /*
 Загружаются все файлы в initjs.php
 */
@@ -466,3 +467,4 @@
 		//code
 		infrajs.code_restore();
 	});
+});

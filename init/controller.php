@@ -17,7 +17,7 @@ use infrajs\controller\Tpl;
 
 Infra::req('infra');
 
-$conf=&Infra::config('controller');
+$conf=&Config::get('controller');
 Controller::$conf=array_merge(Controller::$conf, $conf);
 $conf=Controller::$conf;
 
@@ -264,6 +264,9 @@ Event::handler('layer.isshow', function (&$layer) {
 
 
 Event::handler('onjs', function() {
+	if (!Controller::$conf['client']) return;
+	View::js('-controller/src/infrajs.js');
+	View::js('-layer-config/config.js');
 	View::js('-once/once.js');
 	View::js('-controller/src/crumb.js');
 	View::js('-controller/src/external.js');
@@ -293,6 +296,7 @@ Event::handler('onjs', function() {
 	View::js('-session/infra.js');
 	View::js('-layer-autofocus/autofocus.js');
 	View::js('-controller/make.js');
+	View::js('-controller/init.js');
 });
 
 
