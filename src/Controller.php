@@ -15,7 +15,6 @@ class Controller
 {
 	public static $layers;
 	public static $conf=array(
-		"server" => true,
 		"client" => true,
 		"index" => array(
 			"external" => "index.json"
@@ -56,29 +55,5 @@ class Controller
 		//View::html('',true);
 
 		return $html; 
-	}
-	public static function init()
-	{
-		Infra::init();
-		Crumb::init();
-
-		header('Infrajs-Cache: true');//Афигенный кэш, когда используется infrajs не подгружается даже
-
-		$conf=static::$conf;
-		$layer=$conf['index'];
-		$query=Path::toutf($_SERVER['QUERY_STRING']);
-		$args=array($layer, $query);
-		$html = Access::adminCache('index.php', function ($layer, $query) {
-			header('Infrajs-Cache: false');//Афигенный кэш, когда используется infrajs не подгружается даже
-			$strlayer=json_encode($layer);
-			$conf = Controller::$conf;
-			if ($conf['server']) {
-				$html=Controller::check($layer);//В infra_html были добавленыs все указаные в layers слои
-			}
-			return $html;
-		}, $args);//Если не кэшировать то будет reparse
-
-		//@header('HTTP/1.1 200 Ok'); Приводит к появлению странных 4х символов в начале страницы guard-service
-		return $html;
 	}
 }

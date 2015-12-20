@@ -90,3 +90,5 @@ Event::handler('layer.oninit', function (&$layer) {
 Event::handler('layer.ischeck', function (&$layer) {
 	if (!$layer['crumb']->is) return false;
 }, 'crumb');
+
+Crumb::init();

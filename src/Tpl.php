@@ -124,7 +124,7 @@ class Tpl
 
 		//Проблема при первом session_get конект к базе и вызов session_init в следующем подключении init не вызывается
 		//но для следующего подключения нам нужно понять что есть динамика// По этому загловки отправляются в том числе и руками в скритпах  Cache-Control:no-cache
-		$html = Access::adminCache('infrajs_getHtml', function () use (&$layer) {
+		$html = Access::cache('infrajs_getHtml', function () use (&$layer) {
 			//Здесь мог быть установлен infrajs['com'] его тоже нужно вернуть/ А вот после loadTEXT мог быть кэш и ничего не установится
 			$html = Tpl::_getHtml($layer);
 

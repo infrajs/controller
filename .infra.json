@@ -1,14 +1,14 @@
 {
-	"controller":{
-		"pub":["server","index"],
-		"server":true,
-		"client":true,
-		"index":{
-			"external":"index.json"
-		},
-		"require":[
-			"-controller/init/controller.php",
-			"-controller/init/crumb.php"
-		]
-	}
+	"pub":["client","index"],
+	"conf":"infrajs\\controller\\Controller",
+	"client":true,
+	"index":{
+		"external":"index.json"
+	},
+	"require":[
+		"init/controller.php",
+		"init/crumb.php",
+		"init/path.php",
+		"init/access.php"
+	]
 }

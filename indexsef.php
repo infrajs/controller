@@ -1,5 +1,6 @@
 <?php
 namespace infrajs\controller;
+use infrajs\infra\Config;
 use infrajs\path\Path;
 
 if (!is_file('vendor/autoload.php')) {
@@ -9,6 +10,7 @@ require_once('vendor/autoload.php');
 
 Path::$conf['sefurl']=true;
 
-$html=Controller::init();
+Config::init();
 
-echo $html;
+Path::req('-controller/index.php');
+

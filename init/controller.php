@@ -15,13 +15,6 @@ use infrajs\controller\Tpl;
  * 
  **/
 
-Infra::req('infra');
-
-$conf=&Config::get('controller');
-Controller::$conf=array_merge(Controller::$conf, $conf);
-$conf=Controller::$conf;
-
-
 Event::$classes['layer']=function($obj){
 	if(!isset($obj['id'])) return '';
 	return $obj['id'];
