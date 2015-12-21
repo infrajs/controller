@@ -7,8 +7,6 @@
 	},
 	"require":[
 		"init/controller.php",
-		"init/crumb.php",
-		"init/path.php",
-		"init/access.php"
+		"init/crumb.php"
 	]
 }

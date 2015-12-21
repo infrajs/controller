@@ -1,5 +1,6 @@
 <?php
 namespace infrajs\controller;
+
 use infrajs\infra\Config;
 use infrajs\path\Path;
 
