@@ -3,7 +3,7 @@
 namespace infrajs\controller;
 use infrajs\sequence\Sequence;
 use infrajs\path\Path;
-use infrajs\infra\Each;
+use infrajs\each\Each;
 
 
 class Crumb

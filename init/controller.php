@@ -4,7 +4,7 @@ use infrajs\event\Event;
 use infrajs\template\Template;
 use infrajs\path\Path;
 use infrajs\view\View;
-use infrajs\infra\Each;
+use infrajs\each\Each;
 use infrajs\infra\Infra;
 use infrajs\sequence\Sequence;
 use infrajs\controller\Tpl;

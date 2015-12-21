@@ -1,6 +1,6 @@
 <?php
 namespace infrajs\controller;
-use infrajs\infra\Each;
+use infrajs\each\Each;
 use infrajs\load\Load;
 use infrajs\view\View;
 /**

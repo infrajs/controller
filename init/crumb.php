@@ -5,7 +5,7 @@ use infrajs\event\Event;
 use infrajs\sequence\Sequence;
 use infrajs\template\Template;
 use infrajs\controller\External;
-use infrajs\infra\Each;
+use infrajs\each\Each;
 
 Path::reqif('-controller/infra.php');
 
