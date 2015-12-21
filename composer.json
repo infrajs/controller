@@ -8,7 +8,10 @@
 		"malsup/form": "~3",
 		"vsn4ik/bootstrap-checkbox": "~1",
 		"infrajs/phpdate":"~1",
-		"infrajs/infra":"~1"
+		"infrajs/template":"~1",
+		"infrajs/each":"~1",
+		"infrajs/once":"~1",
+		"infrajs/event":"~1"
 	},
 	"config": {
 		"component-dir": "vendor"
