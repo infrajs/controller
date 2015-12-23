@@ -1,4 +1,4 @@
-define('?-controller/src/crumb.js', ['?-event/event.js','?-sequence/sequence.js'], function (Event, Seq) {
+define('/-controller/src/crumb.js', ['/-event/event.js','/-sequence/sequence.js'], function (Event, Seq) {
 	infra.Crumb=function(){};
 	infra.Crumb.childs={};
 	infra.Crumb.prototype={

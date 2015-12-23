@@ -1,4 +1,4 @@
-define('?-controller/src/tpl.js', ['?-event/event.js'], function () {
+define('/-controller/src/tpl.js', ['/-event/event.js'], function () {
 	//Обработка onshow и onhide, tpl, data
 	//onlyclient - парсить  на клиенте при первом запуске
 	//onlyserver - не показывать слой

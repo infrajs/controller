@@ -61,7 +61,7 @@ infrajs.checkAdd(layer);
 */
 
 
-define('?-controller/src/infrajs.js', ['?-event/event.js'], function (Event) {
+define('/-controller/src/infrajs.js', ['/-event/event.js'], function (Event) {
 	if (!window.infrajs) window.infrajs={};
 	infrajs.storeLayer=function(layer){//кэш на каждый iswork
 		if(!layer['store'])layer['store']={'counter':0};//Кэш используется во всех is функциях... iswork кэш, ischeck кэш используется для определения iswork слоя.. путём сравнения ))
