@@ -7,7 +7,6 @@ use infrajs\template\Template;
 use infrajs\controller\External;
 use infrajs\each\Each;
 
-Path::reqif('-controller/infra.php');
 
 Event::handler('oninit', function () {
 	$root = Crumb::getInstance();

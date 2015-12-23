@@ -1,7 +1,7 @@
 <?php
 namespace infrajs\controller;
 use infrajs\each\Each;
-
+use infrajs\sequence\Sequence;
 /**
  * Функции для написания плагинов
  **/
@@ -24,7 +24,7 @@ class Layer {
 	public static function &find($name, $value)
 	{
 		$right = Sequence::right($name);
-		return static::run(static::$layers, function &(&$layer) use ($right, $value) {
+		return Run::exec(Controller::$layers, function &(&$layer) use ($right, $value) {
 			if (Sequence::get($layer, $right) == $value) {
 				return $layer;
 			}

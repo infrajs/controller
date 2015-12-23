@@ -131,7 +131,8 @@ class Crumb
 	public static function init()
 	{
 		//Crumb::$child=Crumb::getInstance();
-		$query = urldecode(Path::toutf($_SERVER['QUERY_STRING']));
+		//$query = urldecode(Path::toutf($_SERVER['QUERY_STRING']));
+		$query = Path::getQuery();
 		self::change($query);
 	}
 	public function toString()

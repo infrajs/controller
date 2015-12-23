@@ -5,6 +5,8 @@ use infrajs\template\Template;
 use infrajs\path\Path;
 use infrajs\view\View;
 use infrajs\each\Each;
+use infrajs\load\Load;
+
 use infrajs\infra\Infra;
 use infrajs\sequence\Sequence;
 use infrajs\controller\Tpl;
