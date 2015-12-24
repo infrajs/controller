@@ -261,35 +261,36 @@ Event::handler('layer.isshow', function (&$layer) {
 Event::handler('onjs', function() {
 	if (!Controller::$conf['client']) return;
 	View::js('-controller/src/infrajs.js');
-	View::js('-layer-config/config.js');
+	//View::js('-layer-config/config.js');
 	View::js('-once/once.js');
 	View::js('-controller/src/crumb.js');
 	View::js('-controller/src/external.js');
-	View::js('-layer-env/env.js');
+	//View::js('-layer-env/env.js');
+	//View::js('-loader/loader.js');
 
-	View::js('-layer-subs/subs.js');
+	//View::js('-layer-subs/subs.js');
 	View::js('-controller/src/divparent.js');
 
 	View::js('-controller/src/tpl.js');
 	View::js('-controller/src/parsed.js');
 	View::js('-controller/src/div.js');
-	View::js('-layer-autoview/autoview.js');
-	View::js('-Memcode/memcode.js');
-	View::js('-layer-css/css.js');
+	//View::js('-layer-autoview/autoview.js');
+	//View::js('-Memcode/memcode.js');
+	//View::js('-layer-css/css.js');
 	View::js('-controller/src/layers.js');
 	View::js('-controller/src/is.js');
-	View::js('-layer-showanimate/show.js');
-	View::js('-layer-config/config.js');
+	//View::js('-layer-showanimate/show.js');
+	//View::js('-layer-config/config.js');
 
-	View::js('-layer-global/global.js');
+	//View::js('-layer-global/global.js');
 
-	View::js('-layer-onsubmit/onsubmit.js');
-	View::js('-layer-autosave/autosave.js');
+	//View::js('-layer-onsubmit/onsubmit.js');
+	//View::js('-layer-autosave/autosave.js');
 	View::js('-popup/popup.js');
 	View::js('-contacts/showContacts.js');
 	View::js('-session/session.js');
 	View::js('-session/infra.js');
-	View::js('-layer-autofocus/autofocus.js');
+	//View::js('-layer-autofocus/autofocus.js');
 	View::js('-controller/make.js');
 	View::js('-controller/init.js');
 });

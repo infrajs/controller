@@ -3,6 +3,7 @@ namespace infrajs\controller;
 
 use infrajs\config\Config;
 use infrajs\path\Path;
+use infrajs\nostore\Nostore;
 use infrajs\access\Access;
 
 if (!is_file('vendor/autoload.php')) {
@@ -11,7 +12,7 @@ if (!is_file('vendor/autoload.php')) {
 require_once('vendor/autoload.php');
 
 Config::init();
-Config::get('nostore');
+Nostore::init(); //Заголовки кэша по умолчанию
 Access::modified();
 Access::headers();
 $query=Path::init();
