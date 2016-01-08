@@ -1,6 +1,7 @@
 
 	//parsed
 	infrajs.parsedinit=function(){
+		infrajs.parsed.props=[];//Расширяется в global.js
 		infrajs.parsedAdd('dataroot');
 		infrajs.parsedAdd('tplroot');
 		infrajs.parsedAdd('envval');
@@ -12,6 +13,7 @@
 			return infra.template.parse([layer.parsedtpl],layer);
 		});
 		infrajs.parsedAdd('parsed');
+
 	};
 	
 	//Обработка - перепарсиваем слой если изменились какие-то атрибуты
@@ -26,7 +28,7 @@
 		};
 		return str;
 	}
-	infrajs.parsed.props=[];//Расширяется в global.js
+	
 	
 	infrajs.parsedAdd=function(fn){
 		if(typeof(fn)=='string')var func=function(layer){return layer[fn]};

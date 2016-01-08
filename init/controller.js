@@ -7,16 +7,18 @@
 //========================
 //setA и события при каждом изменении адресной строки
 
-infra.handle(infra.Crumb,'onchange',function(){
+Event.handler('Crumb.onchange', function(){
 	//div
 	infrajs.div_init();
 });
+
+infrajs.parsedinit();
 
 //========================
 // infrajs oncheck
 //========================
 //==========wait====//
-infra.wait(infrajs,'oninit', function (layer){
+Event.one('Infrajs.oninit', function (layer){
 
 	//unick
 	infrajs.unickInit();
@@ -26,8 +28,7 @@ infra.wait(infrajs,'oninit', function (layer){
 
 	//onsubmit
 	infrajs.onsubmitinit();
-	//parsed
-	infrajs.parsedinit();
+	
 });
 //==========listen====//
 infra.listen(infrajs,'oninit',function(){

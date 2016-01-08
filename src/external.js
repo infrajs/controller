@@ -54,7 +54,6 @@ infrajs.external.merge=function(layer,external,i){//Используется в 
 		layer[i]=func.apply(infrajs,[layer[i],external[i],layer,external,i]);
 	}else if(typeof(external[i])=='function'){//Функции вызываются сначало у описания потом у external потому что external добавляется потом
 		if(layer[i]===undefined)layer[i]=external[i];
-		//infra.listen(layer,i,external[i]);
 	}else{
 		if(layer[i]===undefined)layer[i]=external[i];
 	}
