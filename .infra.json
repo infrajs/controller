@@ -1,6 +1,20 @@
 {
 	"pub":["client","index"],
 	"conf":"infrajs\\controller\\Controller",
+	"js":[
+		"src/crumb.js",
+		"src/infrajs.js",
+		"src/external.js",
+		"src/tpl.js",
+		"src/layers.js",
+		"src/divparent.js",
+		"src/parsed.js",
+		"src/div.js",
+		"src/is.js",
+		"init/controller.js",
+		"init/init.js"
+	],
+	"dependencies":["event","sequence"],
 	"client":true,
 	"index":{
 		"external":"index.json"
