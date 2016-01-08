@@ -331,10 +331,7 @@ infra.listen(infra,'layer.onshow',function(layer){//До того как сра�
 	if(infrajs.ignoreDOM(layer))return;
 	layer.html=infrajs.getHtml(layer);
 });
-infra.listen(infra,'layer.onshow',function(layer){
-	//js
-	infrajs.jscheck(layer);
-});
+
 infra.listen(infra,'layer.onshow',function(layer){
 	//css
 	if(infrajs.ignoreDOM(layer))return;
