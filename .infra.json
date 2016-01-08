@@ -10,11 +10,15 @@
 		"src/divparent.js",
 		"src/div.js",
 		"src/is.js",
+		"src/unick.js",
+		"init/unick.js",
+		"init/parsed.js",
+		"init/div.js",
 		"init/controller.js",
 		"init/init.js",
 		"init/layers.js"
 	],
-	"dependencies":["event","sequence"],
+	"dependencies":["event","sequence","template"],
 	"client":true,
 	"index":{
 		"external":"index.json"

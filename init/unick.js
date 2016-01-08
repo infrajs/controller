@@ -1,0 +1,1 @@
+infrajs.unickInit();

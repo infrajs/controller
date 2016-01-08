@@ -1,40 +1,12 @@
 
-/*
-Загружаются все файлы в initjs.php
-*/
-//========================
-// infra.Crumb onchange
-//========================
-//setA и события при каждом изменении адресной строки
-
-Event.handler('Crumb.onchange', function(){
-	//div
-	infrajs.div_init();
-});
-
-infrajs.parsedinit();
-
-//========================
-// infrajs oncheck
-//========================
-//==========wait====//
 Event.one('Infrajs.oninit', function (layer){
-
-	//unick
-	infrajs.unickInit();
-
-	//config
-	infrajs.configinit();
 
 	//onsubmit
 	infrajs.onsubmitinit();
 	
 });
 //==========listen====//
-infra.listen(infrajs,'oninit',function(){
-	//loader
-	infra.loader.show();
-});
+
 infra.listen(infrajs,'oninit',function(){
 	//tpl
 	var store=infrajs.store();
