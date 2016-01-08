@@ -1,11 +1,16 @@
 
-Event.one('Infrajs.oninit', function (layer){
+Event.handler('Crumb.onchange', function(){
+	//div
+	infrajs.div_init();
+});
 
+
+Event.one('Infrajs.oninit', function (layer){
 	//onsubmit
 	infrajs.onsubmitinit();
 	
 });
-//==========listen====//
+
 
 infra.listen(infrajs,'oninit',function(){
 	//tpl
