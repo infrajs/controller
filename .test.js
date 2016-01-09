@@ -1,11 +1,11 @@
-infra.wait(infrajs,'onshow',function(){
+Event.one('Infrajs.onshow', function(){
 	var test=infra.test;
 
 
 	test.tasks.push([
 		'Переход на страницу ?test',
 		function(){
-			infra.when(infrajs,'onshow',function(){
+			Event.onext('Infrajs.onshow', function(){
 				test.check();
 			});
 			infra.Crumb.go('?test');
@@ -19,7 +19,7 @@ infra.wait(infrajs,'onshow',function(){
 	test.tasks.push([
 		'Переход на главную ?test',
 		function(){
-			infra.when(infrajs,'onshow',function(){
+			Event.onext('Infrajs.onshow', function(){
 				test.check();
 			});
 			infra.Crumb.go('?');
@@ -34,7 +34,7 @@ infra.wait(infrajs,'onshow',function(){
 	test.tasks.push([
 		'Пробежка по всем страницам',
 		function() {
-			infra.wait(infrajs,'onshow',function(){
+			Event.one('Infrajs.onshow', function(){
 				var alllinks={};
 				var countLinks={};
 				var count = [];
@@ -114,7 +114,7 @@ infra.wait(infrajs,'onshow',function(){
 						return test.check();
 						
 					}
-					infra.when(infrajs,'onshow',gohref);
+					Event.onext('Infrajs.onshow', gohref);
 
 					infra.Crumb.go(nexthref);
 				}

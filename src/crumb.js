@@ -115,7 +115,7 @@ infra.Crumb.init=function(){
 		if(infra.Crumb.search===query)return;//chrome при загрузки запускает собыите а FF нет. Первый запуск мы делаем сами по этому отдельно для всех а тут игнорируются совпадения.
 		infra.Crumb.popstate=true;
 		infra.Crumb.change(query);
-		infra.fire(infra.Crumb,'onchange');
+		Event.fire('Crumb.onchange');
 	}
 	
 	if(document.readyState !== "loading") { 
@@ -167,7 +167,7 @@ infra.Crumb.go = function(href, nopushstate){
 	
 	infra.Crumb.popstate=false;
 	infra.Crumb.change(query);
-	infra.fire(infra.Crumb,'onchange');
+	Event.fire('Crumb.onchange');
 	
 }
 infra.Crumb.handA = function(a) {

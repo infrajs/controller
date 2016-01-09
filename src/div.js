@@ -26,7 +26,7 @@ infrajs.divCheck=function(layer){
 			return;
 		}
 		if(l.div!==layer.div)return;//ищим совпадение дивов впереди
-		if(infrajs.is('show',l)){
+		if(Event.fire('layer.isshow',l)){
 			infrajs.isSaveBranch(layer,infrajs.isParent(l,layer))
 			return true;//Слой который дальше показывается в томже диве найден
 		}

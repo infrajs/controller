@@ -51,8 +51,8 @@ infrajs.isSaveBranch(layer,val);
 infrajs.isParent(layer,parent);
 infrajs.isWork(layer);
 
-infrajs.is('rest|show|check',layer);
-infrajs.isAdd('rest|show|check',callback(layer));
+Event.fire('layer.is rest|show|check',layer);
+infrajs.handler('layer.is rest|show|check',callback(layer));
 
 
 
@@ -130,12 +130,12 @@ infrajs.getAllLayers=function(){
 			store.waits=[];//При запуске checkNow все ожидающие слои обнуляются
 			store.wlayers=wlayers;
 
-			infra.fire(infrajs,'oncheck');//loader
+			Event.fire('Infrajs.oncheck');//loader
 
 			infrajs.checkNow();
 			store.process=false;
 
-			infra.fire(infrajs,'onshow');//loader, setA, в onshow можно зациклить check
+			Event.fire('Infrajs.onshow');//loader, setA, в onshow можно зациклить check
 	},1);//Если вызывать infrajs.check() и вместе с этим переход по ссылке проверка слоёв сработает только один раз за счёт это паузы.. два вызова объединяться за это время в один.
 
 };// child, layers*/
@@ -171,33 +171,35 @@ infrajs.check=function(layers){//Пробежка по слоям
 	}
 
 	store.wlayers=wlayers;
-	infra.fire(infrajs,'oninit');//loader
+	Event.tik('Infrajs');
+	Event.tik('layer');
+	Event.fire('Infrajs.oninit');//loader
 
 
 	infrajs.run(infrajs.getWorkLayers(),function(layer,parent){//Запускается у всех слоёв в работе которые wlayers
 		if(parent)layer['parent']=parent;//Не обрабатывается ситуация когда check снутри иерархии
-		infra.fire(layer,'layer.oninit');//устанавливается state
-		if(infrajs.is('check',layer)){
-			infra.fire(layer,'layer.oncheck');//нельзя запускать is show так как ожидается что все oncheckb сделаются и в is будут на их основе соответствующие проверки
+		Event.fire('layer.oninit', layer);//устанавливается state
+		if(Event.fire('layer.ischeck',layer)){
+			Event.fire('layer.oncheck', layer);//нельзя запускать is show так как ожидается что все oncheckb сделаются и в is будут на их основе соответствующие проверки
 		}
 	});//разрыв нужен для того чтобы можно было наперёд определить показывается слой или нет. oncheck у всех. а потом по порядку.
 
-	infra.fire(infrajs,'oncheck');//момент когда доступны слои для подписки и какой-то обработки, доступен unick
+	Event.fire('Infrajs.oncheck');//момент когда доступны слои для подписки и какой-то обработки, доступен unick
 
 	infrajs.run(infrajs.getWorkLayers(),function(layer){//С чего вдруг oncheck у всех слоёв.. надо только у активных
-		if(infrajs.is('show',layer)){
-			if(!infrajs.is('rest',layer)){
+		if(Event.fire('layer.isshow',layer)){
+			if(!Event.fire('layer.isrest',layer)){
 
-				infra.fire(layer,'layer.onshow');//Событие в котором вставляется html
-				infra.fire(layer,'onshow');//своевременное выполнение infrajs.when onshow в кэше html когда порядок слоёв не играет роли
+				Event.fire('layer.onshow', layer);//Событие в котором вставляется html
+				//infra.fire(layer,'onshow');//своевременное выполнение Event.onext onshow в кэше html когда порядок слоёв не играет роли
 				//при клике делается отметка в конфиге слоя и слой парсится... в oncheck будут подстановки tpl и isRest вернёт false
 			}//onchange показанный слой не реагирует на изменение адресной строки, нельзя привязывать динамику интерфейса к адресной строке, только черещ перепарсивание
 		}else if(layer.showed){
 			//Правильная форма события (conteiner,name,obj)
-			infra.fire(layer,'layer.onhide'); //нужно для autosave
-			infra.fire(layer,'onhide');//сбросить catalog когда скрылся слой поиска в каталоге
+			Event.fire('layer.onhide', layer); //нужно для autosave
+			//infra.fire(layer,'onhide');//сбросить catalog когда скрылся слой поиска в каталоге
 		}
-		layer.showed=infrajs.is('show',layer);//Свойства showed. Нужно знать предыдущее значение isShow с последней проверки. Используется в admin.js
+		layer.showed=Event.fire('layer.isshow',layer);//Свойства showed. Нужно знать предыдущее значение isShow с последней проверки. Используется в admin.js
 	});//у родительского слоя showed будет реальное а не старое, назад showed проверять нельзя
 
 
@@ -223,7 +225,7 @@ infrajs.checkAdd=function(layers){
 		store.alayers.push(layer);//Только если рассматриваемый слой ещё не добавлен
 	});
 };
-infrajs.isAdd=function(name,callback){//def undefined быть не может
+/*infrajs.isAdd=function(name,callback){//def undefined быть не может
 	var store=infrajs.store();
 	if(!store[name])store[name]=[];//Если ещё нет создали очередь
 	return store[name].push(callback);
@@ -264,7 +266,7 @@ infrajs.is=function(name,layer){//def undefined быть не может
 	return cache[name];//check//show//rest
 };
 
-
+*/
 
 /**
  * Пробежка идёт сначало по спискам (layers,childs и только потом по divs, childs, subs)

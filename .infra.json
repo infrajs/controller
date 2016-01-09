@@ -14,9 +14,11 @@
 		"init/unick.js",
 		"init/parsed.js",
 		"init/div.js",
+		"init/tpl.js",
 		"init/controller.js",
 		"init/init.js",
-		"init/layers.js"
+		"init/layers.js",
+		"init/crumb.js"
 	],
 	"dependencies":["event","sequence","template"],
 	"client":true,

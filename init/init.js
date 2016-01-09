@@ -1,6 +1,7 @@
 
 infrajs.checkAdd(infra.conf.controller.index);
-infra.handle(infra.Crumb, 'onchange', function () {
+Event.handler('Crumb.onchange', function () {
+	console.log('infrajs.check(). STOP. Testing');
 	return;
 	infrajs.check();
 });

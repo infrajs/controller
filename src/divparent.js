@@ -10,15 +10,15 @@
 	if(!l){
 		return;
 	}
-	if(!infrajs.is('show',l)){
+	if(!Event.fire('layer.isshow',l)){
 		infrajs.isSaveBranch(layer,false);
 		return false;
 	}
 }*/
-infrajs.divparentIsRest=function(layer){//Нам нужен массив слоёв по дивам чтобы найти слой показываемый в родительском диве
-	if(!layer.divparent)return;
+infrajs.divparentIsRest = function (layer){//Нам нужен массив слоёв по дивам чтобы найти слой показываемый в родительском диве
+	if(!layer.divparent) return;
 	var store=infrajs.store();
 	var l=store.divs[layer.divparent];
-	if(!l)return;
-	if(!infrajs.is('rest',l))return false;
+	if (!l) return;
+	if (!Event.fire('layer.isrest',l)) return false;
 }

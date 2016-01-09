@@ -1,57 +1,29 @@
-
-Event.handler('Crumb.onchange', function(){
-	//div
-	infrajs.div_init();
-});
-
-
-Event.one('Infrajs.oninit', function (layer){
-	//onsubmit
-	infrajs.onsubmitinit();
-	
-});
-
-
-infra.listen(infrajs,'oninit',function(){
-	//tpl
-	var store=infrajs.store();
-	store.divs={};
-});
-
-
-//========================
-//layer oninit
-//========================
-
-infra.listen(infra,'layer.oninit',function(layer){
+Event.handler('layer.oninit', function (layer){
 	//external
 	infrajs.external.check(layer);
-});
-infra.listen(infra,'layer.oninit',function(layer){
-	//config
-	infrajs.configinherit(layer);
-});
-infra.listen(infra,'layer.oninit',function(layer){
+},'external');
+
+Event.handler('layer.oninit', function (layer){
 	//infrajs
 	var store=infrajs.store();
 	layer['store']={'counter':store['counter']};
-});
-infra.listen(infra,'layer.oninit',function(layer){
+},'counter:external');
+Event.handler('layer.oninit', function (layer){
 	//unick
 	infrajs.unickCheck(layer);
-});
-infra.listen(infra,'layer.oninit',function(layer){//это из-за child// всё что после child начинает плыть. по этому надо Crumb каждый раз определять, брать от родителя.
+},'unick:counter');
+Event.handler('layer.oninit', function (layer){//это из-за child// всё что после child начинает плыть. по этому надо Crumb каждый раз определять, брать от родителя.
 	//Crumb
 	if(!layer['dyn']){//Делается только один раз
 		infrajs.setCrumb(layer,'crumb',layer['crumb']);
 	}
-});
-infra.listen(infra,'layer.oninit',function(layer){
+},'crumb:unick');
+Event.handler('layer.oninit', function (layer){
 	//Crumb
 	if(!layer['parent'])return;//слой может быть в child с динамическим state только если есть родитель
 	infrajs.setCrumb(layer,'crumb',layer['dyn']['crumb']);//Возможно у родителей обновился state из-за child у детей тоже должен обновиться хотя они не в child
-});
-infra.listen(infra,'layer.oninit',function(layer){
+},'crumb:unick');
+Event.handler('layer.oninit', function (layer){
 	//Crumb child
 	if(!layer['child'])return;//Это услвие после setCrumb
 
@@ -59,19 +31,19 @@ infra.listen(infra,'layer.oninit',function(layer){
 	if(st) var name=st['name'];
 	else var name='###child###';
 
-	infra.fora(layer['child'],function(l){
+	infra.fora(layer['child'], function(l){
 		infrajs.setCrumb(l,'crumb',name);
 	});
-});
-infra.listen(infra,'layer.oninit',function(layer){//Должно быть после external, чтобы все свойства у слоя появились
+},'crumb:unick');
+Event.handler('layer.oninit', function (layer){//Должно быть после external, чтобы все свойства у слоя появились
 	//Crumb childs
-	infra.forx(layer['childs'],function(l,key){//У этого childs ещё не взять external
+	infra.forx(layer['childs'], function(l,key){//У этого childs ещё не взять external
 		if(!l['crumb'])l['crumb']=infrajs.setCrumb(l,'crumb',key);
 	});
 
-});
+},'crumb:unick');
 
-/* infra.listen(infra,'layer.oninit',function(layer){
+/* Event.handler('layer.oninit', function (layer){
 	//crumb link
 	if(!layer['link']&&!layer['linktpl'])layer['linktpl']='{crumb}';
 });*/
@@ -80,121 +52,79 @@ infra.listen(infra,'layer.oninit',function(layer){//Должно быть пос
 // layer is check
 //========================
 
-infrajs.isAdd('check',function(layer){//может быть у любого слоя в том числе и у не iswork, и когда нет старого значения
-	//infrajs исключение
-	if(!layer)return false;
+Event.handler('layer.ischeck', function (layer){//может быть у любого слоя в том числе и у не iswork, и когда нет старого значения
 	if(!infrajs.isWork(layer))return false;//Нет сохранённого результата, и слой не в работе, если работа началась с infrajs.check(layer) и у layer есть родитель
-});
-
-
-infrajs.isAdd('check',function(layer){
+},'layer');
+Event.handler('layer.ischeck', function (layer){
 	//crumb
-	if(!layer['crumb']['is'])return false;
-});
-
-infrajs.isAdd('check',function(layer){
+	if (!layer['crumb']['is']) return false;
+},'crumb:layer');
+Event.handler('layer.ischeck', function (layer){
 	//tpl
-	if(layer['onlyserver'])return false;
-
-});
+	if (layer['onlyserver']) return false;
+},'layer');
 
 
 //========================
 // layer oncheck
 //========================
 
-infra.listen(infra,'layer.oncheck',function(layer){//Свойство counter должно быть до tpl чтобы counter прибавился а потом парсились
+Event.handler('layer.oncheck', function (layer){//Свойство counter должно быть до tpl чтобы counter прибавился а потом парсились
 	//counter
 	if(!layer.counter)layer.counter=0;
-});
-infra.listen(infra,'layer.oncheck',function(layer){//Без этого не показывается окно cо стилями.. только его заголовок..
+}, 'counter');
+Event.handler('layer.oncheck', function (layer){//Без этого не показывается окно cо стилями.. только его заголовок..
 	//div
-	infra.forx(layer.divs,function(l,key){
+	infra.forx(layer.divs, function(l,key){
 		if(!l.div)l.div=key;
 	});
-});
-infra.listen(infra,'layer.oncheck',function(layer){//В onchange слоя может не быть див// Это нужно чтобы в external мог быть определён div перед тем как наследовать div от родителя
+}, 'div:counter');
+Event.handler('layer.oncheck', function (layer){//В onchange слоя может не быть див// Это нужно чтобы в external мог быть определён div перед тем как наследовать div от родителя
 	//div
 	if(!layer.div&&layer.parent)layer.div=layer.parent.div;
-});
-//infra.listen(infra,'layer.oncheck',function(layer){
-//	//свойства autosave у слоя нет свойства autosave со значениями из сессии, проблема первоисточника, при переавторизации autosave не обновлялся у слоёв это приводило к ошибкам, так как значения в autosave также считались значениями по умолчанию
-//	infrajs.autosaveRestore(layer);
-//});
+}, 'div:counter');
 
 
-/* infra.listen(infra,'layer.oncheck',function(layer){//php {} возвращает как []
-	//subs
-	infra.foro(layer.subs,function(val,key,group){
-		if(typeof(val)!=='object')group[key]={};
-	});
-});*/
-infra.listen(infra,'layer.oncheck',function(layer){//external уже проверен
-	//subs
-	infrajs.subMake(layer);
-});
 
-infra.listen(infra,'layer.oncheck',function(layer){
-	//config
-	infrajs.configtpl(layer);
-});
-/* infra.listen(infra,'layer.oncheck',function(layer){
-	//crumb link
-	if(layer['linktpl'])layer['link']=infra.template.parse([layer['linktpl']],layer);
-});	*/
 
-infra.listen(infra,'layer.oncheck',function(layer){
+
+Event.handler('layer.oncheck', function (layer){
 	//envs
 	infrajs.envEnvs(layer);
-});
-infra.listen(infra,'layer.oncheck',function(layer){
+}, 'envs');
+Event.handler('layer.oncheck', function (layer){
 	//envframe
 	infrajs.envframe(layer);
-});
-infra.listen(infra,'layer.oncheck',function(layer){
+}, 'envs');
+Event.handler('layer.oncheck', function (layer){
 	//envframe
 	infrajs.envframe2(layer);
-});
-infra.listen(infra,'layer.oncheck',function(layer){//external то ещё не применился нельзя
+}, 'envs');
+Event.handler('layer.oncheck', function (layer){//external то ещё не применился нельзя
 	//env myenvtochild
 	infrajs.envmytochild(layer);
-});
-infra.listen(infra,'layer.oncheck',function(layer){//external то ещё не применился нельзя
+}, 'envs');
+Event.handler('layer.oncheck', function (layer){//external то ещё не применился нельзя
 	//envtochild
 	infrajs.envtochild(layer)
-});
+}, 'envs');
 
 
 
 
-infra.listen(infra,'layer.oncheck',function(layer){
+Event.handler('layer.oncheck', function (layer){
 	//div
 	infrajs.divtpl(layer);
-});
-infra.listen(infra,'layer.oncheck',function(layer){
+}, 'divtpl:envs');
+Event.handler('layer.oncheck', function (layer){
 	//tpl
 	infrajs.tplrootTpl(layer);
 	infrajs.tpldatarootTpl(layer);
 	infrajs.tplTpl(layer);
 	infrajs.tplJson(layer);
-});
+}, 'tpl:divtpl');
 
 
-infra.listen(infra,'layer.oncheck',function(layer){
-	//autofocus
-	infrajs.autofocussave(layer);
-});
-
-
-infra.listen(infra,'layer.oncheck',function(layer){
-	//global
-	infrajs.checkGlobal(layer);
-});
-
-infra.listen(infra,'layer.oncheck',function(layer){
-	//show
-	infrajs.show_animate(layer);
-});
 //========================
 // infrajs oncheck
 //========================
@@ -202,119 +132,108 @@ infra.listen(infra,'layer.oncheck',function(layer){
 //========================
 // layer is show
 //========================
-infrajs.isAdd('show',function(layer){
+Event.handler('layer.isshow', function (layer){
 	//infrajs
+	if(!Event.fire('layer.ischeck',layer))return false;
+},'layer');
 
-	if(!infrajs.is('check',layer))return false;
-});
-infrajs.isAdd('show',function(layer){
-	//is
-	infrajs.istplparse(layer);
-	return infrajs.isCheck(layer);
-});
-
-infrajs.isAdd('show',function(layer){
-	//tpl
-	if (layer['tpl']) {
-		return;
-	}
-	var r=true;
-	if(layer['parent']){
-		r=infrajs.isSaveBranch(layer['parent']);
-		if(typeof(r)=='undefined')r=true;
-	}
-	if(layer['gist']){
-		alert(infrajs.isSaveBranch(infrajs.find('id','gist')));
-		exit;
-	}
-	infrajs.isSaveBranch(layer,r);
-});
-
-
-infrajs.isAdd('show',function(layer){//Родитель скрывает ребёнка если у родителя нет опции что ветка остаётся целой
+Event.handler('layer.isshow', function (layer){//Родитель скрывает ребёнка если у родителя нет опции что ветка остаётся целой
 	//infrajs
 	if(!layer.parent)return;
-	if(infrajs.is('show',layer.parent))return;
+	if(Event.fire('layer.isshow',layer.parent))return;
 
 	if(infrajs.isSaveBranch(layer.parent))return;//Какой-то родитель таки не показывается.. теперь нужно узнать скрыт он своей веткой или чужой
 	return false;
-});
-infrajs.isAdd('show',function(layer){
-	//popup
-	do{
-		if(layer.popupis===false)return false;
-		layer=layer.parent;
-	}while(layer)
-});
+},'layer');
 
-infrajs.isAdd('show',function(layer){
+Event.handler('layer.isshow', function (layer){
+	//is
+	infrajs.istplparse(layer);
+	return infrajs.isCheck(layer);
+},'is');
+
+Event.handler('layer.isshow', function (layer){
+	if (layer['tpl']) return;
+	var r=true;
+	if(layer['parent']){
+		r=infrajs.isSaveBranch(layer['parent']);
+		if (typeof(r) == 'undefined') r = true;
+	}
+	infrajs.isSaveBranch(layer,r);
+}, 'tpl:is');
+
+
+
+
+
+Event.handler('layer.isshow', function (layer){
 	//tpl
 	if(layer.tpl)return;
 	infrajs.isSaveBranch(layer,true);//Когда нет шаблона слой скрывается, но не скрывает свою ветку
 	return false;
-});
+}, 'tpl:is');
 
-infrajs.isAdd('show',function(layer){//tpl должен существовать, ветка скрывается
+Event.handler('layer.isshow', function (layer){//tpl должен существовать, ветка скрывается
 	//tpl
 	if(!layer.tplcheck)return;
 	var res=infra.loadTEXT(layer.tpl);
 	if(res)return;//Без шаблона в любом случае показывать нечего... так что вариант показа когда нет результата не рассматриваем
 	infrajs.isSaveBranch(layer,false);
 	return false;
-});
-infrajs.isAdd('show',function(layer){//ветка скрывается
+}, 'tplcheck:tpl,is');
+
+Event.handler('layer.isshow', function (layer){//ветка скрывается
 	//tpl
 	return infrajs.tplJsonCheck(layer);
-});
-infrajs.isAdd('show',function(layer){
+}, 'tpl:is');
+Event.handler('layer.isshow', function (layer){
 	//div
 	if(!layer.div&&layer.parent)return false;//Такой слой игнорируется, события onshow не будет, но обработка пройдёт дальше у других дивов
-});
-infrajs.isAdd('show',function(layer){//isShow учитывала зависимости дивов layerindiv ещё не работает
+}, 'div:tpl');
+Event.handler('layer.isshow', function (layer){//isShow учитывала зависимости дивов layerindiv ещё не работает
 	//div
 	var r=infrajs.divCheck(layer);
 	return r;
-});
+}, 'div:tpl');
 
-infrajs.isAdd('show',function(layer){
+Event.handler('layer.isshow', function (layer){
 	//env, counter
-
 	return infrajs.envCheck(layer);
-});
+}, 'env:div');
 
 
 //========================
 // layer is rest
 //========================
-infrajs.isAdd('rest',function(layer){//Будем проверять все пока не найдём
+Event.handler('layer.isrest' , function (layer){//Будем проверять все пока не найдём
 	//infrajs
 
 	if(!infrajs.isWork(layer))return true;//На случай если забежали к родителю а он не в работе
-	if(!infrajs.is('show',layer))return true;//На случай если забежали окольными путями к слою который не показывается (вообще в check это исключено, но могут быть другие забеги)
+	if(!Event.fire('layer.isshow',layer))return true;//На случай если забежали окольными путями к слою который не показывается (вообще в check это исключено, но могут быть другие забеги)
 
-	if(layer['parent']&&infrajs.isWork(layer['parent'])&&!infrajs.is('rest',layer['parent'])){
+	if(layer['parent']&&infrajs.isWork(layer['parent'])&&!Event.fire('layer.isrest',layer['parent'])){
 		return false;//Парсится родитель парсимся и мы
 	}
 
 	if(!layer.showed)return false;//Ещё Непоказанный слой должен перепарситься..
-});
-infrajs.isAdd('rest',function(layer){
+}, 'layer');
+Event.handler('layer.isrest' , function (layer){
 	//tpl parsed
 	if(!infrajs.isWork(layer))return true;//На случай если забежали к родителю а он не в работе
-	if(!infrajs.is('show',layer))return true;//На случай если забежали окольными путями к слою который не показывается (вообще в check это исключено, но могут быть другие забеги)
+	if(!Event.fire('layer.isshow',layer))return true;//На случай если забежали окольными путями к слою который не показывается (вообще в check это исключено, но могут быть другие забеги)
 
 	if(layer._parsed!=infrajs.parsed(layer)){
 		return false;//'свойство parsed изменилось';
 	}
-});
-infrajs.isAdd('rest',function(layer){
+}, 'parsed');
+Event.handler('layer.isrest' , function (layer){
 	//divparent
 	if(!infrajs.isWork(layer))return true;//На случай если забежали к родителю а он не в работе
-	if(!infrajs.is('show',layer))return true;//На случай если забежали окольными путями к слою который не показывается (вообще в check это исключено, но могут быть другие забеги)
+	if(!Event.fire('layer.isshow',layer))return true;//На случай если забежали окольными путями к слою который не показывается (вообще в check это исключено, но могут быть другие забеги)
 
 	var r=infrajs.divparentIsRest(layer);
 	return r;
-});
+}, 'divparent:parsed');
 
 
 
@@ -323,26 +242,22 @@ infrajs.isAdd('rest',function(layer){
 //========================
 // layer onshow
 //========================
-infra.listen(infra,'layer.onshow',function(layer){//Должно идти до tpl
+Event.handler('layer.onshow', function (layer){//Должно идти до tpl
 	//counter
 	layer.counter++;
-});
-infra.listen(infra,'layer.onshow',function(layer){
+},'layer');
+Event.handler('layer.onshow', function (layer){
 	//tpl
 	layer._parsed=infrajs.parsed(layer);	//Выставляется после обработки шаблонов в которых в событиях onparse могла измениться data
-});
-infra.listen(infra,'layer.onshow',function(layer){//До того как сработает событие самого слоя в котором уже будут обработчики вешаться
+},'parsed');
+Event.handler('layer.onshow', function (layer){//До того как сработает событие самого слоя в котором уже будут обработчики вешаться
 	//tpl
 	if(infrajs.ignoreDOM(layer))return;
 	layer.html=infrajs.getHtml(layer);
-});
+},'html:parsed');
 
-infra.listen(infra,'layer.onshow',function(layer){
-	//css
-	if(infrajs.ignoreDOM(layer))return;
-	infrajs.csscheck(layer);
-});
-infra.listen(infra,'layer.onshow',function(layer){//До того как сработает событие самого слоя в котором уже будут обработчики вешаться
+
+Event.handler('layer.onshow', function (layer){//До того как сработает событие самого слоя в котором уже будут обработчики вешаться
 	//tpl
 
 	var div=document.getElementById(layer.div);
@@ -355,88 +270,63 @@ infra.listen(infra,'layer.onshow',function(layer){//До того как сра�
 		return false;
 	}
 	if(div){
-		infrajs.layer=layer;//в скриптах будет доступ к последнему вставленному слою
-		//^ нельзя этим пользоваться.. при первой загрузке infrajs.layer не определён
 		infra.html(layer.html,layer.div);
-		delete infrajs.layer;//Чтобы небыло ошибок
 		delete layer.html;//нефиг в памяти весеть
 	}
-});
+}, 'dom:html');
 
 
-infra.listen(infra,'layer.onshow',function(layer){
+Event.handler('layer.onshow', function (layer){
 	//tpl
 	//слой который показан и не перепарсивается сюда не попадает, но и скрывать из этого дива никого не надо будет ведь этот слой и был показан.
 	var store=infrajs.store();
 	store.divs[layer.div]=layer;
-});
+}, 'dom:html');
 
-/* infra.listen(infra,'layer.onshow',function(layer){
+/* Event.handler('layer.onshow', function (layer){
 	//popup
 	//layer.showmsg='popup';
 	//popup.layeronshow(layer);
 });*/
-infra.listen(infra,'layer.onshow',function(layer){//Анимация только для первого показываемого слоя, вначале это корневой.. потом это текстовый в центре ожидается
-	//show
-	infrajs.show_div(layer);
 
-});
-infra.listen(infra,'layer.onshow',function(layer){
-	//autofocus
-	//layer.showmsg='autofocus';
-	infrajs.autofocus(layer);
-});
-infra.listen(infra,'layer.onshow',function(layer){
+
+
+
+
+Event.handler('layer.onshow', function (layer){
 	//autosave
 	infrajs.autosaveHand(layer);
-});
-infra.listen(infra,'layer.onshow',function(layer){
-	//onsubmit
-	infrajs.setonsubmit(layer);
-});
-infra.listen(infra,'layer.onshow',function(layer){
-	//autoview
-	infrajs.autoview(layer);
-});
+}, 'autosave:dom');
+
+
 
 
 //========================
 // layer onhide
 //========================
 
-infra.listen(infra,'layer.onhide',function(layer){//onhide запускается когда слой ещё виден
+Event.handler('layer.onhide', function (layer){//onhide запускается когда слой ещё виден
 	//tpl
 	var store=infrajs.store();
 	var l=store.divs[layer.div];//Нужно проверить не будет ли див заменён самостоятельно после показа. Сейчас мы знаем что другой слой в этом диве прямо не показывается. Значит после того как покажутся все слои и див останется в вёрстке только тогда нужно его очистить.
 
 	if(l)return;//значит другой слой щас в этом диве покажется и реальное скрытие этого дива ещё впереди. Это чтобы не было скачков
 	infra.htmlclear(layer.div);
-});
+},'controller');
 
 
 //========================
 // infrajs onshow
 //========================
-infra.handle(infrajs,'onshow',function(){
-	//loader
-	infra.loader.hide();
-});
-infra.listen(infrajs,'onshow',function(){
+
+Event.handler('Infrajs.onshow', function () {
 	//crumb
 	infra.Crumb.setA(document);//Пробежаться по всем ссылкам и добавить спeциальный обработчик на onclick... для перехода по состояниям сайта.
-});
-infra.listen(infrajs,'onshow',function(){
-	//show
-	infrajs.htmlsomelayeranimate=false;
-});
-infra.listen(infrajs,'onshow',function(){
-	//popup
-	if(!window.popup||!popup.st)return;
-	popup.render();
-});
+},'crumb');
 
 
-infra.wait(infrajs,'onshow',function(){
+
+Event.one('Infrajs.onshow', function () {
 	//code
 	infrajs.code_restore();
-});
+}, 'code');
