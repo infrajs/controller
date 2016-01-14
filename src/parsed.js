@@ -4,7 +4,6 @@
 		infrajs.parsed.props=[];//Расширяется в global.js
 		infrajs.parsedAdd('dataroot');
 		infrajs.parsedAdd('tplroot');
-		infrajs.parsedAdd('envval');
 		infrajs.parsedAdd('json');
 		infrajs.parsedAdd('tpl');
 		infrajs.parsedAdd('is');

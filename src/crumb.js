@@ -15,7 +15,7 @@ infra.Crumb.prototype={
 		if(!infra.Crumb.childs[short]){
 			var that=new infra.Crumb();	
 			that.path=right;
-			that.name=right[right.length-1]?right[right.length-1]:'';
+			that.name=right[right.length-1]? right[right.length-1]: '';
 			that.value=that.query=that.is=that.counter=null;
 			infra.Crumb.childs[short]=that;
 			if(that.name)that.parent=that.getInstance('//');
@@ -56,7 +56,7 @@ infra.Crumb.change=function(query){
 		var params=query;
 		var query='';
 	}else{
-		var params=amp[1]?amp[1]:'';
+		var params=amp[1] ? amp[1] : '';
 		var query=amp[0];
 	}
 	infra.Crumb.params=params;
@@ -81,7 +81,7 @@ infra.Crumb.change=function(query){
 	var old=infra.Crumb.path;
 	infra.Crumb.path=right;
 
-	infra.Crumb.value=right[0]?right[0]:'';
+	infra.Crumb.value=right[0] ? right[0] : '';
 	infra.Crumb.query=infra.Crumb.short(right);
 	infra.Crumb.child=infra.Crumb.getInstance(infra.Crumb.value);
 
@@ -91,7 +91,7 @@ infra.Crumb.change=function(query){
 		that.counter=counter;
 		that.is=true;
 		that.child=child;
-		that.value=right[that.path.length]?right[that.path.length]:'';
+		that.value=right[that.path.length] ? right[that.path.length] : '';
 		that.query=infra.Crumb.short(right.slice(that.path.length));
 		child=that;
 		that=that.parent;
@@ -106,21 +106,26 @@ infra.Crumb.change=function(query){
 }
 infra.Crumb.init=function(){
 	var listen=function(){
-		var query=decodeURI(location.search.slice(1));
-		if(query[0] == '-'){
+		var query=URN.getQuery();
+		/*if(query[0] == '-'){
 			var q=query.split('?');
 			infra.Crumb.prefix='?'+q.shift();
 			query=q.join('?');
-		}
-		if(infra.Crumb.search===query)return;//chrome при загрузки запускает собыите а FF нет. Первый запуск мы делаем сами по этому отдельно для всех а тут игнорируются совпадения.
+		}*/
+		
+		if (infra.Crumb.search === query) return;//chrome при загрузки запускает собыите а FF нет. Первый запуск мы делаем сами по этому отдельно для всех а тут игнорируются совпадения.
 		infra.Crumb.popstate=true;
+
 		infra.Crumb.change(query);
+		Event.tik('Crumb.onchange');
 		Event.fire('Crumb.onchange');
 	}
 	
-	if(document.readyState !== "loading") { 
+	if(document.readyState !== "loading") { 	
 		window.addEventListener('popstate',listen, false); //Генерировать заранее нельзя
-		return listen();
+		return setTimeout(function(){
+			listen();
+		},1);
 	}
 	document.addEventListener("DOMContentLoaded", function () {
 		window.addEventListener('popstate',listen, false); //Генерировать заранее нельзя
@@ -152,21 +157,23 @@ infra.Crumb.go = function(href, nopushstate){
 	if (href=='.') { //Правильная ссылка на главную страницу
 		href='';
 	} else {
-		var r=href.split('?');
-		var val=r.shift();
-		if(val) return;	
-		href=r.join('?');
+		//var r=href.split('?');
+		//var val=r.shift();
+		//if(val) return;	
+		//href=r.join('?');
 	}
 	
-	query=href;
+	var query=href;
 	
-	var path=(query?('?'+encodeURI(query)):location.pathname);
+	//var path=(query?('?'+encodeURI(query)):location.pathname);
 	if(!nopushstate) {
-		history.pushState(null,null,path+anchor);
+		history.pushState(null,null,query+anchor);
 	}
 	
 	infra.Crumb.popstate=false;
+
 	infra.Crumb.change(query);
+	Event.tik('Crumb.onchange');
 	Event.fire('Crumb.onchange');
 	
 }

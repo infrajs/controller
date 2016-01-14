@@ -245,28 +245,4 @@ Event::handler('layer.isshow', function (&$layer) {
 	if (Layer::pop($layer, 'onlyclient')) return;
 	return Tpl::jsoncheck($layer);
 }, 'jsoncheck:is');
-
-	
-//View::js('-layer-config/config.js');
-//View::js('-layer-env/env.js');
-//View::js('-loader/loader.js');
-//View::js('-layer-subs/subs.js');
-
-//View::js('-layer-autoview/autoview.js');
-//View::js('-Memcode/memcode.js');
-//View::js('-layer-css/css.js');
-
-//View::js('-layer-showanimate/show.js');
-//View::js('-layer-config/config.js');
-
-//View::js('-layer-global/global.js');
-
-//View::js('-layer-onsubmit/onsubmit.js');
-//View::js('-layer-autosave/autosave.js');
-
-//View::js('-layer-autofocus/autofocus.js');
-
-
-
-	
 	

@@ -1,13 +1,22 @@
-Event.handler('layer.oninit', function (layer){
-	//external
-	infrajs.external.check(layer);
-},'external');
+Event.one('Infrajs.oninit', function() {
+	//div
+	infrajs.unickExternalInit();
+	infrajs.div_init();
+}, 'div');
+
+
+Event.handler('Infrajs.oninit', function () {
+	//tpl
+	var store=infrajs.store();
+	store.divs={};
+}, 'tpl');
+
 
 Event.handler('layer.oninit', function (layer){
 	//infrajs
 	var store=infrajs.store();
 	layer['store']={'counter':store['counter']};
-},'counter:external');
+});
 Event.handler('layer.oninit', function (layer){
 	//unick
 	infrajs.unickCheck(layer);
@@ -58,7 +67,7 @@ Event.handler('layer.ischeck', function (layer){//может быть у люб�
 Event.handler('layer.ischeck', function (layer){
 	//crumb
 	if (!layer['crumb']['is']) return false;
-},'crumb:layer');
+},'crumb');
 Event.handler('layer.ischeck', function (layer){
 	//tpl
 	if (layer['onlyserver']) return false;
@@ -75,6 +84,7 @@ Event.handler('layer.oncheck', function (layer){//Свойство counter до�
 }, 'counter');
 Event.handler('layer.oncheck', function (layer){//Без этого не показывается окно cо стилями.. только его заголовок..
 	//div
+
 	infra.forx(layer.divs, function(l,key){
 		if(!l.div)l.div=key;
 	});
@@ -84,45 +94,26 @@ Event.handler('layer.oncheck', function (layer){//В onchange слоя може�
 	if(!layer.div&&layer.parent)layer.div=layer.parent.div;
 }, 'div:counter');
 
-
-
-
-
-Event.handler('layer.oncheck', function (layer){
-	//envs
-	infrajs.envEnvs(layer);
-}, 'envs');
-Event.handler('layer.oncheck', function (layer){
-	//envframe
-	infrajs.envframe(layer);
-}, 'envs');
-Event.handler('layer.oncheck', function (layer){
-	//envframe
-	infrajs.envframe2(layer);
-}, 'envs');
-Event.handler('layer.oncheck', function (layer){//external то ещё не применился нельзя
-	//env myenvtochild
-	infrajs.envmytochild(layer);
-}, 'envs');
-Event.handler('layer.oncheck', function (layer){//external то ещё не применился нельзя
-	//envtochild
-	infrajs.envtochild(layer)
-}, 'envs');
-
-
-
-
 Event.handler('layer.oncheck', function (layer){
 	//div
 	infrajs.divtpl(layer);
-}, 'divtpl:envs');
+}, 'div:counter');
+
+
+
+
+
+
+
+
 Event.handler('layer.oncheck', function (layer){
 	//tpl
 	infrajs.tplrootTpl(layer);
+	if(layer.id==6)console.log('oncheck');
 	infrajs.tpldatarootTpl(layer);
 	infrajs.tplTpl(layer);
 	infrajs.tplJson(layer);
-}, 'tpl:divtpl');
+}, 'tpl:div');
 
 
 //========================
@@ -133,8 +124,8 @@ Event.handler('layer.oncheck', function (layer){
 // layer is show
 //========================
 Event.handler('layer.isshow', function (layer){
-	//infrajs
-	if(!Event.fire('layer.ischeck',layer))return false;
+	if (!Event.fire('layer.ischeck',layer)) return false;
+	//Event.fire('layer.oncheck',layer);
 },'layer');
 
 Event.handler('layer.isshow', function (layer){//Родитель скрывает ребёнка если у родителя нет опции что ветка остаётся целой
@@ -165,10 +156,15 @@ Event.handler('layer.isshow', function (layer){
 
 
 
+/*Event.handler('layer.isshow', function (layer){
+	if (!layer['tpl']) return false;
+});*/
 
 Event.handler('layer.isshow', function (layer){
 	//tpl
+
 	if(layer.tpl)return;
+
 	infrajs.isSaveBranch(layer,true);//Когда нет шаблона слой скрывается, но не скрывает свою ветку
 	return false;
 }, 'tpl:is');
@@ -196,10 +192,7 @@ Event.handler('layer.isshow', function (layer){//isShow учитывала за�
 	return r;
 }, 'div:tpl');
 
-Event.handler('layer.isshow', function (layer){
-	//env, counter
-	return infrajs.envCheck(layer);
-}, 'env:div');
+
 
 
 //========================
@@ -245,6 +238,7 @@ Event.handler('layer.isrest' , function (layer){
 Event.handler('layer.onshow', function (layer){//Должно идти до tpl
 	//counter
 	layer.counter++;
+
 },'layer');
 Event.handler('layer.onshow', function (layer){
 	//tpl
@@ -283,23 +277,6 @@ Event.handler('layer.onshow', function (layer){
 	store.divs[layer.div]=layer;
 }, 'dom:html');
 
-/* Event.handler('layer.onshow', function (layer){
-	//popup
-	//layer.showmsg='popup';
-	//popup.layeronshow(layer);
-});*/
-
-
-
-
-
-Event.handler('layer.onshow', function (layer){
-	//autosave
-	infrajs.autosaveHand(layer);
-}, 'autosave:dom');
-
-
-
 
 //========================
 // layer onhide
@@ -323,10 +300,3 @@ Event.handler('Infrajs.onshow', function () {
 	//crumb
 	infra.Crumb.setA(document);//Пробежаться по всем ссылкам и добавить спeциальный обработчик на onclick... для перехода по состояниям сайта.
 },'crumb');
-
-
-
-Event.one('Infrajs.onshow', function () {
-	//code
-	infrajs.code_restore();
-}, 'code');

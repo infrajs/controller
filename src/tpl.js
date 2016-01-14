@@ -85,7 +85,7 @@ infrajs.getTpl=function(layer){
 		tpl='';
 	}
 	if(!tpl)tpl='';
-	return String(tpl);
+	return tpl;
 };
 infrajs.getHtml=function(layer){//Вызывается как для основных так и для подслойв tpls frame.
 	if(layer.data||layer.json||layer.tplsm||layer.tplroot){

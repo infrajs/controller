@@ -145,7 +145,6 @@ infrajs.show=function(layer,div){
 	infrajs.check(layer);
 }
 infrajs.check=function(layers){//Пробежка по слоям
-
 	var store=infrajs.store();
 	if(store.process){//Функция checkNow сейчас выполняется и в каком-то
 		//Момент когда process уже начался но ещё не запустился после timer
@@ -204,7 +203,7 @@ infrajs.check=function(layers){//Пробежка по слоям
 
 
 
-	infra.fire(infrajs,'onshow');//loader, setA, в onshow можно зациклить check
+	Event.fire('Infrajs.onshow');//loader, setA, в onshow можно зациклить check
 	store.process=false;
 	//onshow1
 		//вызван check (нужен setTimeout чтобы не разворачивало всё.)
