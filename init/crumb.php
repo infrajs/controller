@@ -8,7 +8,7 @@ use infrajs\controller\External;
 use infrajs\each\Each;
 
 
-Event::handler('oninit', function () {
+Event::handler('Infrajs.oninit', function () {
 	$root = Crumb::getInstance();
 	if(!$root->is) throw new \Exception('Crumb нужно инициализировать до запуска контроллера');
 	Sequence::set(Template::$scope, Sequence::right('infra.Crumb.query'), $root->query);

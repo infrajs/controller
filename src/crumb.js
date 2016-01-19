@@ -138,6 +138,7 @@ infra.Crumb.isInternal = function(href){
 	if(/^javascript:/.test(href))return false;
 	if(/^mailto:/.test(href))return false;
 	if(/^http.?:/.test(href))return false;
+	href=href.replace(/^\//,'');
 	if(href[0] == '-') return false;
 	if(href[0] == '!') return false;
 	if(href[0] == '~') return false;
