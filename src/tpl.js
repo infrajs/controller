@@ -121,9 +121,9 @@ infrajs.ignoreDOM=function(layer){//onlyclient //после какого мом�
 	var conf=infra.conf;
 	
 
-	if(!conf.controller.server)return false;//Значит сервера небыло впринципе
+	if (first) return true;//Значит сервера небыло впринципе
 
-	if(layer&&infrajs.tplonlyclient(layer))return false;
+	if (layer && infrajs.tplonlyclient(layer)) return false;
 	
 	return first;
 }
