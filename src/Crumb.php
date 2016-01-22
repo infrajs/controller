@@ -96,7 +96,6 @@ class Crumb
 
 		$right = self::right($query);
 		$counter = ++self::$globalcounter;
-
 		$inst = self::getInstance();
 		$old = $inst->path;
 		//Crumb::$path=$right;
@@ -105,14 +104,14 @@ class Crumb
 		//Crumb::$child=Crumb::getInstance((string)@$right[0]);
 		$that = self::getInstance($right);
 		$child = null;
-
+		
 		while ($that) {
 			$that->counter = $counter;
 			$that->is = true;
 			$that->child = $child;
 			$that->value = (string) @$right[sizeof($that->path)];
 
-			$that->query = self::short(array_slice($right, sizeof($that->path)));
+
 			$child = $that;
 			$that = $that->parent;
 		};

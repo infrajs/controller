@@ -8,7 +8,7 @@ use infrajs\controller\External;
 use infrajs\each\Each;
 
 
-Event::handler('Infrajs.oninit', function () {
+Event::handler('layer.oninit', function () {
 	$root = Crumb::getInstance();
 	if(!$root->is) throw new \Exception('Crumb нужно инициализировать до запуска контроллера');
 	Sequence::set(Template::$scope, Sequence::right('infra.Crumb.query'), $root->query);
@@ -45,10 +45,13 @@ Event::handler('Infrajs.oninit', function () {
 
 
 Event::handler('layer.oninit', function (&$layer) {
+
 	//это из-за child// всё что после child начинает плыть. по этому надо crumb каждый раз определять, брать от родителя.
 	//crumb
+
 	if (!isset($layer['dyn'])) {
 		//Делается только один раз
+
 		Crumb::set($layer, 'crumb', $layer['crumb']);
 	}
 }, 'crumb');
