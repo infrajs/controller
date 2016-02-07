@@ -48,12 +48,13 @@ class Layer {
 	/**
 	 * Механизм id и быстрый доступ к слою
 	 **/
-	public static $id = 1;
-	public static $ids = array();
+	public static $start_id = 1;
+	public static $id = array();
+	public static $name = array();
 	public static function setId(&$layer)
 	{
-		if (@!$layer['id']) $layer['id'] = self::$id++;
-		self::$ids[$layer['id']] = &$layer;
+		if (empty($layer['id'])) $layer['id'] = self::$start_id++;
+		self::$id[$layer['id']] = &$layer;
 	}
 	/**
 	 * Механизм определения уникальности html получаемого от слоя

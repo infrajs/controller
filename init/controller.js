@@ -162,10 +162,17 @@ Event.handler('layer.isshow', function (layer){
 
 Event.handler('layer.isshow', function (layer){
 	//tpl
+	if (layer.tpl) return;
 
-	if(layer.tpl)return;
+	var r=true;
+	if (layer['parent']) {//Пустой слой не должен обрывать наследования если какой=то родитель скрывает всю ветку		
+		var cache=infrajs.storeLayer(layer['parent']);
+		r = cache.is_save_branch;
+		if (typeof(r)==='undefined') r = true;
+	}
+	var cache=infrajs.storeLayer(layer);
+	cache.is_save_branch=r;
 
-	infrajs.isSaveBranch(layer,true);//Когда нет шаблона слой скрывается, но не скрывает свою ветку
 	return false;
 }, 'tpl:is');
 
@@ -253,12 +260,11 @@ Event.handler('layer.onshow', function (layer){//До того как срабо
 
 Event.handler('layer.onshow', function (layer){//До того как сработает событие самого слоя в котором уже будут обработчики вешаться
 	//tpl
-
-	var div=document.getElementById(layer.div);
-	if(div)div.style.display='';
-	if(infrajs.ignoreDOM(layer))return;
-	if(!div){//Мы не можем проверить это в isshow так как для проверки надо чтобы например родитель показался, Но показ идёт одновременно уже без проверок.. сейчас.  По этому сейчас и проверяем. Пользователь не должне допускать таких ситуаций.
-		if(!layer.divcheck&&infra.debug()){//Также мы не можем проверить в layer.oninsert.cond так как ситуация когда див не найден это ошибка, у слоя должно быть определено условие при которых он не показывается и это совпадает с тем что нет родителя. В конце концов указываться divparent
+	var div = document.getElementById(layer.div);
+	if (div) div.style.display='';
+	if (infrajs.ignoreDOM(layer))return;
+	if (!div){//Мы не можем проверить это в isshow так как для проверки надо чтобы например родитель показался, Но показ идёт одновременно уже без проверок.. сейчас.  По этому сейчас и проверяем. Пользователь не должне допускать таких ситуаций.
+		if (!layer.divcheck && infra.debug()){//Также мы не можем проверить в layer.oninsert.cond так как ситуация когда див не найден это ошибка, у слоя должно быть определено условие при которых он не показывается и это совпадает с тем что нет родителя. В конце концов указываться divparent
 			console.log('Не найден контейнер для слоя:'+'\ndiv:'+layer.div+'\ntpl:'+layer.tpl+'\ntplroot:'+layer.tplroot+'\nparent.tpl:'+(layer.parent?layer.parent.tpl:''));
 		}
 		return false;

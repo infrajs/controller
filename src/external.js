@@ -8,17 +8,20 @@
 		infra.seq.set(infra.template.scope,infra.seq.right('infrajs.find'),function(){
 			return infrajs.find.apply(infrajs,arguments);
 		});
-		infra.seq.set(infra.template.scope,infra.seq.right('infrajs.ids'),infrajs.ids);
+		infra.seq.set(infra.template.scope,infra.seq.right('infrajs.id'),infrajs.id);
+		infra.seq.set(infra.template.scope,infra.seq.right('infrajs.name'),infrajs.name);
 	}
 	Event.classes['layer'] = function(layer){
 		infrajs.external.check(layer);
 		infrajs.unickCheck(layer);
 		return layer.id;
 	}
-	infrajs.ids={};
+	infrajs.id = {};
+	infrajs.name = {};
 	infrajs.unickCheck=function(layer){
 		if(!layer.id)layer.id=counter++;
-		infrajs.ids[layer.id]=layer;
+		infrajs.id[layer.id]=layer;
+		if(layer.name)infrajs.name[layer.name] = layer;
 	}
 	infrajs.find=function(name,value){
 		var right=infra.seq.right(name);

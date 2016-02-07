@@ -37,7 +37,7 @@ Event::handler('oninit', function () {
 		return Layer::find($name, $value);
 	};
 	Sequence::set(Template::$scope, Sequence::right('infrajs.find'), $fn);
-	Sequence::set(Template::$scope, Sequence::right('infrajs.ids'), Layer::$ids);
+	Sequence::set(Template::$scope, Sequence::right('infrajs.id'), Layer::$id);
 });
 
 
@@ -50,6 +50,11 @@ Event::handler('layer.oninit', function (&$layer) {
 		External::checkExt($layer, $ext);
 	}
 }, 'layer');
+Event::handler('layer.oninit', function(&$layer) {
+	if(empty($layer['name'])) return;
+	Layer::$name[$layer['name']] = &$layer;
+}, 'name');
+
 Event::handler('layer.isshow', function (&$layer) {
 	if (!Event::fire('layer.ischeck', $layer)) return false;
 }, 'layer');
@@ -168,7 +173,8 @@ Event::handler('layer.oncheck', function (&$layer) {
 
 
 Event::handler('layer.isshow', function (&$layer) {
-	if (@$layer['tpl']) return;
+	//tpl
+	if (!empty($layer['tpl'])) return;
 
 	$r = true;
 	if (!empty($layer['parent'])) {//Пустой слой не должен обрывать наследования если какой=то родитель скрывает всю ветку		
