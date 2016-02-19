@@ -17,7 +17,7 @@
 		"init/layers.js",
 		"init/crumb.js"
 	],
-	"dependencies":["event","sequence","template"],
+	"dependencies":["event","sequence","template","each"],
 	"client":true,
 	"index":{
 		"external":"index.json"

@@ -55,7 +55,8 @@ class Crumb
 
 			$that->path = $right;
 			$that->name = @$right[sizeof($right) - 1];
-			$that->value = $that->query = $that->is = $that->counter = null;
+			$that->value = $that->is = $that->counter = null;
+			//$that->value = $that->query = $that->is = $that->counter = null;
 			self::$childs[$short] = $that;
 
 			if ($that->name) {
@@ -110,7 +111,7 @@ class Crumb
 			$that->is = true;
 			$that->child = $child;
 			$that->value = (string) @$right[sizeof($that->path)];
-
+			//$that->query = Crumb::short(right.slice(that.path.length));
 
 			$child = $that;
 			$that = $that->parent;
