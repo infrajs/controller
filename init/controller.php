@@ -218,12 +218,12 @@ Layer::parsedAdd('is');
 Event::handler('layer.isshow', function (&$layer) {
 	$prop = 'is';
 	$proptpl = $prop.'tpl';
-	if (!isset($layer[$proptpl])) {
-		return;
+	if (isset($layer[$proptpl])) {
+		$p = $layer[$proptpl];
+		$p = Template::parse(array($p), $layer);
+		$layer[$prop] = $p;	
 	}
-	$p = $layer[$proptpl];
-	$p = Template::parse(array($p), $layer);
-	$layer[$prop] = $p;
+	
 	if (!isset($layer['is']) || is_null($layer['is'])) {
 		$is = true;
 	} else {
