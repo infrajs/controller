@@ -195,6 +195,7 @@ Event::handler('layer.onshow', function (&$layer) {
 
 Event::handler('layer.onshow', function (&$layer) {
 	//tpl
+	
 	if (Layer::pop($layer, 'onlyclient')) return;
 	if(!empty($layer['div'])){
 		$div = $layer['div'];

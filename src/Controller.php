@@ -24,7 +24,6 @@ class Controller
 	{
 		static::$layers=&$layers;
 		//Пробежка по слоям
-
 		Event::fire('oninit');//сборка событий
 
 		Run::exec(static::$layers, function (&$layer, &$parent) {
@@ -46,8 +45,6 @@ class Controller
 				//onchange показанный слой не реагирует на изменение адресной строки, нельзя привязывать динамику интерфейса к адресной строке, только черещ перепарсивание
 			}
 		});//у родительского слоя showed будет реальное а не старое
-
-
 		Event::fire('onshow');
 		//loader, setA, seo добавить в html, можно зациклить check
 		$html=View::html();
