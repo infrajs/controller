@@ -22,7 +22,7 @@ Event::$classes['layer']=function($obj){
 	return $obj['id'];
 };
 
-Event::handler('oninit', function () {
+Event::handler('Infrajs.oninit', function () {
 	Layer::parsedAdd('parsed');
 	Layer::parsedAdd(function ($layer) {
 		if (!isset($layer['parsedtpl'])) {
@@ -31,7 +31,7 @@ Event::handler('oninit', function () {
 		return Template::parse(array($layer['parsedtpl']), $layer);
 	});
 });
-Event::handler('oninit', function () {
+Event::handler('Infrajs.oninit', function () {
 	Template::$scope;
 	$fn = function ($name, $value) {
 		return Layer::find($name, $value);
@@ -84,7 +84,7 @@ Event::handler('layer.onshow', function (&$layer) {
  * div, divs, divtpl
  *
  **/
-Event::handler('oninit', function () {
+Event::handler('Infrajs.oninit', function () {
 	Run::runAddKeys('divs');
 	
 	External::add('divs', function (&$now, $ext) {//Если уже есть пропускаем
