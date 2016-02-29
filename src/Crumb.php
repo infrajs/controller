@@ -8,15 +8,15 @@ use infrajs\each\Each;
 
 class Crumb
 {
-	public $name;
-	public $parent;
-	public $child;
-	public $value;//Строка или null
-	public $query;
+	public static $name;
+	public static $parent;
+	public static $child;
+	public static $value;//Строка или null
+	public static $query;
 	public static $childs = array();
-	public $counter = 0;
+	public static $counter = 0;
 	public static $globalcounter = 0;
-	public $path;//Путь текущей крошки
+	public static $path;//Путь текущей крошки
 	public static $params;//Всё что после первого амперсанда
 	public static $get;
 	public $is;
@@ -80,7 +80,9 @@ class Crumb
 	}
 	public static function change($query)
 	{
-		$amp = explode('&', $query, 2);
+		Crumb::$query=$query;
+
+		$amp = explode('?', $query, 2);
 
 		$eq = explode('=', $amp[0], 2);
 		$sl = explode('/', $eq[0], 2);
@@ -101,7 +103,8 @@ class Crumb
 		$old = $inst->path;
 		//Crumb::$path=$right;
 		//Crumb::$value=(string)@$right[0];
-		//Crumb::$query=Crumb::short($right);
+		
+
 		//Crumb::$child=Crumb::getInstance((string)@$right[0]);
 		$that = self::getInstance($right);
 		$child = null;

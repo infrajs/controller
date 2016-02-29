@@ -37,7 +37,7 @@ Event::handler('oninit', function () {
 		return Layer::find($name, $value);
 	};
 	Sequence::set(Template::$scope, Sequence::right('infrajs.find'), $fn);
-	Sequence::set(Template::$scope, Sequence::right('infrajs.id'), Layer::$id);
+	Sequence::set(Template::$scope, Sequence::right('infrajs.ids'), Layer::$ids);
 });
 
 

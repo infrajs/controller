@@ -106,16 +106,10 @@ infra.Crumb.change=function(query){
 }
 infra.Crumb.init=function(){
 	var listen=function(){
-		var query=URN.getQuery();
-		/*if(query[0] == '-'){
-			var q=query.split('?');
-			infra.Crumb.prefix='?'+q.shift();
-			query=q.join('?');
-		}*/
-		
+		var query = URN.getQuery();
 		if (infra.Crumb.search === query) return;//chrome при загрузки запускает собыите а FF нет. Первый запуск мы делаем сами по этому отдельно для всех а тут игнорируются совпадения.
-		infra.Crumb.popstate=true;
-
+		infra.Crumb.popstate = true;
+		infra.Crumb.anchor = location.hash;
 		infra.Crumb.change(query);
 		Event.tik('Crumb.onchange');
 		Event.fire('Crumb.onchange');
@@ -153,7 +147,7 @@ infra.Crumb.go = function(href, nopushstate){
 	if(href[1])var anchor='#'+href[1];
 	else var anchor='';
 	href=href[0];
-
+	infra.Crumb.anchor=anchor;
 
 	if (href=='.') { //Правильная ссылка на главную страницу
 		href='';
@@ -186,6 +180,7 @@ infra.Crumb.handA = function(a) {
 	a.addEventListener('click', function (event) {
 
 		var href=a.getAttribute('href');
+
 		var is=a.getAttribute('infra');
 		if (is !=  'true') return;
 		
@@ -195,14 +190,18 @@ infra.Crumb.handA = function(a) {
 			event.preventDefault();
 			window.history.pushState(null, null, href);
 		}
-		
+		if (href[0]=='#') {
+			infra.Crumb.anchor = href;
+			return;
+		}
+
 		infra.Crumb.a=a;
 		infra.Crumb.go(href, true);
 		infra.Crumb.a=false;
 	});
 }
 infra.Crumb.setA=function(div){
-	if(infra.Crumb.prefix)return;
+	
 	if(typeof(div)=='string')div=document.getElementById(div);
 	if(!div)return;
 
@@ -224,7 +223,6 @@ infra.Crumb.setA=function(div){
 	static $params;//Всё что после первого амперсанда
 	static $get;
 	public $is;*/
-infra.Crumb.prefix='';
 infra.Crumb.value='';
 infra.Crumb.query=null;
 infra.Crumb.path=[];

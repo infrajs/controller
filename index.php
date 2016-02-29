@@ -31,6 +31,7 @@ $html = Access::cache('index.php', function ($query) {
 	header('Infrajs-Cache: false');	
 	Config::get();
 	$conf = Config::get('controller');
+	
 	return Controller::check($conf['index']);
 }, array($query));
 

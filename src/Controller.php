@@ -24,6 +24,8 @@ class Controller
 	{
 		static::$layers=&$layers;
 		//Пробежка по слоям
+		Event::tik('Infrajs');
+		Event::tik('layer');
 		Event::fire('oninit');//сборка событий
 
 		Run::exec(static::$layers, function (&$layer, &$parent) {

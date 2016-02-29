@@ -174,7 +174,7 @@ class Tpl
 	public static function jsoncheck(&$layer)
 	{
 		if (@$layer['data'] && !is_null(@$layer['jsoncheck'])) {
-			$data = &infrajs_getData($layer);
+			$data = &Tpl::getData($layer);
 			if (@$layer['jsoncheck']) {
 				//Если true значит да только если данные есть
 				if (!$data || (!is_null($data['result']) && !$data['result'])) {
