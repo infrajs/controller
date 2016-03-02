@@ -1,5 +1,6 @@
 {
 	"name":"infrajs/controller",
+	"homepage":"https://github.com/infrajs/controller",
 	"description": "Layer controller for php and javascript",
 	"license": "GPL3",
 	"require": {
