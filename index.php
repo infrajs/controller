@@ -5,6 +5,7 @@ use infrajs\config\Config;
 use infrajs\path\Path;
 use infrajs\nostore\Nostore;
 use infrajs\access\Access;
+use infrajs\update\Update;
 
 if (!is_file('vendor/autoload.php')) {
 	chdir('../../../');	
@@ -14,6 +15,8 @@ require_once('vendor/autoload.php');
 //Считывается .infra.json из корня и из данных
 //Новые классы тянут за собой теперь и конфиги .infra.json автоматически
 Config::init();
+
+Update::init(); //Проверка data/update
 
 //По дате последней авторизации админа выход если нет изменений
 Access::modified();
