@@ -21,7 +21,6 @@ Event::$classes['layer']=function($obj){
 	if(!isset($obj['id'])) return '';
 	return $obj['id'];
 };
-
 Event::handler('Infrajs.oninit', function () {
 	Layer::parsedAdd('parsed');
 	Layer::parsedAdd(function ($layer) {
