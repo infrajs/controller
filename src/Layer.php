@@ -8,7 +8,7 @@ use infrajs\sequence\Sequence;
 class Layer {
 	/**
 	 * Находит в цепочке родителей значение указанного свойства.
-	 * Используется для onlyclient
+	 * Используется для onlyclient, domready
 	 **/
 	public static function pop($layer, $prop){
 		$parent = $layer;
