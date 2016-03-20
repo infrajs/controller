@@ -44,7 +44,6 @@ infrajs.storeLayer(layer);
 infrajs.getLayers(iswork);
 
 infrajs.run(layers,callback);
-infrajs.runAddList('layers');
 
 
 infrajs.isSaveBranch(layer,val);
@@ -347,10 +346,9 @@ infrajs.isParent=function(layer,parent){
 },
 
 
-infrajs.isSaveBranch=function(layer,val){
-	var cache=infrajs.storeLayer(layer);
-	if(typeof(val)!=='undefined')cache.is_save_branch=val;
-	return cache.is_save_branch;
+infrajs.isSaveBranch = function(layer,val){
+	if(typeof(val)!=='undefined')layer.is_save_branch = val;
+	return layer.is_save_branch;
 }
 /*controller.getParent=function(layer){//пробежка по infrajs_getWorkLayers не гарантирует правильного родителя
 	if(typeof(layer['parent']))!='undefined')return layer['parent'];

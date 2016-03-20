@@ -11,7 +11,7 @@ require_once('vendor/autoload.php');
 
 Path::$conf['sefurl']=true;
 
-Config::init();
+Config::init();//Чтобы применились пути
 
 Path::req('-controller/index.php');
 

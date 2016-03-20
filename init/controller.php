@@ -59,10 +59,9 @@ Event::handler('layer.isshow', function (&$layer) {
 }, 'layer');
 Event::handler('layer.isshow', function (&$layer) {
 	//Родитель скрывает ребёнка если у родителя нет опции что ветка остаётся целой
-	if (@!$layer['parent']) return;
+	if (empty($layer['parent'])) return;
 
 	if (Event::fire('layer.isshow', $layer['parent'])) return;
-
 	//Какой-то родитель таки не показывается, например пустой слой, теперь нужно узнать скрывает родитель свою ветку или нет
 	if (!empty($layer['parent']['is_save_branch'])) return;
 
@@ -128,7 +127,12 @@ Event::handler('layer.oncheck', function (&$layer) {
 }, 'div');
 
 Event::handler('layer.isshow', function (&$layer) {
-	if (empty($layer['div'])&&!empty($layer['parent'])) return false;
+	//Если не указан див и указан родитель, не показываем ничего
+	if (empty($layer['div'])) {
+		//$layer['is_save_branch'] = true;
+		return; //Отсутсвие дива не запрещает показ	
+	} 
+
 	//Такой слой игнорируется, события onshow не будет, но обработка пройдёт дальше у других дивов
 	$start = false;
 	if (Run::exec(Controller::$layers, function (&$l) use (&$layer, &$start) {//Пробежка не по слоям на ветке, а по всем слоям обрабатываемых после.. .то есть и на других ветках тоже
@@ -166,7 +170,6 @@ Event::handler('layer.oncheck', function (&$layer) {
 	Tpl::dataroottpl($layer);
 	Tpl::tpltpl($layer);
 	Tpl::jsontpl($layer);
-
 }, 'tpl:div');
 
 
@@ -174,7 +177,6 @@ Event::handler('layer.oncheck', function (&$layer) {
 Event::handler('layer.isshow', function (&$layer) {
 	//tpl
 	if (!empty($layer['tpl'])) return;
-
 	$r = true;
 	if (!empty($layer['parent'])) {//Пустой слой не должен обрывать наследования если какой=то родитель скрывает всю ветку		
 		$r = $layer['parent']['is_save_branch'];

@@ -9,7 +9,6 @@
 		"src/tpl.js",
 		"src/divparent.js",
 		"src/infrajs-crumb.js",
-		"src/div.js",
 		"src/is.js",
 		"init/parsed.js",
 		"init/controller.js",

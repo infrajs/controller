@@ -1,7 +1,18 @@
 Event.one('Infrajs.oninit', function() {
 	//div
 	infrajs.unickExternalInit();
-	infrajs.div_init();
+	infrajs.runAddKeys('divs');
+	infrajs.externalAdd('divs',function(now,ext){//Если уже есть пропускаем
+		if(!now)now={};
+		for(var i in ext){
+			if(now[i])continue;
+			now[i]=[];
+			infra.fora(ext[i],function(l){
+				now[i].push({external:l});
+			});
+		}
+		return now;
+	});
 }, 'div');
 
 
@@ -96,7 +107,8 @@ Event.handler('layer.oncheck', function (layer){//В onchange слоя може�
 
 Event.handler('layer.oncheck', function (layer){
 	//div
-	infrajs.divtpl(layer);
+	if(!layer['divtpl'])return;
+	layer['div']=infra.template.parse([layer['divtpl']],layer);
 }, 'div:counter');
 
 
@@ -109,7 +121,6 @@ Event.handler('layer.oncheck', function (layer){
 Event.handler('layer.oncheck', function (layer){
 	//tpl
 	infrajs.tplrootTpl(layer);
-	if(layer.id==6)console.log('oncheck');
 	infrajs.tpldatarootTpl(layer);
 	infrajs.tplTpl(layer);
 	infrajs.tplJson(layer);
@@ -133,7 +144,7 @@ Event.handler('layer.isshow', function (layer){//Родитель скрывае
 	if(!layer.parent)return;
 	if(Event.fire('layer.isshow',layer.parent))return;
 
-	if(infrajs.isSaveBranch(layer.parent))return;//Какой-то родитель таки не показывается.. теперь нужно узнать скрыт он своей веткой или чужой
+	if(layer.parent.is_save_branch)return;//Какой-то родитель таки не показывается.. теперь нужно узнать скрыт он своей веткой или чужой
 	return false;
 },'layer');
 
@@ -147,10 +158,10 @@ Event.handler('layer.isshow', function (layer){
 	if (layer['tpl']) return;
 	var r=true;
 	if(layer['parent']){
-		r=infrajs.isSaveBranch(layer['parent']);
+		r=layer.parent.is_save_branch;
 		if (typeof(r) == 'undefined') r = true;
 	}
-	infrajs.isSaveBranch(layer,r);
+	layer.is_save_branch=r;
 }, 'tpl:is');
 
 
@@ -181,7 +192,7 @@ Event.handler('layer.isshow', function (layer){//tpl должен существ
 	if(!layer.tplcheck)return;
 	var res=infra.loadTEXT(layer.tpl);
 	if(res)return;//Без шаблона в любом случае показывать нечего... так что вариант показа когда нет результата не рассматриваем
-	infrajs.isSaveBranch(layer,false);
+	layer.is_save_branch=false;
 	return false;
 }, 'tplcheck:tpl,is');
 
@@ -189,14 +200,22 @@ Event.handler('layer.isshow', function (layer){//ветка скрывается
 	//tpl
 	return infrajs.tplJsonCheck(layer);
 }, 'tpl:is');
-Event.handler('layer.isshow', function (layer){
-	//div
-	if(!layer.div&&layer.parent)return false;//Такой слой игнорируется, события onshow не будет, но обработка пройдёт дальше у других дивов
-}, 'div:tpl');
+
 Event.handler('layer.isshow', function (layer){//isShow учитывала зависимости дивов layerindiv ещё не работает
 	//div
-	var r=infrajs.divCheck(layer);
-	return r;
+	if (!layer['div']) return;	
+	var start=false;
+	if(infrajs.run(infrajs.getWorkLayers(),function(l){//Пробежка не по слоям на ветке, а по всем слоям обрабатываемых после.. .то есть и на других ветках тоже
+		if(!start){
+			if(layer===l)start=true;
+			return;
+		}
+		if(l.div!==layer.div)return;//ищим совпадение дивов впереди
+		if(Event.fire('layer.isshow',l)){
+			layer.is_save_branch = infrajs.isParent(l,layer);
+			return true;//Слой который дальше показывается в том же диве найден
+		}
+	})) return false;
 }, 'div:tpl');
 
 

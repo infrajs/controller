@@ -35,12 +35,14 @@ class Controller
 			Event::fire('layer.oninit', $layer);
 			if (!Event::fire('layer.ischeck', $layer)) return;
 			Event::fire('layer.oncheck', $layer);
+
 		});//разрыв нужен для того чтобы можно было наперёд определить показывается слой или нет. oncheck у всех. а потом по порядку.
 
 		Event::fire('oncheck');//момент когда доступны слои по getUnickLayer
 
 		Run::exec(static::$layers, function (&$layer) {
 			//С чего вдруг oncheck у всех слоёв.. надо только у активных
+			
 			if (Event::fire('layer.isshow', $layer)) {
 				//Событие в котором вставляется html
 				Event::fire('layer.onshow', $layer);//при клике делается отметка в конфиге слоя и слой парсится... в oncheck будут подстановки tpl и isRest вернёт false
