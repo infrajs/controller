@@ -4,7 +4,7 @@ Controller infrajs
 ## 1 октября 2015
 
 * Обновлённый каталог с универсальным фильтром
-* ~ синоним infra/data/
+* ~ синоним data/
 * Управление кэшем no-cache или no-store
 * Тесты
 * Добавлены тесты javascript infra.test('plugin')
@@ -13,7 +13,7 @@ Controller infrajs
 * Роли test debug admin
 * docx убраны {env:company}
 * Изменение конфига обновляет кэш
-* файл infra/data/update отмечает заход админа и иницирует обновлние кэша infra-update:OK
+* файл data/update отмечает заход админа и иницирует обновлние кэша infra-update:OK
 
 
 Контроллер все расширения подключает автоматически. Уже есть вызов Config::get();
