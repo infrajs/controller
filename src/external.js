@@ -9,7 +9,7 @@
 			return infrajs.find.apply(infrajs,arguments);
 		});
 		infra.seq.set(infra.template.scope,infra.seq.right('infrajs.ids'),infrajs.ids);
-		infra.seq.set(infra.template.scope,infra.seq.right('infrajs.name'),infrajs.name);
+		infra.seq.set(infra.template.scope,infra.seq.right('infrajs.names'),infrajs.names);
 	}
 	Event.classes['layer'] = function(layer){
 		infrajs.external.check(layer);
@@ -17,11 +17,11 @@
 		return layer.id;
 	}
 	infrajs.ids = {};
-	infrajs.name = {};
+	infrajs.names = {};
 	infrajs.unickCheck=function(layer){
-		if(!layer.id)layer.id=counter++;
-		infrajs.ids[layer.id]=layer;
-		if(layer.name)infrajs.name[layer.name] = layer;
+		if(!layer.id)layer.id = counter++;
+		infrajs.ids[layer.id] = layer;
+		if(layer.name) infrajs.names[layer.name] = layer;
 	}
 	infrajs.find=function(name,value){
 		var right=infra.seq.right(name);

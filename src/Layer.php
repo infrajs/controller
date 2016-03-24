@@ -50,11 +50,12 @@ class Layer {
 	 **/
 	public static $start_id = 1;
 	public static $ids = array();
-	public static $name = array();
+	public static $names = array();
 	public static function setId(&$layer)
 	{
 		if (empty($layer['id'])) $layer['id'] = Layer::$start_id++;
 		Layer::$ids[$layer['id']] = &$layer;
+		if (!empty($layer['name'])) Layer::$names[$layer['name']] = &$layer;
 	}
 	/**
 	 * Механизм определения уникальности html получаемого от слоя

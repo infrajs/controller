@@ -43,7 +43,7 @@ infra.Crumb.change=function(query){
 	//Запускается паблик у класса
 	
 	infra.Crumb.search=query;
-	var amp=query.split('&');
+	var amp=query.split('?');
 	if(amp.length>1)amp=[amp.shift(),amp.join('&')];
 
 	var eq=amp[0].split('=',2);

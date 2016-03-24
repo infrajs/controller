@@ -31,7 +31,7 @@ class Controller
 		Run::exec(static::$layers, function (&$layer, &$parent) {
 			//Запускается у всех слоёв в работе
 			if ($parent) $layer['parent'] = &$parent;
-			Layer::setId($layer);
+			Layer::setId($layer);//Иначе у layer нет ID а должен быть
 			Event::fire('layer.oninit', $layer);
 			if (!Event::fire('layer.ischeck', $layer)) return;
 			Event::fire('layer.oncheck', $layer);

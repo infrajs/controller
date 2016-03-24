@@ -18,7 +18,7 @@ use infrajs\controller\Tpl;
  **/
 
 Event::$classes['layer']=function($obj){
-	if(!isset($obj['id'])) return '';
+	if(!isset($obj['id'])) Layer::setId($layer);
 	return $obj['id'];
 };
 Event::handler('Infrajs.oninit', function () {
@@ -37,6 +37,7 @@ Event::handler('Infrajs.oninit', function () {
 	};
 	Sequence::set(Template::$scope, Sequence::right('infrajs.find'), $fn);
 	Sequence::set(Template::$scope, Sequence::right('infrajs.ids'), Layer::$ids);
+	Sequence::set(Template::$scope, Sequence::right('infrajs.names'), Layer::$names);
 });
 
 
@@ -48,11 +49,12 @@ Event::handler('layer.oninit', function (&$layer) {
 		$ext = &$layer['external'];
 		External::checkExt($layer, $ext);
 	}
+	Layer::setId($layer);
 }, 'layer');
-Event::handler('layer.oninit', function(&$layer) {
-	if(empty($layer['name'])) return;
-	Layer::$name[$layer['name']] = &$layer;
-}, 'name');
+
+//Event::handler('layer.oninit', function(&$layer) {
+//	Layer::setId($layer);
+//}, 'name');
 
 Event::handler('layer.isshow', function (&$layer) {
 	if (!Event::fire('layer.ischeck', $layer)) return false;
