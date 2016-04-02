@@ -3,7 +3,7 @@
 Event.one('Infrajs.oninit',function(){
 	infra.seq.set(infra.template.scope,infra.seq.right('infra.Crumb'),infra.Crumb);
 	infrajs.externalAdd('child','layers');
-	infrajs.externalAdd('childs',function(now,ext){//Если уже есть значения этого свойства то дополняем
+	/*infrajs.externalAdd('childs',function(now,ext){//Если уже есть значения этого свойства то дополняем
 		if(!now)now={};
 		infra.forx(ext,function(n,key){
 			if(now[key])return;
@@ -13,7 +13,7 @@ Event.one('Infrajs.oninit',function(){
 			now[key]={external:n};
 		});
 		return now;
-	});
+	});*/
 	infrajs.externalAdd('crumb',function(now,ext,layer,external,i){//проверка external в onchange
 		infrajs.setCrumb(layer,'crumb',ext);
 		return layer[i];

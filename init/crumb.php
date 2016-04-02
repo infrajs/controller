@@ -20,20 +20,7 @@ Event::handler('layer.oninit', function () {
 	};
 	Sequence::set(Template::$scope, Sequence::right('infra.Crumb.getInstance'), $cl);
 	External::add('child', 'layers');
-	External::add('childs', function (&$now, &$ext) {
-		//Если уже есть значения этого свойства то дополняем
-		if (!$now) {
-			$now = array();
-		}
-		Each::forx($ext, function (&$n, $key) use (&$now) {
-			if (@$now[$key]) {
-				return;
-			}
-			$now[$key] = array('external' => &$n);
-		});
-
-		return $now;
-	});
+	
 	External::add('crumb', function (&$now, &$ext, &$layer, &$external, $i) {//проверка external в onchange
 		Crumb::set($layer, 'crumb', $ext);
 		return $layer[$i];
