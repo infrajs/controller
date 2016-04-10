@@ -4,28 +4,13 @@
 	"description": "Layer controller for php and javascript",
 	"license": "GPL3",
 	"require": {
-		"components/jquery": "~2",
-		"twbs/bootstrap": "~3",
-		"malsup/form": "~3",
-		"vsn4ik/bootstrap-checkbox": "~1",
 		"infrajs/phpdate":"~1",
 		"infrajs/template":"~1",
 		"infrajs/each":"~1",
-		"infrajs/update":"~1",
-		"infrajs/nostore":"~1",
 		"infrajs/access":"~1",
 		"infrajs/config":"~1",
-		"infrajs/path":"~1",
-		"infrajs/once":"~1",
 		"infrajs/event":"~1"
 	},
-	"config": {
-		"component-dir": "vendor"
-	},
-	"repositories":[{
-		"type":"vcs",
-		"url":"https://github.com/malsup/form"
-	}],
 	"autoload": {
 		"psr-4": { "infrajs\\controller\\": "src/" }
 	}

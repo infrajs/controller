@@ -2,7 +2,6 @@
 
 namespace infrajs\controller;
 use infrajs\sequence\Sequence;
-use infrajs\path\Path;
 use infrajs\each\Each;
 
 
@@ -117,7 +116,12 @@ class Crumb
 			//$that->query = Crumb::short(right.slice(that.path.length));
 
 			$child = $that;
-			$that = $that->parent;
+			if (!empty($that->parent)) {
+				$that = $that->parent;
+			} else {
+				$that = false;
+			}
+			
 		};
 		$that = self::getInstance($old);
 		if (!$that) {
@@ -133,9 +137,7 @@ class Crumb
 	}
 	public static function init()
 	{
-		//Crumb::$child=Crumb::getInstance();
-		//$query = urldecode(Path::toutf($_SERVER['QUERY_STRING']));
-		$query = Path::getQuery();
+		$query = urldecode($_SERVER['REQUEST_URI']);
 		self::change($query);
 	}
 	public function toString()

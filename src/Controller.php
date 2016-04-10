@@ -3,10 +3,10 @@
 namespace infrajs\controller;
 use infrajs\infra\Infra;
 use infrajs\event\Event;
-use infrajs\path\Path;
 use infrajs\access\Access;
 use infrajs\load\Load;
 use infrajs\view\View;
+use infrajs\config\Config;
 /*//
 Event::fire('layer.is|on show|check|init',layer);
 Controller::check(layer);
@@ -20,6 +20,17 @@ class Controller
 			"external" => "index.json"
 		)
 	);
+	public static function init(){
+		$query = urldecode($_SERVER['REQUEST_URI']);
+		header('Infrajs-Cache: true');
+		$html = Access::cache(__FILE__.':init', function ($query) {
+			header('Infrajs-Cache: false');	
+			Config::get();
+			$conf = Config::get('controller');
+			return Controller::check($conf['index']);
+		}, array($query));
+		echo $html;
+	}
 	public static function check(&$layers)
 	{
 		static::$layers=&$layers;

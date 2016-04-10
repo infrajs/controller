@@ -1,6 +1,5 @@
 <?php
 namespace infrajs\controller;
-use infrajs\path\Path;
 use infrajs\event\Event;
 use infrajs\sequence\Sequence;
 use infrajs\template\Template;

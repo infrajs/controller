@@ -2,7 +2,6 @@
 namespace infrajs\controller;
 use infrajs\event\Event;
 use infrajs\template\Template;
-use infrajs\path\Path;
 use infrajs\view\View;
 use infrajs\each\Each;
 use infrajs\load\Load;
