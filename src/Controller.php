@@ -30,6 +30,7 @@ class Controller
 			return Controller::check($conf['index']);
 		}, array($query));
 		echo $html;
+		exit;
 	}
 	public static function check(&$layers)
 	{
