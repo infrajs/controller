@@ -41,7 +41,6 @@ infra.Crumb.prototype={
 infra.Crumb.change=function(query){
 	//static
 	//Запускается паблик у класса
-	
 	infra.Crumb.search=query;
 	var amp=query.split('?');
 	if(amp.length>1)amp=[amp.shift(),amp.join('&')];
@@ -104,9 +103,9 @@ infra.Crumb.change=function(query){
 		that=that.parent;
 	};
 }
-infra.Crumb.init=function(){
-	var listen=function(){
-		var query = URN.getQuery();
+infra.Crumb.init = function(){
+	var listen = function(){
+		var query = location.pathname.substr(1)+location.search;//URN.getQuery();
 		if (infra.Crumb.search === query) return;//chrome при загрузки запускает собыите а FF нет. Первый запуск мы делаем сами по этому отдельно для всех а тут игнорируются совпадения.
 		infra.Crumb.popstate = true;
 		infra.Crumb.anchor = location.hash;
@@ -140,9 +139,8 @@ infra.Crumb.isInternal = function(href){
 	
 	return true;
 }
-infra.Crumb.go = function(href, nopushstate){
+infra.Crumb.go = function (href, nopushstate) {
 	if (!infra.Crumb.isInternal(href)) return;
-
 	href=href.split('#',2);
 	if(href[1])var anchor='#'+href[1];
 	else var anchor='';
@@ -166,7 +164,6 @@ infra.Crumb.go = function(href, nopushstate){
 	}
 	
 	infra.Crumb.popstate=false;
-
 	infra.Crumb.change(query);
 	Event.tik('Crumb.onchange');
 	Event.fire('Crumb.onchange');
@@ -179,22 +176,27 @@ infra.Crumb.handA = function(a) {
 	a.setAttribute('infra','true');
 	a.addEventListener('click', function (event) {
 
-		var href=a.getAttribute('href');
+		var href=a.href;
+		var r=href.split('/');
+		r.shift();//http:
+		r.shift();//
+		r.shift();//ya.ru
+		href=r.join('/');
+		
 
 		var is=a.getAttribute('infra');
 		if (is !=  'true') return;
 		
-		if (!infra.Crumb.isInternal(href)) return;
+		if (!infra.Crumb.isInternal(a.getAttribute('href'))) return;
 		
 		if (!event.defaultPrevented) { //Добавляется ли адрес в историю? Кто отменил стандартное действие тот и добавил в историю
 			event.preventDefault();
-			window.history.pushState(null, null, href);
+			window.history.pushState(null, null, a.getAttribute('href'));
 		}
 		if (href[0]=='#') {
 			infra.Crumb.anchor = href;
 			return;
 		}
-
 		infra.Crumb.a=a;
 		infra.Crumb.go(href, true);
 		infra.Crumb.a=false;
