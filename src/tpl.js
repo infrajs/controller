@@ -57,11 +57,11 @@ infrajs.tplJson=function(layer){
 		layer[prop]=p;
 	}
 }
-infrajs.tplonlyclient=function(layer){
-	var parent=layer;
-	while(parent){
-		if(parent['onlyclient'])return true;
-		parent=parent['parent'];
+infrajs.tplonlyclient = function(layer){
+	var parent = layer;
+	while (parent){
+		if (parent['onlyclient']) return true;
+		parent = parent['parent'];
 	}
 }
 infrajs.getData=function(layer){
@@ -121,9 +121,11 @@ infrajs.ignoreDOM=function(layer){//onlyclient //после какого мом�
 	var conf=infra.conf;
 	
 
-	if (first) return true;//Значит сервера небыло впринципе
+	
+	if (!first) return false;//Значит сервера небыло впринципе
 
 	if (layer && infrajs.tplonlyclient(layer)) return false;
+
 	
 	return first;
 }
