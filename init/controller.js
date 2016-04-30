@@ -204,15 +204,15 @@ Event.handler('layer.isshow', function (layer){//ветка скрывается
 Event.handler('layer.isshow', function (layer){//isShow учитывала зависимости дивов layerindiv ещё не работает
 	//div
 	if (!layer['div']) return;	
-	var start=false;
-	if(infrajs.run(infrajs.getWorkLayers(),function(l){//Пробежка не по слоям на ветке, а по всем слоям обрабатываемых после.. .то есть и на других ветках тоже
-		if(!start){
-			if(layer===l)start=true;
+	var start = false;
+	if (infrajs.run(infrajs.getWorkLayers(), function (l) { //Пробежка не по слоям на ветке, а по всем слоям обрабатываемых после.. .то есть и на других ветках тоже
+		if (!start) { 
+			if (layer === l) start = true;
 			return;
 		}
-		if(l.div!==layer.div)return;//ищим совпадение дивов впереди
-		if(Event.fire('layer.isshow',l)){
-			layer.is_save_branch = infrajs.isParent(l,layer);
+		if (l.div !== layer.div) return;//ищим совпадение дивов впереди
+		if (Event.fire('layer.isshow', l)){
+			layer.is_save_branch = infrajs.isParent(l, layer);
 			return true;//Слой который дальше показывается в том же диве найден
 		}
 	})) return false;

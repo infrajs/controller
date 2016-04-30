@@ -34,7 +34,7 @@ class Controller
 	}
 	public static function check(&$layers)
 	{
-		static::$layers=&$layers;
+		static::$layers = &$layers;
 		//Пробежка по слоям
 		Event::tik('Infrajs');
 		Event::tik('layer');
@@ -54,13 +54,13 @@ class Controller
 
 		Run::exec(static::$layers, function (&$layer) {
 			//С чего вдруг oncheck у всех слоёв.. надо только у активных
-			
 			if (Event::fire('layer.isshow', $layer)) {
 				//Событие в котором вставляется html
 				Event::fire('layer.onshow', $layer);//при клике делается отметка в конфиге слоя и слой парсится... в oncheck будут подстановки tpl и isRest вернёт false
 				//onchange показанный слой не реагирует на изменение адресной строки, нельзя привязывать динамику интерфейса к адресной строке, только черещ перепарсивание
 			}
 		});//у родительского слоя showed будет реальное а не старое
+		
 		Event::fire('Infrajs.onshow');
 		//loader, setA, seo добавить в html, можно зациклить check
 		$html=View::html();

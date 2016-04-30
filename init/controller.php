@@ -133,21 +133,17 @@ Event::handler('layer.isshow', function (&$layer) {
 		//$layer['is_save_branch'] = true;
 		return; //Отсутсвие дива не запрещает показ	
 	} 
-
 	//Такой слой игнорируется, события onshow не будет, но обработка пройдёт дальше у других дивов
 	$start = false;
 	if (Run::exec(Controller::$layers, function (&$l) use (&$layer, &$start) {//Пробежка не по слоям на ветке, а по всем слоям обрабатываемых после.. .то есть и на других ветках тоже
 		if (!$start) {
-			if (Each::isEqual($layer, $l)) {
-				$start = true;
-			}
-
+			if (Each::isEqual($layer, $l)) $start = true;
 			return;
 		}
 		if (@$l['div'] !== @$layer['div']) return; //ищим совпадение дивов впереди
 		if (Event::fire('layer.isshow', $l)) {
 			$layer['is_save_branch'] = Layer::isParent($l, $layer);
-			return true;//Слой который дальше показывается в томже диве найден
+			return true;//Слой который дальше показывается в этом же диве найден
 		}
 	})) {
 		return false;
