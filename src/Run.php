@@ -9,6 +9,7 @@ class Run {
 	public static function &exec(&$layers, $callback, &$parent = null)
 	{
 		$props = &static::$props;
+		
 		$r = &Each::exec($layers, function &(&$layer) use (&$parent, $callback, $props) {
 			$r = &$callback($layer, $parent);
 			if (!is_null($r)) return $r;

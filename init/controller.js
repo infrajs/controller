@@ -1,8 +1,9 @@
+infrajs.runAddKeys('divs');
 Event.one('Infrajs.oninit', function() {
 	//div
 	infrajs.unickExternalInit();
-	infrajs.runAddKeys('divs');
-	infrajs.externalAdd('divs',function(now,ext){//Если уже есть пропускаем
+	
+	/*infrajs.externalAdd('divs',function(now,ext){//Если уже есть пропускаем
 		if(!now)now={};
 		for(var i in ext){
 			if(now[i])continue;
@@ -12,9 +13,34 @@ Event.one('Infrajs.oninit', function() {
 			});
 		}
 		return now;
-	});
+	});*/
 }, 'div');
+//Свойство dyn, setCrumb
+//infra.load('-controller/props/external.js');//Уже должен быть
 
+infrajs.runAddKeys('childs');
+infrajs.runAddList('child');
+Event.one('Infrajs.oninit',function(){
+	infra.seq.set(infra.template.scope,infra.seq.right('infra.Crumb'),infra.Crumb);
+	infrajs.externalAdd('child','layers');
+	/*infrajs.externalAdd('childs',function(now,ext){//Если уже есть значения этого свойства то дополняем
+		if(!now)now={};
+		infra.forx(ext,function(n,key){
+			if(now[key])return;
+			//if(!now[key])now[key]=[];
+			//else if(now[key].constructor!==Array)now[key]=[now[key]];
+			//now[key].push({external:n});
+			now[key]={external:n};
+		});
+		return now;
+	});*/
+	infrajs.externalAdd('crumb',function(now,ext,layer,external,i){//проверка external в onchange
+		infrajs.setCrumb(layer,'crumb',ext);
+		return layer[i];
+	});	
+
+	
+});
 
 Event.handler('Infrajs.oninit', function () {
 	//tpl
@@ -143,10 +169,9 @@ Event.handler('layer.isshow', function (layer){//Родитель скрывае
 	//infrajs
 	if(!layer.parent)return;
 	if(Event.fire('layer.isshow',layer.parent))return;
-
 	if(layer.parent.is_save_branch)return;//Какой-то родитель таки не показывается.. теперь нужно узнать скрыт он своей веткой или чужой
 	return false;
-},'layer');
+});
 
 Event.handler('layer.isshow', function (layer){
 	//is
@@ -189,7 +214,7 @@ Event.handler('layer.isshow', function (layer){
 
 Event.handler('layer.isshow', function (layer){//tpl должен существовать, ветка скрывается
 	//tpl
-	if(!layer.tplcheck)return;
+	if (!layer.tplcheck) return;
 	var res=infra.loadTEXT(layer.tpl);
 	if(res)return;//Без шаблона в любом случае показывать нечего... так что вариант показа когда нет результата не рассматриваем
 	layer.is_save_branch=false;

@@ -21,8 +21,5 @@
 	"index":{
 		"external":"index.json"
 	},
-	"require":[
-		"init/controller.php",
-		"init/crumb.php"
-	]
+	"require":"init/controller.php"
 }

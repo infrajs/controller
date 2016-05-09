@@ -10,15 +10,16 @@ use infrajs\infra\Infra;
 use infrajs\sequence\Sequence;
 use infrajs\controller\Tpl;
 
+use infrajs\controller\External;
+
 /**
  * У слоя созданы свойства
  * counter, parsed, unick, external, parsedtpl, onlyclient, parent, is_save_branch, onlyclient
  * 
  **/
 
-Event::$classes['layer']=function($obj){
-	if(!isset($obj['id'])) Layer::setId($layer);
-	return $obj['id'];
+Event::$classes['layer'] = function (&$obj) {
+	return Layer::setId($obj);
 };
 Event::handler('Infrajs.oninit', function () {
 	Layer::parsedAdd('parsed');
@@ -48,27 +49,30 @@ Event::handler('layer.oninit', function (&$layer) {
 		$ext = &$layer['external'];
 		External::checkExt($layer, $ext);
 	}
-	Layer::setId($layer);
+	//Layer::setId($layer);//layer.name добавим в архив
 }, 'layer');
 
-//Event::handler('layer.oninit', function(&$layer) {
-//	Layer::setId($layer);
-//}, 'name');
 
 Event::handler('layer.isshow', function (&$layer) {
 	if (!Event::fire('layer.ischeck', $layer)) return false;
 }, 'layer');
+
 Event::handler('layer.isshow', function (&$layer) {
 	//Родитель скрывает ребёнка если у родителя нет опции что ветка остаётся целой
 	if (empty($layer['parent'])) return;
-
 	if (Event::fire('layer.isshow', $layer['parent'])) return;
 	//Какой-то родитель таки не показывается, например пустой слой, теперь нужно узнать скрывает родитель свою ветку или нет
 	if (!empty($layer['parent']['is_save_branch'])) return;
-
+	
 	return false;
-}, 'layer');
+});
 
+Event::handler('layer.isshow', function (&$layer) {
+	if (empty($layer['tpl'])) {
+		$layer['is_save_branch'] = true;
+		return false;
+	}
+}, 'layer');
 
 //Свойство counter есть на клиенте
 Event::handler('layer.oncheck', function (&$layer) {
@@ -83,67 +87,65 @@ Event::handler('layer.onshow', function (&$layer) {
  * div, divs, divtpl
  *
  **/
-Event::handler('Infrajs.oninit', function () {
-	Run::runAddKeys('divs');
-	
-	External::add('divs', function (&$now, $ext) {//Если уже есть пропускаем
-		if (!$now) {
-			$now = array();
-		}
-		foreach ($ext as $i => $v) {
-			if (isset($now[$i])) {
-				continue;
-			}
-			$now[$i] = array();
-			Each::fora($ext[$i], function (&$l) use (&$now, $i) {
-				array_push($now[$i], array('external' => $l));
-			});
-		}
-		return $now;
-	});
-
-});
+Run::runAddKeys('divs');
 Event::handler('layer.oncheck', function (&$layer) {
 	//В onchange слоя может не быть див// Это нужно чтобы в external мог быть определён div перед тем как наследовать div от родителя
-	if (@!$layer['div'] && @$layer['parent']) {
-		$layer['div'] = $layer['parent']['div'];
-	}
+	if (empty($layer['parent'])) return;
+	if (isset($layer['div'])) return;
+	
+	$layer['div'] = $layer['parent']['div'];
 	
 }, 'div');
 
 Event::handler('layer.oncheck', function (&$layer) {
-	//Без этого не показывается окно cо стилями.. только его заголовок..
-	Each::forx($layer['divs'], function (&$l, $div) {
-		if (@!$l['div']) {
-			$l['div'] = $div;
-		}
-	});
-
+	if (empty($layer['divs'])) return; 
+	foreach ($layer['divs'] as $key => &$v) { //Без этого не показывается окно cо стилями.. только его заголовок..
+		Each::exec($v, function (&$l) use ($key) {
+			if (empty($l['div'])) $l['div'] = $key;
+		});	
+	}
 }, 'div');
-
 
 Event::handler('layer.oncheck', function (&$layer) {
 	if (!isset($layer['divtpl'])) return;
 	$layer['div'] = Template::parse(array($layer['divtpl']), $layer);
 }, 'div');
+/*
+if ($layer['debug']) {
+	unset($layer['crumb']);
+	unset($layer['parent']);
+	unset($layer['divs']);
+	echo '<pre>';
+	print_r($layer);
+	exit;
+}
+Event::handler('layer.isshow', function (&$layer) {
+	if (empty($layer['tpl'])) {
+		echo 1;
+		$layer['is_save_branch'] = true;
+		return false;
+	}
+}, 'layer');
+*/
 
 Event::handler('layer.isshow', function (&$layer) {
 	//Если не указан див и указан родитель, не показываем ничего
-	if (empty($layer['div'])) {
-		//$layer['is_save_branch'] = true;
-		return; //Отсутсвие дива не запрещает показ	
-	} 
+	//Отсутсвие дива не запрещает показ	
 	//Такой слой игнорируется, события onshow не будет, но обработка пройдёт дальше у других дивов
+	if (empty($layer['div'])) return;
+	
 	$start = false;
-	if (Run::exec(Controller::$layers, function (&$l) use (&$layer, &$start) {//Пробежка не по слоям на ветке, а по всем слоям обрабатываемых после.. .то есть и на других ветках тоже
+	if ($master = Run::exec(Controller::$layers, function (&$l) use (&$layer, &$start) {//Пробежка не по слоям на ветке, а по всем слоям обрабатываемых после.. .то есть и на других ветках тоже
 		if (!$start) {
 			if (Each::isEqual($layer, $l)) $start = true;
 			return;
 		}
-		if (@$l['div'] !== @$layer['div']) return; //ищим совпадение дивов впереди
+		if (empty($l['div'])) return;
+		if ($l['div'] !== $layer['div']) return; //ищим совпадение дивов впереди
+
 		if (Event::fire('layer.isshow', $l)) {
 			$layer['is_save_branch'] = Layer::isParent($l, $layer);
-			return true;//Слой который дальше показывается в этом же диве найден
+			return $l;//Слой который дальше показывается в этом же диве найден
 		}
 	})) {
 		return false;
@@ -193,7 +195,6 @@ Event::handler('layer.onshow', function (&$layer) {
 
 Event::handler('layer.onshow', function (&$layer) {
 	//tpl
-	
 	if (Layer::pop($layer, 'onlyclient')) return;
 	if(!empty($layer['div'])){
 		$div = $layer['div'];
@@ -234,7 +235,6 @@ Event::handler('layer.isshow', function (&$layer) {
 	return $is;
 }, 'is:div');
 
-
 Event::handler('layer.isshow', function (&$layer) {
 	//tpl depricated
 	if (is_string(@$layer['tpl']) && @$layer['tplcheck']) {
@@ -250,4 +250,67 @@ Event::handler('layer.isshow', function (&$layer) {
 	if (Layer::pop($layer, 'onlyclient')) return;
 	return Tpl::jsoncheck($layer);
 }, 'jsoncheck:is');
+
+
+
+Run::runAddKeys('childs');
+Run::runAddList('child');
+Event::handler('layer.oninit', function () {
+	$root = Crumb::getInstance();
+	if(!$root->is) throw new \Exception('Crumb нужно инициализировать до запуска контроллера');
+	Sequence::set(Template::$scope, Sequence::right('infra.Crumb.query'), $root->query);
+	Sequence::set(Template::$scope, Sequence::right('infra.Crumb.params'), Crumb::$params);
+	Sequence::set(Template::$scope, Sequence::right('infra.Crumb.get'), Crumb::$get);
+
+	$cl = function ($mix = null) {
+		return ext\Crumb::getInstance($mix);
+	};
+	Sequence::set(Template::$scope, Sequence::right('infra.Crumb.getInstance'), $cl);
+	External::add('child', 'layers');
 	
+	External::add('crumb', function (&$now, &$ext, &$layer, &$external, $i) {//проверка external в onchange
+		Crumb::set($layer, 'crumb', $ext);
+		return $layer[$i];
+	});
+}, 'crumb');
+
+
+Event::handler('layer.oninit', function (&$layer) {
+	//это из-за child// всё что после child начинает плыть. по этому надо crumb каждый раз определять, брать от родителя.
+	if (!isset($layer['dyn'])) {
+		//Делается только один раз
+		Crumb::set($layer, 'crumb', $layer['crumb']);
+	}
+	if (empty($layer['parent'])) return;
+	Crumb::set($layer, 'crumb', $layer['dyn']['crumb']);//Возможно у родителей обновился crumb из-за child у детей тоже должен обновиться хотя они не в child
+}, 'crumb');
+
+Event::handler('layer.oninit', function (&$layer) {	
+	if (empty($layer['child'])) return;//Это услвие после Crumb::set
+	$crumb = &$layer['crumb']->child;
+	if ($crumb) {
+		$name = $crumb->name;
+	} else {
+		$name = '###child###';
+	}
+	Each::fora($layer['child'], function (&$l) use (&$name) {
+		Crumb::set($l, 'crumb', $name);
+	});
+}, 'crumb');
+
+Event::handler('layer.oninit', function (&$layer) {
+	if (empty($layer['childs'])) return;
+	foreach ($layer['childs'] as $key => &$v) {
+		Each::exec($v, function (&$l) use ($key) {
+			if (!empty($l['crumb'])) return;
+			Crumb::set($l, 'crumb', $key);
+		});	
+	}
+}, 'crumb');
+
+
+Event::handler('layer.ischeck', function (&$layer) {
+	if (!$layer['crumb']->is) return false;
+}, 'crumb');
+
+Crumb::init();

@@ -39,11 +39,10 @@ class Controller
 		Event::tik('Infrajs');
 		Event::tik('layer');
 		Event::fire('Infrajs.oninit');//сборка событий
-
+		
 		Run::exec(static::$layers, function (&$layer, &$parent) {
 			//Запускается у всех слоёв в работе
 			if ($parent) $layer['parent'] = &$parent;
-			Layer::setId($layer);//Иначе у layer нет ID а должен быть
 			Event::fire('layer.oninit', $layer);
 			if (!Event::fire('layer.ischeck', $layer)) return;
 			Event::fire('layer.oncheck', $layer);
@@ -63,10 +62,8 @@ class Controller
 		
 		Event::fire('Infrajs.onshow');
 		//loader, setA, seo добавить в html, можно зациклить check
-		$html=View::html();
-
+		$html = View::html();
 		//View::html('',true);
-
 		return $html; 
 	}
 }

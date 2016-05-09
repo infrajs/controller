@@ -56,6 +56,7 @@ class Layer {
 		if (empty($layer['id'])) $layer['id'] = Layer::$start_id++;
 		Layer::$ids[$layer['id']] = &$layer;
 		if (!empty($layer['name'])) Layer::$names[$layer['name']] = &$layer;
+		return $layer['id'];
 	}
 	/**
 	 * Механизм определения уникальности html получаемого от слоя

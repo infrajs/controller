@@ -1,27 +1,4 @@
-//Свойство dyn, setCrumb
-//infra.load('-controller/props/external.js');//Уже должен быть
-Event.one('Infrajs.oninit',function(){
-	infra.seq.set(infra.template.scope,infra.seq.right('infra.Crumb'),infra.Crumb);
-	infrajs.externalAdd('child','layers');
-	/*infrajs.externalAdd('childs',function(now,ext){//Если уже есть значения этого свойства то дополняем
-		if(!now)now={};
-		infra.forx(ext,function(n,key){
-			if(now[key])return;
-			//if(!now[key])now[key]=[];
-			//else if(now[key].constructor!==Array)now[key]=[now[key]];
-			//now[key].push({external:n});
-			now[key]={external:n};
-		});
-		return now;
-	});*/
-	infrajs.externalAdd('crumb',function(now,ext,layer,external,i){//проверка external в onchange
-		infrajs.setCrumb(layer,'crumb',ext);
-		return layer[i];
-	});	
 
-	infrajs.runAddKeys('childs');
-	infrajs.runAddList('child');
-});
 infrajs.setCrumb=function(layer,name,value){
 	if(!layer.dyn)layer.dyn={};
 	layer.dyn[name]=value;
