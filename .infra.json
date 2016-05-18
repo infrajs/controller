@@ -12,7 +12,7 @@
 		"src/is.js",
 		"init/parsed.js",
 		"init/controller.js",
-		"init/init.js",
+		"init/initjs.php",
 		"init/layers.js",
 		"init/crumb.js"
 	],

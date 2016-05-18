@@ -31,9 +31,7 @@ class External {
 	}
 	public static function checkExt(&$layer, &$external)
 	{
-		if (!$external) {
-			return;
-		}
+		if (!$external) return;
 		unset($layer['external']);
 		Each::fora($external, function (&$exter) use (&$layer) {
 
