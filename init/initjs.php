@@ -14,7 +14,7 @@
 			External::checkExt($layer, $ext);
 		}
 	});
-	$data = Load::json_decode($data);
+	$data = Load::json_encode($data);
 ?>
 infrajs.checkAdd(<?php echo $data?>);
 Event.handler('Crumb.onchange', function () {
