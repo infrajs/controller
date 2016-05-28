@@ -3,7 +3,7 @@
 	"conf":"infrajs\\controller\\Controller",
 	"js":[
 		"src/parsed.js",
-		"src/crumb.js",
+		"src/Crumb.js",
 		"src/infrajs.js",
 		"src/external.js",
 		"src/tpl.js",

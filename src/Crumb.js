@@ -1,5 +1,6 @@
 
 infra.Crumb=function(){};
+window.Crumb = infra.Crumb;
 infra.Crumb.childs={};
 infra.Crumb.prototype={
 	

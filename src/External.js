@@ -18,6 +18,8 @@
 	}
 	infrajs.ids = {};
 	infrajs.names = {};
+	Controller.ids = infrajs.ids;
+	Controller.names = infrajs.names;
 	infrajs.unickCheck=function(layer){
 		if(!layer.id)layer.id = counter++;
 		infrajs.ids[layer.id] = layer;

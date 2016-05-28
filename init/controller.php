@@ -36,8 +36,8 @@ Event::handler('Infrajs.oninit', function () {
 		return Layer::find($name, $value);
 	};
 	Sequence::set(Template::$scope, Sequence::right('infrajs.find'), $fn);
-	Sequence::set(Template::$scope, Sequence::right('infrajs.ids'), Layer::$ids);
-	Sequence::set(Template::$scope, Sequence::right('infrajs.names'), Layer::$names);
+	Sequence::set(Template::$scope, Sequence::right('infrajs.ids'), Controller::$ids);
+	Sequence::set(Template::$scope, Sequence::right('infrajs.names'), Controller::$names);
 });
 
 

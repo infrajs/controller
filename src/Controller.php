@@ -13,6 +13,8 @@ Controller::check(layer);
 */
 class Controller
 {
+	public static $ids = array();
+	public static $names = array();
 	public static $layers;
 	public static $conf=array(
 		"client" => true,
