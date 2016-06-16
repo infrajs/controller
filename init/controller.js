@@ -179,6 +179,7 @@ Event.handler('layer.isshow', function (layer){
 	return infrajs.isCheck(layer);
 },'is');
 
+/*
 Event.handler('layer.isshow', function (layer){
 	if (layer['tpl']) return;
 	var r=true;
@@ -188,7 +189,7 @@ Event.handler('layer.isshow', function (layer){
 	}
 	layer.is_save_branch=r;
 }, 'tpl:is');
-
+*/
 
 
 
@@ -199,32 +200,29 @@ Event.handler('layer.isshow', function (layer){
 Event.handler('layer.isshow', function (layer){
 	//tpl
 	if (layer.tpl) return;
-
-	var r=true;
+	var r = true;
 	if (layer['parent']) {//Пустой слой не должен обрывать наследования если какой=то родитель скрывает всю ветку		
-		var cache=infrajs.storeLayer(layer['parent']);
-		r = cache.is_save_branch;
+		r = layer['parent'].is_save_branch;
 		if (typeof(r)==='undefined') r = true;
 	}
-	var cache=infrajs.storeLayer(layer);
-	cache.is_save_branch=r;
+	layer.is_save_branch = r;
 
 	return false;
-}, 'tpl:is');
+}, 'tpl:div');
 
 Event.handler('layer.isshow', function (layer){//tpl должен существовать, ветка скрывается
 	//tpl
 	if (!layer.tplcheck) return;
 	var res=infra.loadTEXT(layer.tpl);
 	if(res)return;//Без шаблона в любом случае показывать нечего... так что вариант показа когда нет результата не рассматриваем
-	layer.is_save_branch=false;
+	layer.is_save_branch = false;
 	return false;
 }, 'tplcheck:tpl,is');
 
 Event.handler('layer.isshow', function (layer){//ветка скрывается
 	//tpl
 	return infrajs.tplJsonCheck(layer);
-}, 'tpl:is');
+}, 'tpl:div');
 
 Event.handler('layer.isshow', function (layer){//isShow учитывала зависимости дивов layerindiv ещё не работает
 	//div
@@ -241,7 +239,7 @@ Event.handler('layer.isshow', function (layer){//isShow учитывала за�
 			return true;//Слой который дальше показывается в том же диве найден
 		}
 	})) return false;
-}, 'div:tpl');
+}, 'div');
 
 
 
