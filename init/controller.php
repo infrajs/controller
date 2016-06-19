@@ -308,6 +308,10 @@ Event::handler('layer.oninit', function (&$layer) {
 	}
 }, 'crumb');
 
+Event::handler('layer.ischeck', function ($layer){
+	if (empty($layer['parent'])) return;
+	if (!Event::fire('layer.ischeck', $layer['parent'])) return false;
+}, 'layer');
 
 Event::handler('layer.ischeck', function (&$layer) {
 	if (!$layer['crumb']->is) return false;

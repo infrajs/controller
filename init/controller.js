@@ -53,22 +53,18 @@ Event.handler('layer.oninit', function (layer){
 	//infrajs
 	var store=infrajs.store();
 	layer['store']={'counter':store['counter']};
-});
-Event.handler('layer.oninit', function (layer){
-	//unick
-	infrajs.unickCheck(layer);
-},'unick:counter');
+});	
 Event.handler('layer.oninit', function (layer){//это из-за child// всё что после child начинает плыть. по этому надо Crumb каждый раз определять, брать от родителя.
 	//Crumb
 	if(!layer['dyn']){//Делается только один раз
 		infrajs.setCrumb(layer,'crumb',layer['crumb']);
 	}
-},'crumb:unick');
+},'crumb');
 Event.handler('layer.oninit', function (layer){
 	//Crumb
 	if(!layer['parent'])return;//слой может быть в child с динамическим state только если есть родитель
 	infrajs.setCrumb(layer,'crumb',layer['dyn']['crumb']);//Возможно у родителей обновился state из-за child у детей тоже должен обновиться хотя они не в child
-},'crumb:unick');
+},'crumb');
 Event.handler('layer.oninit', function (layer){
 	//Crumb child
 	if(!layer['child'])return;//Это услвие после setCrumb
@@ -80,15 +76,19 @@ Event.handler('layer.oninit', function (layer){
 	infra.fora(layer['child'], function(l){
 		infrajs.setCrumb(l,'crumb',name);
 	});
-},'crumb:unick');
+},'crumb');
 Event.handler('layer.oninit', function (layer){//Должно быть после external, чтобы все свойства у слоя появились
 	//Crumb childs
 	infra.forx(layer['childs'], function(l,key){//У этого childs ещё не взять external
 		if(!l['crumb'])l['crumb']=infrajs.setCrumb(l,'crumb',key);
 	});
 
-},'crumb:unick');
+},'crumb');
 
+Event.handler('layer.ischeck', function (layer){
+	//crumb
+	if (!layer['crumb']['is']) return false;
+},'crumb');
 /* Event.handler('layer.oninit', function (layer){
 	//crumb link
 	if(!layer['link']&&!layer['linktpl'])layer['linktpl']='{crumb}';
@@ -97,14 +97,17 @@ Event.handler('layer.oninit', function (layer){//Должно быть посл�
 //========================
 // layer is check
 //========================
+Event.handler('layer.ischeck', function (layer){
+	if (!layer['parent']) return;
+	if (!Event.fire('layer.ischeck', layer['parent'])) return false;
+},'layer');
 
 Event.handler('layer.ischeck', function (layer){//может быть у любого слоя в том числе и у не iswork, и когда нет старого значения
-	if(!infrajs.isWork(layer))return false;//Нет сохранённого результата, и слой не в работе, если работа началась с infrajs.check(layer) и у layer есть родитель
+	if (!infrajs.isWork(layer)) return false;//Нет сохранённого результата, и слой не в работе, если работа началась с infrajs.check(layer) и у layer есть родитель
 },'layer');
-Event.handler('layer.ischeck', function (layer){
-	//crumb
-	if (!layer['crumb']['is']) return false;
-},'crumb');
+
+
+
 Event.handler('layer.ischeck', function (layer){
 	//tpl
 	if (layer['onlyserver']) return false;
@@ -114,28 +117,30 @@ Event.handler('layer.ischeck', function (layer){
 //========================
 // layer oncheck
 //========================
-
 Event.handler('layer.oncheck', function (layer){//Свойство counter должно быть до tpl чтобы counter прибавился а потом парсились
 	//counter
-	if(!layer.counter)layer.counter=0;
-}, 'counter');
-Event.handler('layer.oncheck', function (layer){//Без этого не показывается окно cо стилями.. только его заголовок..
-	//div
+	//if (layer.debugRubrics) console.log('Слой debugRubrics div content ', layer.div, layer);
+	if (!layer.counter) layer.counter =	 0;
+}, 'layer');
 
-	infra.forx(layer.divs, function(l,key){
-		if(!l.div)l.div=key;
-	});
-}, 'div:counter');
 Event.handler('layer.oncheck', function (layer){//В onchange слоя может не быть див// Это нужно чтобы в external мог быть определён div перед тем как наследовать div от родителя
 	//div
-	if(!layer.div&&layer.parent)layer.div=layer.parent.div;
-}, 'div:counter');
+	if (!layer.div && layer.parent) layer.div = layer.parent.div;
+}, 'div');
+
+Event.handler('layer.oncheck', function (layer){//Без этого не показывается окно cо стилями.. только его заголовок..
+	if (!layer['divs']) return; 
+	for (var key in layer['divs']) { //Без этого не показывается окно cо стилями.. только его заголовок..
+		Each.exec(layer['divs'][key], function (l) {
+			if (!l['div']) l['div'] = key;
+		});	
+	}
+}, 'div');
 
 Event.handler('layer.oncheck', function (layer){
-	//div
-	if(!layer['divtpl'])return;
-	layer['div']=infra.template.parse([layer['divtpl']],layer);
-}, 'div:counter');
+	if (!layer['divtpl']) return;
+	layer['div'] = Template.parse([layer['divtpl']], layer);
+}, 'div');
 
 
 
@@ -287,8 +292,7 @@ Event.handler('layer.isrest' , function (layer){
 Event.handler('layer.onshow', function (layer){//Должно идти до tpl
 	//counter
 	layer.counter++;
-
-},'layer');
+}, 'layer');
 Event.handler('layer.onshow', function (layer){
 	//tpl
 	layer._parsed=infrajs.parsed(layer);	//Выставляется после обработки шаблонов в которых в событиях onparse могла измениться data

@@ -176,9 +176,9 @@ infrajs.check=function(layers){//Пробежка по слоям
 
 
 	infrajs.run(infrajs.getWorkLayers(),function(layer,parent){//Запускается у всех слоёв в работе которые wlayers
-		if(parent)layer['parent']=parent;//Не обрабатывается ситуация когда check снутри иерархии
+		if (parent) layer['parent'] = parent;//Не обрабатывается ситуация когда check снутри иерархии
 		Event.fire('layer.oninit', layer);//устанавливается state
-		if(Event.fire('layer.ischeck',layer)){
+		if(Event.fire('layer.ischeck', layer)){
 			Event.fire('layer.oncheck', layer);//нельзя запускать is show так как ожидается что все oncheckb сделаются и в is будут на их основе соответствующие проверки
 		}
 	});//разрыв нужен для того чтобы можно было наперёд определить показывается слой или нет. oncheck у всех. а потом по порядку.
