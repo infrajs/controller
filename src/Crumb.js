@@ -129,9 +129,10 @@ infra.Crumb.init = function(){
 infra.Crumb.isInternal = function(href){
 	if (href=='.') return true;
 	if (typeof(href) == 'undefined' || href == null) return false;//У ссылки нет ссылки
-	if(/^javascript:/.test(href))return false;
-	if(/^mailto:/.test(href))return false;
-	if(/^http.?:/.test(href))return false;
+	//if(/^javascript:/.test(href))return false;
+	//if(/^mailto:/.test(href))return false;
+	//if(/^http.?:/.test(href))return false;
+	if(/^\w+:/.test(href))return false;
 	href=href.replace(/^\//,'');
 	if(href[0] == '-') return false;
 	if(href[0] == '!') return false;
