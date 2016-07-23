@@ -106,7 +106,10 @@ infra.Crumb.change=function(query){
 }
 infra.Crumb.init = function(){
 	var listen = function(){
-		var query = location.pathname.substr(1)+location.search;//URN.getQuery();
+		var src = location.pathname.substr(1);
+		src = decodeURI(src);
+
+		var query = src+location.search;//URN.getQuery();
 		if (infra.Crumb.search === query) return;//chrome при загрузки запускает собыите а FF нет. Первый запуск мы делаем сами по этому отдельно для всех а тут игнорируются совпадения.
 		infra.Crumb.popstate = true;
 		infra.Crumb.anchor = location.hash;
@@ -199,6 +202,7 @@ infra.Crumb.handA = function(a) {
 			infra.Crumb.anchor = href;
 			return;
 		}
+		href = decodeURI(href);
 		infra.Crumb.a=a;
 		infra.Crumb.go(href, true);
 		infra.Crumb.a=false;
