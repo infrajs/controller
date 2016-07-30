@@ -7,6 +7,7 @@
 		infrajs.parsedAdd('json');
 		infrajs.parsedAdd('tpl');
 		infrajs.parsedAdd('is');
+		infrajs.parsedAdd('id');
 		infrajs.parsedAdd(function(layer){
 			if(!layer.parsedtpl)return '';
 			return infra.template.parse([layer.parsedtpl],layer);

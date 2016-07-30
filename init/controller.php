@@ -162,6 +162,7 @@ Layer::parsedAdd('tpl');
 Layer::parsedAdd('json');
 Layer::parsedAdd('dataroot');
 Layer::parsedAdd('tplroot');
+Layer::parsedAdd('id');
 
 
 Event::handler('layer.oncheck', function (&$layer) {
