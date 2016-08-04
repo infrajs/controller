@@ -67,12 +67,14 @@ Event::handler('layer.isshow', function (&$layer) {
 	return false;
 });
 
+/*
 Event::handler('layer.isshow', function (&$layer) {
 	if (empty($layer['tpl'])) {
 		$layer['is_save_branch'] = true;
 		return false;
 	}
 }, 'layer');
+*/
 
 //Свойство counter есть на клиенте
 Event::handler('layer.oncheck', function (&$layer) {

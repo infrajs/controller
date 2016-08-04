@@ -1,5 +1,5 @@
 infrajs.runAddKeys('divs');
-Event.one('Infrajs.oninit', function() {
+Event.one('Controller.oninit', function() {
 	//div
 	infrajs.unickExternalInit();
 	
@@ -20,7 +20,7 @@ Event.one('Infrajs.oninit', function() {
 
 infrajs.runAddKeys('childs');
 infrajs.runAddList('child');
-Event.one('Infrajs.oninit',function(){
+Event.one('Controller.oninit',function(){
 	infra.seq.set(infra.template.scope,infra.seq.right('infra.Crumb'),infra.Crumb);
 	infrajs.externalAdd('child','layers');
 	/*infrajs.externalAdd('childs',function(now,ext){//Если уже есть значения этого свойства то дополняем
@@ -42,30 +42,31 @@ Event.one('Infrajs.oninit',function(){
 	
 });
 
-Event.handler('Infrajs.oninit', function () {
+Event.handler('Controller.oninit', function () {
 	//tpl
 	var store=infrajs.store();
 	store.divs={};
 }, 'tpl');
 
 
-Event.handler('layer.oninit', function (layer){
+Event.handler('Layer.oninit', function (layer){
 	//infrajs
 	var store=infrajs.store();
 	layer['store']={'counter':store['counter']};
+	delete layer.is_save_branch;
 });	
-Event.handler('layer.oninit', function (layer){//это из-за child// всё что после child начинает плыть. по этому надо Crumb каждый раз определять, брать от родителя.
+Event.handler('Layer.oninit', function (layer){//это из-за child// всё что после child начинает плыть. по этому надо Crumb каждый раз определять, брать от родителя.
 	//Crumb
 	if(!layer['dyn']){//Делается только один раз
 		infrajs.setCrumb(layer,'crumb',layer['crumb']);
 	}
 },'crumb');
-Event.handler('layer.oninit', function (layer){
+Event.handler('Layer.oninit', function (layer){
 	//Crumb
 	if(!layer['parent'])return;//слой может быть в child с динамическим state только если есть родитель
 	infrajs.setCrumb(layer,'crumb',layer['dyn']['crumb']);//Возможно у родителей обновился state из-за child у детей тоже должен обновиться хотя они не в child
 },'crumb');
-Event.handler('layer.oninit', function (layer){
+Event.handler('Layer.oninit', function (layer){
 	//Crumb child
 	if(!layer['child'])return;//Это услвие после setCrumb
 
@@ -77,7 +78,7 @@ Event.handler('layer.oninit', function (layer){
 		infrajs.setCrumb(l,'crumb',name);
 	});
 },'crumb');
-Event.handler('layer.oninit', function (layer){//Должно быть после external, чтобы все свойства у слоя появились
+Event.handler('Layer.oninit', function (layer){//Должно быть после external, чтобы все свойства у слоя появились
 	//Crumb childs
 	infra.forx(layer['childs'], function(l,key){//У этого childs ещё не взять external
 		if(!l['crumb'])l['crumb']=infrajs.setCrumb(l,'crumb',key);
@@ -89,7 +90,7 @@ Event.handler('layer.ischeck', function (layer){
 	//crumb
 	if (!layer['crumb']['is']) return false;
 },'crumb');
-/* Event.handler('layer.oninit', function (layer){
+/* Event.handler('Layer.oninit', function (layer){
 	//crumb link
 	if(!layer['link']&&!layer['linktpl'])layer['linktpl']='{crumb}';
 });*/
@@ -117,18 +118,18 @@ Event.handler('layer.ischeck', function (layer){
 //========================
 // layer oncheck
 //========================
-Event.handler('layer.oncheck', function (layer){//Свойство counter должно быть до tpl чтобы counter прибавился а потом парсились
+Event.handler('Layer.oncheck', function (layer){//Свойство counter должно быть до tpl чтобы counter прибавился а потом парсились
 	//counter
 	//if (layer.debugRubrics) console.log('Слой debugRubrics div content ', layer.div, layer);
 	if (!layer.counter) layer.counter =	 0;
 }, 'layer');
 
-Event.handler('layer.oncheck', function (layer){//В onchange слоя может не быть див// Это нужно чтобы в external мог быть определён div перед тем как наследовать div от родителя
+Event.handler('Layer.oncheck', function (layer){//В onchange слоя может не быть див// Это нужно чтобы в external мог быть определён div перед тем как наследовать div от родителя
 	//div
 	if (!layer.div && layer.parent) layer.div = layer.parent.div;
 }, 'div');
 
-Event.handler('layer.oncheck', function (layer){//Без этого не показывается окно cо стилями.. только его заголовок..
+Event.handler('Layer.oncheck', function (layer){//Без этого не показывается окно cо стилями.. только его заголовок..
 	if (!layer['divs']) return; 
 	for (var key in layer['divs']) { //Без этого не показывается окно cо стилями.. только его заголовок..
 		Each.exec(layer['divs'][key], function (l) {
@@ -137,7 +138,7 @@ Event.handler('layer.oncheck', function (layer){//Без этого не пок�
 	}
 }, 'div');
 
-Event.handler('layer.oncheck', function (layer){
+Event.handler('Layer.oncheck', function (layer){
 	if (!layer['divtpl']) return;
 	layer['div'] = Template.parse([layer['divtpl']], layer);
 }, 'div');
@@ -149,7 +150,7 @@ Event.handler('layer.oncheck', function (layer){
 
 
 
-Event.handler('layer.oncheck', function (layer){
+Event.handler('Layer.oncheck', function (layer){
 	//tpl
 	infrajs.tplrootTpl(layer);
 	infrajs.tpldatarootTpl(layer);
@@ -289,22 +290,22 @@ Event.handler('layer.isrest' , function (layer){
 //========================
 // layer onshow
 //========================
-Event.handler('layer.onshow', function (layer){//Должно идти до tpl
+Event.handler('Layer.onshow', function (layer){//Должно идти до tpl
 	//counter
 	layer.counter++;
 }, 'layer');
-Event.handler('layer.onshow', function (layer){
+Event.handler('Layer.onshow', function (layer){
 	//tpl
 	layer._parsed=infrajs.parsed(layer);	//Выставляется после обработки шаблонов в которых в событиях onparse могла измениться data
 },'parsed');
-Event.handler('layer.onshow', function (layer){//До того как сработает событие самого слоя в котором уже будут обработчики вешаться
+Event.handler('Layer.onshow', function (layer){//До того как сработает событие самого слоя в котором уже будут обработчики вешаться
 	//tpl
 	if(infrajs.ignoreDOM(layer))return;
 	layer.html=infrajs.getHtml(layer);
 },'html:parsed');
 
 
-Event.handler('layer.onshow', function (layer){//До того как сработает событие самого слоя в котором уже будут обработчики вешаться
+Event.handler('Layer.onshow', function (layer){//До того как сработает событие самого слоя в котором уже будут обработчики вешаться
 	//tpl
 	var div = document.getElementById(layer.div);
 	if (div) div.style.display='';
@@ -322,7 +323,7 @@ Event.handler('layer.onshow', function (layer){//До того как срабо
 }, 'dom:html');
 
 
-Event.handler('layer.onshow', function (layer){
+Event.handler('Layer.onshow', function (layer){
 	//tpl
 	//слой который показан и не перепарсивается сюда не попадает, но и скрывать из этого дива никого не надо будет ведь этот слой и был показан.
 	var store=infrajs.store();
@@ -334,7 +335,7 @@ Event.handler('layer.onshow', function (layer){
 // layer onhide
 //========================
 
-Event.handler('layer.onhide', function (layer){//onhide запускается когда слой ещё виден
+Event.handler('Layer.onhide', function (layer){//onhide запускается когда слой ещё виден
 	//tpl
 	var store=infrajs.store();
 	var l=store.divs[layer.div];//Нужно проверить не будет ли див заменён самостоятельно после показа. Сейчас мы знаем что другой слой в этом диве прямо не показывается. Значит после того как покажутся все слои и див останется в вёрстке только тогда нужно его очистить.

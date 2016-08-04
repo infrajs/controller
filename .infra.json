@@ -5,6 +5,7 @@
 		"src/parsed.js",
 		"src/Crumb.js",
 		"src/infrajs.js",
+		"src/Layer.js",
 		"src/External.js",
 		"src/tpl.js",
 		"src/divparent.js",

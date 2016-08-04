@@ -135,12 +135,12 @@ infrajs.tplJsonCheck=function(layer){
 	var data=infrajs.getData(layer);
 	if(layer.jsoncheck){//Если true значит да только если данные есть
 		if(!data||(typeof(data.result)!=='undefined'&&!data.result)){
-			infrajs.isSaveBranch(layer,false);
+			layer.is_save_branch = false;
 			return false;
 		}
 	}else if(!layer.jsoncheck){//Если false Значит да только если данных нет
 		if(data&&(typeof(data.result)=='undefined'||data.result)){
-			infrajs.isSaveBranch(layer,false);
+			layer.is_save_branch = false;
 			return false;
 		}
 	}
