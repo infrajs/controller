@@ -141,6 +141,7 @@ Event::handler('layer.isshow', function (&$layer) {
 			return;
 		}
 		if (empty($l['div'])) return;
+		if (empty($l['tpl'])) return;
 		if ($l['div'] !== $layer['div']) return; //ищим совпадение дивов впереди
 
 		if (Event::fire('layer.isshow', $l)) {

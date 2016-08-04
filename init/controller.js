@@ -86,7 +86,7 @@ Event.handler('Layer.oninit', function (layer){//Должно быть посл�
 
 },'crumb');
 
-Event.handler('layer.ischeck', function (layer){
+Event.handler('Layer.ischeck', function (layer){
 	//crumb
 	if (!layer['crumb']['is']) return false;
 },'crumb');
@@ -98,18 +98,18 @@ Event.handler('layer.ischeck', function (layer){
 //========================
 // layer is check
 //========================
-Event.handler('layer.ischeck', function (layer){
+Event.handler('Layer.ischeck', function (layer){
 	if (!layer['parent']) return;
-	if (!Event.fire('layer.ischeck', layer['parent'])) return false;
+	if (!Event.fire('Layer.ischeck', layer['parent'])) return false;
 },'layer');
 
-Event.handler('layer.ischeck', function (layer){//может быть у любого слоя в том числе и у не iswork, и когда нет старого значения
+Event.handler('Layer.ischeck', function (layer){//может быть у любого слоя в том числе и у не iswork, и когда нет старого значения
 	if (!infrajs.isWork(layer)) return false;//Нет сохранённого результата, и слой не в работе, если работа началась с infrajs.check(layer) и у layer есть родитель
 },'layer');
 
 
 
-Event.handler('layer.ischeck', function (layer){
+Event.handler('Layer.ischeck', function (layer){
 	//tpl
 	if (layer['onlyserver']) return false;
 },'layer');
@@ -166,27 +166,27 @@ Event.handler('Layer.oncheck', function (layer){
 //========================
 // layer is show
 //========================
-Event.handler('layer.isshow', function (layer){
-	if (!Event.fire('layer.ischeck',layer)) return false;
+Event.handler('Layer.isshow', function (layer){
+	if (!Event.fire('Layer.ischeck',layer)) return false;
 	//Event.fire('layer.oncheck',layer);
 },'layer');
 
-Event.handler('layer.isshow', function (layer){//Родитель скрывает ребёнка если у родителя нет опции что ветка остаётся целой
+Event.handler('Layer.isshow', function (layer){//Родитель скрывает ребёнка если у родителя нет опции что ветка остаётся целой
 	//infrajs
 	if(!layer.parent)return;
-	if(Event.fire('layer.isshow',layer.parent))return;
+	if(Event.fire('Layer.isshow',layer.parent))return;
 	if(layer.parent.is_save_branch)return;//Какой-то родитель таки не показывается.. теперь нужно узнать скрыт он своей веткой или чужой
 	return false;
 });
 
-Event.handler('layer.isshow', function (layer){
+Event.handler('Layer.isshow', function (layer){
 	//is
 	infrajs.istplparse(layer);
 	return infrajs.isCheck(layer);
 },'is');
 
 /*
-Event.handler('layer.isshow', function (layer){
+Event.handler('Layer.isshow', function (layer){
 	if (layer['tpl']) return;
 	var r=true;
 	if(layer['parent']){
@@ -199,11 +199,11 @@ Event.handler('layer.isshow', function (layer){
 
 
 
-/*Event.handler('layer.isshow', function (layer){
+/*Event.handler('Layer.isshow', function (layer){
 	if (!layer['tpl']) return false;
 });*/
 
-Event.handler('layer.isshow', function (layer){
+Event.handler('Layer.isshow', function (layer){
 	//tpl
 	if (layer.tpl) return;
 	var r = true;
@@ -216,7 +216,7 @@ Event.handler('layer.isshow', function (layer){
 	return false;
 }, 'tpl:div');
 
-Event.handler('layer.isshow', function (layer){//tpl должен существовать, ветка скрывается
+Event.handler('Layer.isshow', function (layer){//tpl должен существовать, ветка скрывается
 	//tpl
 	if (!layer.tplcheck) return;
 	var res=infra.loadTEXT(layer.tpl);
@@ -225,12 +225,12 @@ Event.handler('layer.isshow', function (layer){//tpl должен существ
 	return false;
 }, 'tplcheck:tpl,is');
 
-Event.handler('layer.isshow', function (layer){//ветка скрывается
+Event.handler('Layer.isshow', function (layer){//ветка скрывается
 	//tpl
 	return infrajs.tplJsonCheck(layer);
 }, 'tpl:div');
 
-Event.handler('layer.isshow', function (layer){//isShow учитывала зависимости дивов layerindiv ещё не работает
+Event.handler('Layer.isshow', function (layer){//isShow учитывала зависимости дивов layerindiv ещё не работает
 	//div
 	if (!layer['div']) return;	
 	var start = false;
@@ -239,8 +239,10 @@ Event.handler('layer.isshow', function (layer){//isShow учитывала за�
 			if (layer === l) start = true;
 			return;
 		}
+		if (!l.tpl) return;
+		if (!l.div) return;
 		if (l.div !== layer.div) return;//ищим совпадение дивов впереди
-		if (Event.fire('layer.isshow', l)){
+		if (Event.fire('Layer.isshow', l)){
 			layer.is_save_branch = infrajs.isParent(l, layer);
 			return true;//Слой который дальше показывается в том же диве найден
 		}
@@ -253,31 +255,31 @@ Event.handler('layer.isshow', function (layer){//isShow учитывала за�
 //========================
 // layer is rest
 //========================
-Event.handler('layer.isrest' , function (layer){//Будем проверять все пока не найдём
+Event.handler('Layer.isrest' , function (layer){//Будем проверять все пока не найдём
 	//infrajs
 
 	if(!infrajs.isWork(layer))return true;//На случай если забежали к родителю а он не в работе
-	if(!Event.fire('layer.isshow',layer))return true;//На случай если забежали окольными путями к слою который не показывается (вообще в check это исключено, но могут быть другие забеги)
+	if(!Event.fire('Layer.isshow',layer))return true;//На случай если забежали окольными путями к слою который не показывается (вообще в check это исключено, но могут быть другие забеги)
 
-	if(layer['parent']&&infrajs.isWork(layer['parent'])&&!Event.fire('layer.isrest',layer['parent'])){
+	if(layer['parent']&&infrajs.isWork(layer['parent'])&&!Event.fire('Layer.isrest',layer['parent'])){
 		return false;//Парсится родитель парсимся и мы
 	}
 
 	if(!layer.showed)return false;//Ещё Непоказанный слой должен перепарситься..
 }, 'layer');
-Event.handler('layer.isrest' , function (layer){
+Event.handler('Layer.isrest' , function (layer){
 	//tpl parsed
 	if(!infrajs.isWork(layer))return true;//На случай если забежали к родителю а он не в работе
-	if(!Event.fire('layer.isshow',layer))return true;//На случай если забежали окольными путями к слою который не показывается (вообще в check это исключено, но могут быть другие забеги)
+	if(!Event.fire('Layer.isshow',layer))return true;//На случай если забежали окольными путями к слою который не показывается (вообще в check это исключено, но могут быть другие забеги)
 
 	if(layer._parsed!=infrajs.parsed(layer)){
 		return false;//'свойство parsed изменилось';
 	}
 }, 'parsed');
-Event.handler('layer.isrest' , function (layer){
+Event.handler('Layer.isrest' , function (layer){
 	//divparent
 	if(!infrajs.isWork(layer))return true;//На случай если забежали к родителю а он не в работе
-	if(!Event.fire('layer.isshow',layer))return true;//На случай если забежали окольными путями к слою который не показывается (вообще в check это исключено, но могут быть другие забеги)
+	if(!Event.fire('Layer.isshow',layer))return true;//На случай если забежали окольными путями к слою который не показывается (вообще в check это исключено, но могут быть другие забеги)
 
 	var r=infrajs.divparentIsRest(layer);
 	return r;
@@ -326,6 +328,7 @@ Event.handler('Layer.onshow', function (layer){//До того как срабо
 Event.handler('Layer.onshow', function (layer){
 	//tpl
 	//слой который показан и не перепарсивается сюда не попадает, но и скрывать из этого дива никого не надо будет ведь этот слой и был показан.
+	//if (!layer.tpl) return;
 	var store=infrajs.store();
 	store.divs[layer.div]=layer;
 }, 'dom:html');
