@@ -1,7 +1,18 @@
-infrajs.runAddKeys('divs');
+Controller.runAddKeys('divs');
+
+Event.classes['layer'] = function(layer){
+	infrajs.external.check(layer);
+	infrajs.unickCheck(layer);
+	return layer.id;
+}
 Event.one('Controller.oninit', function() {
 	//div
-	infrajs.unickExternalInit();
+	//infra.seq.set(infra.template.scope,infra.seq.right('infrajs.find'), Controller.find);
+	infra.seq.set(infra.template.scope,infra.seq.right('infrajs.ids'),Controller.ids);
+	infra.seq.set(infra.template.scope,infra.seq.right('infrajs.names'),Controller.names);
+
+	infra.seq.set(infra.template.scope,infra.seq.right('Controller.ids'), Controller.ids);
+	infra.seq.set(infra.template.scope,infra.seq.right('Controller.names'), Controller.names);
 	
 	/*infrajs.externalAdd('divs',function(now,ext){//Если уже есть пропускаем
 		if(!now)now={};

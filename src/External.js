@@ -4,18 +4,6 @@
 
 (function(){
 	var counter=1;
-	infrajs.unickExternalInit=function(){
-		infra.seq.set(infra.template.scope,infra.seq.right('infrajs.find'),function(){
-			return infrajs.find.apply(infrajs,arguments);
-		});
-		infra.seq.set(infra.template.scope,infra.seq.right('infrajs.ids'),infrajs.ids);
-		infra.seq.set(infra.template.scope,infra.seq.right('infrajs.names'),infrajs.names);
-	}
-	Event.classes['layer'] = function(layer){
-		infrajs.external.check(layer);
-		infrajs.unickCheck(layer);
-		return layer.id;
-	}
 	infrajs.ids = {};
 	infrajs.names = {};
 	Controller.ids = infrajs.ids;
