@@ -181,16 +181,19 @@ infra.Crumb.handA = function(a) {
 	a.setAttribute('infra','true');
 	a.addEventListener('click', function (event) {
 
-		var href=a.href;
-		var r=href.split('/');
+		var href = a.href;
+		var r = href.split('/');
 		r.shift();//http:
 		r.shift();//
 		r.shift();//ya.ru
-		href=r.join('/');
+		href = r.join('/');
 		
 
-		var is=a.getAttribute('infra');
-		if (is !=  'true') return;
+		var is = a.getAttribute('infra');
+		if (is != 'true') return;
+
+		var is = a.getAttribute('data-crumb');
+		if (is == 'false') return;
 		
 		if (!infra.Crumb.isInternal(a.getAttribute('href'))) return;
 		
@@ -198,14 +201,14 @@ infra.Crumb.handA = function(a) {
 			event.preventDefault();
 			window.history.pushState(null, null, a.getAttribute('href'));
 		}
-		if (href[0]=='#') {
+		if (href[0] == '#') {
 			infra.Crumb.anchor = href;
 			return;
 		}
 		href = decodeURI(href);
-		infra.Crumb.a=a;
+		infra.Crumb.a = a;
 		infra.Crumb.go(href, true);
-		infra.Crumb.a=false;
+		infra.Crumb.a = false;
 	});
 }
 infra.Crumb.setA=function(div){
