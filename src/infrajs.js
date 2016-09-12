@@ -162,10 +162,10 @@ infrajs.check=function(layers){//Пробежка по слоям
 	//store.ismainrun=true;
 
 	if(layers){
-		console.log('infrajs.check(layers)');
+		console.log('Controller.check(layers)');
 		var wlayers=layers;
 	}else{//Если конкретные слои не указаны беруться все упоминавшиеся слои
-		console.log('infrajs.check()');
+		console.log('Controller.check()');
 		var wlayers=store.alayers.concat();//далее alayers может наполняться, чтобы не было копии
 	}
 
