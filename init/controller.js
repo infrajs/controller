@@ -34,24 +34,30 @@ infrajs.runAddList('child');
 Event.one('Controller.oninit',function(){
 	infra.seq.set(infra.template.scope,infra.seq.right('infra.Crumb'),infra.Crumb);
 	infrajs.externalAdd('child','layers');
-	/*infrajs.externalAdd('childs',function(now,ext){//Если уже есть значения этого свойства то дополняем
-		if(!now)now={};
-		infra.forx(ext,function(n,key){
-			if(now[key])return;
-			//if(!now[key])now[key]=[];
-			//else if(now[key].constructor!==Array)now[key]=[now[key]];
-			//now[key].push({external:n});
-			now[key]={external:n};
-		});
-		return now;
-	});*/
+	
+	
+
 	infrajs.externalAdd('crumb',function(now,ext,layer,external,i){//проверка external в onchange
 		infrajs.setCrumb(layer,'crumb',ext);
 		return layer[i];
 	});	
-
-	
 });
+Event.handler('Controller.oninit', function () {
+	var root = Crumb.getInstance();
+	Sequence.set(Template.scope, Sequence.right('infra.Crumb.query'), root.query);
+	Sequence.set(Template.scope, Sequence.right('infra.Crumb.params'), Crumb.params);
+	Sequence.set(Template.scope, Sequence.right('infra.Crumb.get'), Crumb.get);
+});
+	/*$cl = function ($mix = null) {
+		return ext\Crumb::getInstance($mix);
+	};
+	Sequence::set(Template::$scope, Sequence::right('infra.Crumb.getInstance'), $cl);
+	External::add('child', 'layers');
+	
+	External::add('crumb', function (&$now, &$ext, &$layer, &$external, $i) {//проверка external в onchange
+		Crumb::set($layer, 'crumb', $ext);
+		return $layer[$i];
+	});*/
 
 Event.handler('Controller.oninit', function () {
 	//tpl
