@@ -83,6 +83,7 @@ infra.Crumb.change=function(query){
 
 	infra.Crumb.value=right[0] ? right[0] : '';
 	infra.Crumb.query=infra.Crumb.short(right);
+	infra.Crumb.href=infra.Crumb.short(right);
 	infra.Crumb.child=infra.Crumb.getInstance(infra.Crumb.value);
 
 	var that=infra.Crumb.getInstance(infra.Crumb.path);

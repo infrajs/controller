@@ -8,11 +8,13 @@
 		Router::init();
 	}
 	$data = Controller::$conf['index'];
-	Run::exec($data, function(&$layer){
+	Run::exec($data, function &(&$layer) {
 		while (@$layer['external'] && !Layer::pop($layer, 'onlyclient')) {
 			$ext = &$layer['external'];
 			External::checkExt($layer, $ext);
 		}
+		$r = null;
+		return $r;
 	});
 	$data = Load::json_encode($data);
 ?>

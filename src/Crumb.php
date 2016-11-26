@@ -7,15 +7,16 @@ use infrajs\each\Each;
 
 class Crumb
 {
-	public static $name;
-	public static $parent;
-	public static $child;
-	public static $value;//Строка или null
-	public static $query;
+	public $name;
+	public $parent;
+	public $child;
+	public $value;//Строка или null
+	public $query;
+	public static $href;
 	public static $childs = array();
-	public static $counter = 0;
+	public $counter = 0;
 	public static $globalcounter = 0;
-	public static $path;//Путь текущей крошки
+	public $path;//Путь текущей крошки
 	public static $params;//Всё что после первого амперсанда
 	public static $get;
 	public $is;
@@ -34,12 +35,12 @@ class Crumb
 	public function __toString(){	
 		return implode('/', $this->path);
 	}
-	public function getInst($name = '')
+	public function &getInst($name = '')
 	{
 		$right = $this->path;
 		return self::getInstance($name, $right);
 	}
-	public static function getInstance($name = '', $right = array())
+	public static function &getInstance($name = '', $right = array())
 	{
 		$right = self::right(array_merge($right, self::right($name)));
 
@@ -79,7 +80,7 @@ class Crumb
 	}
 	public static function change($query)
 	{
-		Crumb::$query=$query;
+		Crumb::$href=$query;
 
 		$amp = explode('?', $query, 2);
 

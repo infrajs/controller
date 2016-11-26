@@ -21,7 +21,9 @@ use infrajs\controller\External;
 Event::$classes['layer'] = function (&$obj) {
 	return Layer::setId($obj);
 };
-Event::handler('Controller.oninit', function () {
+
+Event::handler('Controller.oninit', function &() {
+	$r = null;
 	Layer::parsedAdd('parsed');
 	Layer::parsedAdd(function ($layer) {
 		if (!isset($layer['parsedtpl'])) {
@@ -29,8 +31,11 @@ Event::handler('Controller.oninit', function () {
 		}
 		return Template::parse(array($layer['parsedtpl']), $layer);
 	});
+	return $r;
 });
-Event::handler('Controller.oninit', function () {
+Event::handler('Controller.oninit', function &() {
+	$r = null;
+
 	Template::$scope;
 	$fn = function ($name, $value) {
 		return Layer::find($name, $value);
@@ -41,23 +46,29 @@ Event::handler('Controller.oninit', function () {
 
 	Sequence::set(Template::$scope, Sequence::right('Controller.ids'), Controller::$ids);
 	Sequence::set(Template::$scope, Sequence::right('Controller.names'), Controller::$names);
+	return $r;
+
 });
 
 
 
 
 
-Event::handler('Layer.oninit', function (&$layer) {
+Event::handler('Layer.oninit', function &(&$layer) {
+	$r = null;
 	while (@$layer['external'] && !Layer::pop($layer, 'onlyclient')) {
 		$ext = &$layer['external'];
 		External::checkExt($layer, $ext);
 	}
 	//Layer::setId($layer);//layer.name добавим в архив
+	return $r;
 }, 'layer');
 
 
 Event::handler('Layer.isshow', function (&$layer) {
-	if (!Event::fire('layer.ischeck', $layer)) return false;
+	$r = null;
+	if (!Event::fire('Layer.ischeck', $layer)) return false;
+	return $r;
 }, 'layer');
 
 Event::handler('Layer.isshow', function (&$layer) {
@@ -93,20 +104,25 @@ Event::handler('Layer.onshow', function (&$layer) {
 Run::runAddKeys('divs');
 Event::handler('Layer.oncheck', function (&$layer) {
 	//В onchange слоя может не быть див// Это нужно чтобы в external мог быть определён div перед тем как наследовать div от родителя
-	if (empty($layer['parent'])) return;
-	if (isset($layer['div'])) return;
+	$r = null;
+	if (empty($layer['parent'])) return $r;
+	if (isset($layer['div'])) return $r;
 	
 	$layer['div'] = $layer['parent']['div'];
-	
+	return $r;
 }, 'div');
 
 Event::handler('Layer.oncheck', function (&$layer) {
-	if (empty($layer['divs'])) return; 
+	$r = null;
+	if (empty($layer['divs'])) return $r; 
 	foreach ($layer['divs'] as $key => &$v) { //Без этого не показывается окно cо стилями.. только его заголовок..
-		Each::exec($v, function (&$l) use ($key) {
+		Each::exec($v, function &(&$l) use ($key) {
+			$r = null;
 			if (empty($l['div'])) $l['div'] = $key;
+			return $r;
 		});	
 	}
+	return $r;
 }, 'div');
 
 Event::handler('Layer.oncheck', function (&$layer) {
@@ -138,19 +154,21 @@ Event::handler('Layer.isshow', function (&$layer) {
 	if (empty($layer['div'])) return;
 	
 	$start = false;
-	if ($master = Run::exec(Controller::$layers, function (&$l) use (&$layer, &$start) {//Пробежка не по слоям на ветке, а по всем слоям обрабатываемых после.. .то есть и на других ветках тоже
+	if ($master = Run::exec(Controller::$layers, function &(&$l) use (&$layer, &$start) {//Пробежка не по слоям на ветке, а по всем слоям обрабатываемых после.. .то есть и на других ветках тоже
+		$r = null;
 		if (!$start) {
 			if (Each::isEqual($layer, $l)) $start = true;
-			return;
+			return $r;
 		}
-		if (empty($l['div'])) return;
-		if (empty($l['tpl'])) return;
-		if ($l['div'] !== $layer['div']) return; //ищим совпадение дивов впереди
+		if (empty($l['div'])) return $r;
+		if (empty($l['tpl'])) return $r;
+		if ($l['div'] !== $layer['div']) return $r; //ищим совпадение дивов впереди
 
 		if (Event::fire('layer.isshow', $l)) {
 			$layer['is_save_branch'] = Layer::isParent($l, $layer);
 			return $l;//Слой который дальше показывается в этом же диве найден
 		}
+		return $r;
 	})) {
 		return false;
 	}
@@ -298,24 +316,28 @@ Event::handler('Layer.oninit', function (&$layer) {
 	} else {
 		$name = '###child###';
 	}
-	Each::fora($layer['child'], function (&$l) use (&$name) {
+	Each::fora($layer['child'], function &(&$l) use (&$name) {
+		$r = null;
 		Crumb::set($l, 'crumb', $name);
+		return $r;
 	});
 }, 'crumb');
 
 Event::handler('Layer.oninit', function (&$layer) {
 	if (empty($layer['childs'])) return;
 	foreach ($layer['childs'] as $key => &$v) {
-		Each::exec($v, function (&$l) use ($key) {
-			if (!empty($l['crumb'])) return;
+		Each::exec($v, function &(&$l) use ($key) {
+			$r = null;
+			if (!empty($l['crumb'])) return $r;
 			Crumb::set($l, 'crumb', $key);
+			return $r;
 		});	
 	}
 }, 'crumb');
 
 Event::handler('Layer.ischeck', function ($layer){
 	if (empty($layer['parent'])) return;
-	if (!Event::fire('layer.ischeck', $layer['parent'])) return false;
+	if (!Event::fire('Layer.ischeck', $layer['parent'])) return false;
 }, 'layer');
 
 Event::handler('Layer.ischeck', function (&$layer) {

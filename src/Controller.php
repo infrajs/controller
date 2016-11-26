@@ -42,24 +42,28 @@ class Controller
 		Event::tik('layer');
 		Event::fire('Infrajs.oninit');//сборка событий
 		
-		Run::exec(static::$layers, function (&$layer, &$parent) {
+		Run::exec(static::$layers, function &(&$layer, &$parent) {
 			//Запускается у всех слоёв в работе
+			$r = null;
 			if ($parent) $layer['parent'] = &$parent;
 			Event::fire('layer.oninit', $layer);
-			if (!Event::fire('layer.ischeck', $layer)) return;
+			if (!Event::fire('layer.ischeck', $layer)) return $r;
 			Event::fire('layer.oncheck', $layer);
+			return $r;
 
 		});//разрыв нужен для того чтобы можно было наперёд определить показывается слой или нет. oncheck у всех. а потом по порядку.
 
 		Event::fire('oncheck');//момент когда доступны слои по getUnickLayer
 
-		Run::exec(static::$layers, function (&$layer) {
+		Run::exec(static::$layers, function &(&$layer) {
 			//С чего вдруг oncheck у всех слоёв.. надо только у активных
+			$r = null;
 			if (Event::fire('layer.isshow', $layer)) {
 				//Событие в котором вставляется html
 				Event::fire('layer.onshow', $layer);//при клике делается отметка в конфиге слоя и слой парсится... в oncheck будут подстановки tpl и isRest вернёт false
 				//onchange показанный слой не реагирует на изменение адресной строки, нельзя привязывать динамику интерфейса к адресной строке, только черещ перепарсивание
 			}
+			return $r;
 		});//у родительского слоя showed будет реальное а не старое
 		
 		Event::fire('Infrajs.onshow');

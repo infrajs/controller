@@ -142,14 +142,14 @@ class Tpl
 			Template::includes($tpls);
 			
 			$repls = array();//- подшаблоны для замены, Важно, что оригинальный распаршеный шаблон не изменяется
-			Each::fora($layer['tplsm'], function ($tm) use (&$repls) {
+			Each::fora($layer['tplsm'], function &($tm) use (&$repls) {
 				//mix tpl
 				
 				$t = Template::make($tm);//С кэшем перепарсивания
 				array_push($repls, $t);
 				//for(var i in t)repls[i]=t[i];//Нельзя подменять в оригинальном шаблоне, который в других местах может использоваться без подмен
 				//^ из-за этого обработчики указанные в tplsm срабатывают постоянно, так как нельзя поставить отметку о том что обработчик сохранён
-				$r=null;
+				$r = null;
 				return $r;
 			});
 
