@@ -10,13 +10,15 @@ class Layer {
 	 * Находит в цепочке родителей значение указанного свойства.
 	 * Используется для onlyclient, domready
 	 **/
-	public static function pop($layer, $prop){
+	public static function &pop($layer, $prop){
 		$parent = $layer;
+		$r = null;
 		while ($parent) {
 			if (isset($parent[$prop])) return $parent[$prop];
 			if (!isset($parent['parent'])) break;
 			$parent = $parent['parent'];
 		}
+		return $r;
 	}
 	/**
 	 * Поиск слоя по значению свойства
