@@ -37,7 +37,9 @@ class Controller
 	public static function init(){
 		header('Infrajs-Cache: env-support');
 		$conf = Config::get('controller');
-		echo Controller::check($conf['index']);
+		$html = Controller::check($conf['index']);
+		echo $html;
+		return !!$html;
 	}
 	public static function check(&$layers)
 	{
