@@ -22,17 +22,22 @@ class Controller
 			"external" => "index.json"
 		)
 	);
-	public static function init(){
+	/*public static function init(){
 		$query = urldecode($_SERVER['REQUEST_URI']);
 		header('Infrajs-Cache: true');
 		$html = Access::cache(__FILE__.':init', function ($query) {
 			header('Infrajs-Cache: false');	
-			Config::get();
+			Config::get(); //Нужно собрать все расширения, чтобы выполнились все подписки
 			$conf = Config::get('controller');
 			return Controller::check($conf['index']);
 		}, array($query));
 		echo $html;
 		exit;
+	}*/
+	public static function init(){
+		header('Infrajs-Cache: env-support');
+		$conf = Config::get('controller');
+		echo Controller::check($conf['index']);
 	}
 	public static function check(&$layers)
 	{
