@@ -139,7 +139,7 @@ class Tpl
 
 		if (@$layer['data'] || @$layer['json'] || @$layer['tpls'] || @$layer['tplroot']) {
 			$tpls = Template::make($layer['tpl']);//С кэшем перепарсивания
-			Template::includes($tpls);
+			
 			
 			$repls = array();//- подшаблоны для замены, Важно, что оригинальный распаршеный шаблон не изменяется
 			Each::fora($layer['tplsm'], function &($tm) use (&$repls) {
@@ -155,7 +155,7 @@ class Tpl
 
 			$layer['data'] = &self::getData($layer);//подменили строку data на объект data
 
-
+			Template::includes($tpls, $layer['data'], @$layer['dataroot']);
 			$alltpls = array(&$repls,&$tpls);
 
 			$html = Template::exec($alltpls, $layer, @$layer['tplroot'], @$layer['dataroot']);

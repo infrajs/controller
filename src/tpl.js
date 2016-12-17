@@ -90,7 +90,7 @@ infrajs.getTpl=function(layer){
 infrajs.getHtml=function(layer){//Вызывается как для основных так и для подслойв tpls frame.
 	if(layer.data||layer.json||layer.tplsm||layer.tplroot){
 		var tpls=infra.template.make(layer.tpl);//С кэшем перепарсивания
-		infra.template.includes(tpls);
+		
 		infrajs.com=infra.com;
 		var repls=[];//- подшаблоны для замены, Важно, что оригинальный распаршеный шаблон не изменяется
 		infra.fora(layer.tplsm,function(tm){//mix tpl
@@ -100,6 +100,7 @@ infrajs.getHtml=function(layer){//Вызывается как для основ�
 			//^ из-за этого обработчики указанные в tplsm срабатывают постоянно, так как нельзя поставить отметку о том что обработчик сохранён
 		});
 		layer.data=this.getData(layer);//подменили строку data на объект data
+		infra.template.includes(tpls, layer.data, layer.dataroot);
 		var html=infra.template.exec([repls,tpls],layer,layer.tplroot,layer.dataroot);
 	}else{
 		var tpl=this.getTpl(layer);

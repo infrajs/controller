@@ -326,9 +326,10 @@ Event.handler('Layer.onshow', function (layer){//До того как срабо
 
 Event.handler('Layer.onshow', function (layer){//До того как сработает событие самого слоя в котором уже будут обработчики вешаться
 	//tpl
+	if (!layer.div) return; //При перепарсивании и изменении global или parsed срабатывает ошбка на самом первом слое у которого нет div.
 	var div = document.getElementById(layer.div);
-	if (div) div.style.display='';
-	if (infrajs.ignoreDOM(layer))return;
+	if (div) div.style.display = '';
+	if (infrajs.ignoreDOM(layer)) return;
 	if (!div){//Мы не можем проверить это в isshow так как для проверки надо чтобы например родитель показался, Но показ идёт одновременно уже без проверок.. сейчас.  По этому сейчас и проверяем. Пользователь не должне допускать таких ситуаций.
 		if (!layer.divcheck && infra.debug()){//Также мы не можем проверить в layer.oninsert.cond так как ситуация когда див не найден это ошибка, у слоя должно быть определено условие при которых он не показывается и это совпадает с тем что нет родителя. В конце концов указываться divparent
 			console.log('Не найден контейнер для слоя:'+'\ndiv:'+layer.div+'\ntpl:'+layer.tpl+'\ntplroot:'+layer.tplroot+'\nparent.tpl:'+(layer.parent?layer.parent.tpl:''));
