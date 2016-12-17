@@ -155,7 +155,7 @@ class Tpl
 
 			$layer['data'] = &self::getData($layer);//подменили строку data на объект data
 
-			Template::includes($tpls, $layer['data'], @$layer['dataroot']);
+			$tpls = Template::includes($tpls, $layer['data'], @$layer['dataroot']);
 			$alltpls = array(&$repls,&$tpls);
 
 			$html = Template::exec($alltpls, $layer, @$layer['tplroot'], @$layer['dataroot']);
