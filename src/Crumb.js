@@ -167,6 +167,11 @@ infra.Crumb.go = function (href, nopushstate) {
 	//var path=(query?('?'+encodeURI(query)):location.pathname);
 	if(!nopushstate) {
 		history.pushState(null,null,query+anchor);
+	} else if (nopushstate === false) { //Тихое изменение состояния
+		history.replaceState(null,null,'/'+query+anchor);
+		infra.Crumb.popstate=false;
+		infra.Crumb.change(query);
+		return;
 	}
 	
 	infra.Crumb.popstate=false;
