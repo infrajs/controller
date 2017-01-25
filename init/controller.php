@@ -56,7 +56,7 @@ Event::handler('Controller.oninit', function &() {
 
 Event::handler('Layer.oninit', function &(&$layer) {
 	$r = null;
-	while (@$layer['external'] && !Layer::pop($layer, 'onlyclient')) {
+	while (!empty($layer['external']) && !Layer::pop($layer, 'onlyclient')) {
 		$ext = &$layer['external'];
 		External::checkExt($layer, $ext);
 	}
@@ -260,12 +260,10 @@ Event::handler('Layer.isshow', function (&$layer) {
 
 Event::handler('Layer.isshow', function (&$layer) {
 	//tpl depricated
-	if (is_string(@$layer['tpl']) && @$layer['tplcheck']) {
+	if (isset($layer['tpl']) && is_string($layer['tpl']) && !empty($layer['tplcheck'])) {
 		//Мы не можем делать проверку пока другой плагин не подменит tpl
 		$res = Load::loadTEXT($layer['tpl']);
-		if (!$res) {
-			return false;
-		}
+		if (!$res) return false;
 	}
 }, 'tplcheck:is');
 Event::handler('Layer.isshow', function (&$layer) {
