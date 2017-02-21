@@ -35,9 +35,22 @@ class Controller
 		exit;
 	}*/
 	public static function init(){
-		header('Infrajs-Cache: env-support');
+		
 		$conf = Config::get('controller');
-		$html = Controller::check($conf['index']);
+		
+		$crumb = Crumb::getInstance();
+		if ($crumb->value) {
+			header('Infrajs-Cache: false');
+			$html = Controller::check($conf['index']);
+		} else { //Исключение для главной. Полный кэш
+			header('Infrajs-Cache: true');
+			$html = Access::cache(__FILE__, function () use ($conf) {
+				header('Infrajs-Cache: false');
+				$html = Controller::check($conf['index']);
+				return $html;
+			});
+		}
+
 		echo $html;
 		return !!$html;
 	}
@@ -45,6 +58,7 @@ class Controller
 	{
 		static::$layers = &$layers;
 		//Пробежка по слоям
+
 		Event::tik('Infrajs');
 		Event::tik('layer');
 		Event::fire('Infrajs.oninit');//сборка событий
@@ -75,6 +89,7 @@ class Controller
 		
 		Event::fire('Infrajs.onshow');
 		//loader, setA, seo добавить в html, можно зациклить check
+
 		$html = View::html();
 		//View::html('',true);
 		return $html; 
