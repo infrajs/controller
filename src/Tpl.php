@@ -38,9 +38,7 @@ class Tpl
 	{
 		$prop = 'tpl';
 		$proptpl = $prop.'tpl';
-		if (@!$layer[$proptpl]) {
-			return;
-		}
+		if (empty($layer[$proptpl])) return;
 		$p = $layer[$proptpl];
 		$ar = is_array($p);
 		if (!$ar) {
@@ -57,9 +55,7 @@ class Tpl
 	{
 		$prop = 'json';
 		$proptpl = $prop.'tpl';
-		if (@!$layer[$proptpl]) {
-			return;
-		}
+		if (empty($layer[$proptpl])) return;
 		$p = $layer[$proptpl];
 		$ar = is_array($p);
 		if (!$ar) {
@@ -78,7 +74,7 @@ class Tpl
 		if (!isset($layer['json'])) {
 			return $layer['data'];
 		}
-		$data = @$layer['json'];
+		$data = isset($layer['json'])?$layer['json']:null;
 		if (Each::isAssoc($data) === false) {
 			//Если массив то это просто строка в виде данных
 			$data = Load::loadTEXT($data[0]);
@@ -137,7 +133,7 @@ class Tpl
 	{
 		//Вызывается как для основных так и для подслойв tpls frame. Расширяется в tpltpl.prop.js
 
-		if (@$layer['data'] || @$layer['json'] || @$layer['tpls'] || @$layer['tplroot']) {
+		if (!empty($layer['data']) || !empty($layer['json']) || !empty($layer['tpls']) || !empty($layer['tplroot'])) {
 			$tpls = Template::make($layer['tpl']);//С кэшем перепарсивания
 			
 			
@@ -155,10 +151,10 @@ class Tpl
 
 			$layer['data'] = &self::getData($layer);//подменили строку data на объект data
 
-			$tpls = Template::includes($tpls, $layer['data'], @$layer['dataroot']);
+			$tpls = Template::includes($tpls, $layer['data'], isset($layer['dataroot'])? $layer['dataroot']: null);
 			$alltpls = array(&$repls,&$tpls);
 
-			$html = Template::exec($alltpls, $layer, @$layer['tplroot'], @$layer['dataroot']);
+			$html = Template::exec($alltpls, $layer, isset($layer['tplroot']) ? $layer['tplroot'] : null, isset($layer['dataroot'])? $layer['dataroot']: null);
 		} else {
 			$tpl = self::getTpl($layer);
 
@@ -173,14 +169,14 @@ class Tpl
 	}
 	public static function jsoncheck(&$layer)
 	{
-		if (@$layer['data'] && !is_null(@$layer['jsoncheck'])) {
+		if (!empty($layer['data']) && isset($layer['jsoncheck']) && !is_null($layer['jsoncheck'])) {
 			$data = &Tpl::getData($layer);
-			if (@$layer['jsoncheck']) {
+			if (!empty($layer['jsoncheck'])) {
 				//Если true значит да только если данные есть
 				if (!$data || (!is_null($data['result']) && !$data['result'])) {
 					return false;
 				}
-			} elseif (@!$layer['jsoncheck']) {
+			} elseif (empty($layer['jsoncheck'])) {
 				//Если false Значит да только если данных нет
 				if (!$data || !$data['result']) {
 					return;

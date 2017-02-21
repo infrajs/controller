@@ -9,7 +9,7 @@
 	}
 	$data = Controller::$conf['index'];
 	Run::exec($data, function &(&$layer) {
-		while (@$layer['external'] && !Layer::pop($layer, 'onlyclient')) {
+		while (!empty($layer['external']) && !Layer::pop($layer, 'onlyclient')) {
 			$ext = &$layer['external'];
 			External::checkExt($layer, $ext);
 		}

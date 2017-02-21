@@ -44,7 +44,7 @@ class Crumb
 	{
 		$right = self::right(array_merge($right, self::right($name)));
 
-		if (@$right[0] === '') {
+		if (isset($right[0]) && $right[0] === '') {
 			$right = array();
 		}
 
@@ -54,7 +54,7 @@ class Crumb
 			$that = new self($right);
 
 			$that->path = $right;
-			$that->name = @$right[sizeof($right) - 1];
+			$that->name = isset($right[sizeof($right) - 1])?$right[sizeof($right) - 1]:null;
 			$that->value = $that->is = $that->counter = null;
 			//$that->value = $that->query = $that->is = $that->counter = null;
 			self::$childs[$short] = $that;
@@ -91,7 +91,7 @@ class Crumb
 			$params = $query;
 			$query = '';
 		} else {
-			$params = (string) @$amp[1];
+			$params = isset($amp[1])?$amp[1]:null;
 			$query = $amp[0];
 		}
 		self::$params = $params;
@@ -113,7 +113,7 @@ class Crumb
 			$that->counter = $counter;
 			$that->is = true;
 			$that->child = $child;
-			$that->value = (string) @$right[sizeof($that->path)];
+			$that->value = (string) isset($right[sizeof($that->path)]) ? $right[sizeof($that->path)] : null;
 			//$that->query = Crumb::short(right.slice(that.path.length));
 
 			$child = $that;
