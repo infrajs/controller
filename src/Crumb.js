@@ -137,20 +137,21 @@ infra.Crumb.isInternal = function(href){
 	//if(/^mailto:/.test(href))return false;
 	//if(/^http.?:/.test(href))return false;
 	if(/^\w+:/.test(href))return false;
+
 	href=href.replace(/^\//,'');
 	if(href[0] == '-') return false;
 	if(href[0] == '!') return false;
 	if(href[0] == '~') return false;
-
-	
 	return true;
 }
 infra.Crumb.go = function (href, nopushstate) {
 	if (!infra.Crumb.isInternal(href)) return;
 	href=href.split('#',2);
-	if(href[1])var anchor='#'+href[1];
+	if (href[1]) var anchor='#'+href[1];
 	else var anchor='';
+
 	href=href[0];
+
 	infra.Crumb.anchor=anchor;
 
 	if (href=='.') { //Правильная ссылка на главную страницу
@@ -187,27 +188,27 @@ infra.Crumb.handA = function(a) {
 	a.setAttribute('infra','true');
 	a.addEventListener('click', function (event) {
 
-		var href = a.href;
-		var r = href.split('/');
-		r.shift();//http:
-		r.shift();//
-		r.shift();//ya.ru
-		href = r.join('/');
 		
-
 		var is = a.getAttribute('infra');
 		if (is != 'true') return;
 
 		var is = a.getAttribute('data-crumb');
 		if (is == 'false') return;
 		
+		href = a.getAttribute('href');
 		if (!infra.Crumb.isInternal(a.getAttribute('href'))) return;
-		
+
 		if (!event.defaultPrevented) { //Добавляется ли адрес в историю? Кто отменил стандартное действие тот и добавил в историю
 			event.preventDefault();
 			window.history.pushState(null, null, a.getAttribute('href'));
 		}
-		if (href[0] == '#') {
+
+		var r = href.split('#');
+		var r1 = r.shift();
+		var r2 = r.join('#');
+
+		// && location.pathname+location.search == href
+		if (r.length > 1 && location.pathname+location.search == r1) {
 			infra.Crumb.anchor = href;
 			return;
 		}
