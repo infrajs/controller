@@ -42,13 +42,13 @@ infra.Crumb.prototype={
 infra.Crumb.change=function(query){
 	//static
 	//Запускается паблик у класса
-	infra.Crumb.search=query;
-	var amp=query.split('?');
-	if(amp.length>1)amp=[amp.shift(),amp.join('&')];
+	Crumb.search = query;
+	var amp = query.split('?');
+	if (amp.length > 1) amp = [amp.shift(),amp.join('&')];
 
-	var eq=amp[0].split('=',2);
+	var eq = amp[0].split('=',2);
 
-	var sl=eq[0].split('/',2);
+	var sl = eq[0].split('/',2);
 
 
 	if( eq.length!==1&&sl.length===1 ){
@@ -59,7 +59,7 @@ infra.Crumb.change=function(query){
 		var params=amp[1] ? amp[1] : '';
 		var query=amp[0];
 	}
-	infra.Crumb.params=params;
+	Crumb.params=params;
 
 	var ar = params.split('&');
 	var get = {};
@@ -74,17 +74,17 @@ infra.Crumb.change=function(query){
 		}*/
 		get[unescape(k)] = v;
 	}
-	infra.Crumb.get=get;
+	Crumb.get=get;
 
-	var right=infra.Crumb.right(query);
-	var counter=++infra.Crumb.counter;
-	var old=infra.Crumb.path;
-	infra.Crumb.path=right;
+	var right = Crumb.right(query);
+	var counter = ++Crumb.counter;
+	var old = Crumb.path;
+	Crumb.path=right;
 
-	infra.Crumb.value=right[0] ? right[0] : '';
-	infra.Crumb.query=infra.Crumb.short(right);
-	infra.Crumb.href=infra.Crumb.short(right);
-	infra.Crumb.child=infra.Crumb.getInstance(infra.Crumb.value);
+	Crumb.value = right[0] ? right[0] : '';
+	Crumb.query = Crumb.short(right);
+	Crumb.href = Crumb.short(right);
+	Crumb.child = Crumb.getInstance(infra.Crumb.value);
 
 	var that=infra.Crumb.getInstance(infra.Crumb.path);
 	var child=null;
@@ -111,10 +111,10 @@ infra.Crumb.init = function(){
 		src = decodeURI(src);
 
 		var query = src+location.search;//URN.getQuery();
-		if (infra.Crumb.search === query) return;//chrome при загрузки запускает собыите а FF нет. Первый запуск мы делаем сами по этому отдельно для всех а тут игнорируются совпадения.
-		infra.Crumb.popstate = true;
-		infra.Crumb.anchor = location.hash;
-		infra.Crumb.change(query);
+		if (Crumb.search === query) return;//chrome при загрузки запускает собыите а FF нет. Первый запуск мы делаем сами по этому отдельно для всех а тут игнорируются совпадения.
+		Crumb.popstate = true;
+		Crumb.anchor = location.hash;
+		Crumb.change(query);
 		Event.tik('Crumb.onchange');
 		Event.fire('Crumb.onchange');
 	}
@@ -145,25 +145,26 @@ infra.Crumb.isInternal = function(href){
 	return true;
 }
 infra.Crumb.go = function (href, nopushstate) {
-	if (!infra.Crumb.isInternal(href)) return;
-	href=href.split('#',2);
-	if (href[1]) var anchor='#'+href[1];
-	else var anchor='';
+	if (!Crumb.isInternal(href)) return;
+	href = href.split('#',2);
+	if (href[1]) var anchor = '#' + href[1];
+	else var anchor = '';
 
-	href=href[0];
+	href = href[0];
 
-	infra.Crumb.anchor=anchor;
+	Crumb.anchor = anchor;
 
-	if (href=='.') { //Правильная ссылка на главную страницу
-		href='';
-	} else {
+	if (href == '.') { //Правильная ссылка на главную страницу
+		href = '';
+	} else if (href[0]=='?') {//Относительная ссылка
+		href = location.pathname+href;
 		//var r=href.split('?');
 		//var val=r.shift();
 		//if(val) return;	
 		//href=r.join('?');
 	}
 	
-	var query=href;
+	var query = href;
 	
 	//var path=(query?('?'+encodeURI(query)):location.pathname);
 	if(!nopushstate) {
