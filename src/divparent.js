@@ -10,7 +10,7 @@
 	if(!l){
 		return;
 	}
-	if(!Event.fire('layer.isshow',l)){
+	if(!Event.fire('Layer.isshow',l)){
 		infrajs.isSaveBranch(layer,false);
 		return false;
 	}
@@ -20,5 +20,5 @@ infrajs.divparentIsRest = function (layer){//Нам нужен массив сл
 	var store=infrajs.store();
 	var l=store.divs[layer.divparent];
 	if (!l) return;
-	if (!Event.fire('layer.isrest',l)) return false;
+	if (!Event.fire('Layer.isrest',l)) return false;
 }

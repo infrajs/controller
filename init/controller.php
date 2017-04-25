@@ -18,7 +18,7 @@ use infrajs\controller\External;
  * 
  **/
 
-Event::$classes['layer'] = function (&$obj) {
+Event::$classes['Layer'] = function (&$obj) {
 	return Layer::setId($obj);
 };
 
@@ -74,10 +74,9 @@ Event::handler('Layer.isshow', function (&$layer) {
 Event::handler('Layer.isshow', function (&$layer) {
 	//Родитель скрывает ребёнка если у родителя нет опции что ветка остаётся целой
 	if (empty($layer['parent'])) return;
-	if (Event::fire('layer.isshow', $layer['parent'])) return;
+	if (Event::fire('Layer.isshow', $layer['parent'])) return;
 	//Какой-то родитель таки не показывается, например пустой слой, теперь нужно узнать скрывает родитель свою ветку или нет
 	if (!empty($layer['parent']['is_save_branch'])) return;
-	
 	return false;
 }, 'layer');
 
@@ -164,7 +163,7 @@ Event::handler('Layer.isshow', function (&$layer) {
 		if (empty($l['tpl'])) return $r;
 		if ($l['div'] !== $layer['div']) return $r; //ищим совпадение дивов впереди
 
-		if (Event::fire('layer.isshow', $l)) {
+		if (Event::fire('Layer.isshow', $l)) {
 			$layer['is_save_branch'] = Layer::isParent($l, $layer);
 			return $l;//Слой который дальше показывается в этом же диве найден
 		}

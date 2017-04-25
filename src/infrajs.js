@@ -50,8 +50,8 @@ infrajs.isSaveBranch(layer,val);
 infrajs.isParent(layer,parent);
 infrajs.isWork(layer);
 
-Event.fire('layer.is rest|show|check',layer);
-infrajs.handler('layer.is rest|show|check',callback(layer));
+Event.fire('Layer.is rest|show|check',layer);
+infrajs.handler('Layer.is rest|show|check',callback(layer));
 
 
 
@@ -130,12 +130,12 @@ infrajs.getAllLayers=function(){
 			store.waits=[];//При запуске checkNow все ожидающие слои обнуляются
 			store.wlayers=wlayers;
 
-			Event.fire('Infrajs.oncheck');//loader
+			Event.fire('Controller.oncheck');//loader
 
 			infrajs.checkNow();
 			store.process=false;
 
-			Event.fire('Infrajs.onshow');//loader, setA, в onshow можно зациклить check
+			Event.fire('Controller.onshow');//loader, setA, в onshow можно зациклить check
 	},1);//Если вызывать infrajs.check() и вместе с этим переход по ссылке проверка слоёв сработает только один раз за счёт это паузы.. два вызова объединяться за это время в один.
 
 };// child, layers*/
@@ -170,40 +170,40 @@ infrajs.check=function(layers){//Пробежка по слоям
 	}
 
 	store.wlayers=wlayers;
-	Event.tik('Infrajs');
-	Event.tik('layer');
-	Event.fire('Infrajs.oninit');//loader
+	Event.tik('Controller');
+	Event.tik('Layer');
+	Event.fire('Controller.oninit');//loader
 
 
 	infrajs.run(infrajs.getWorkLayers(),function(layer,parent){//Запускается у всех слоёв в работе которые wlayers
 		if (parent) layer['parent'] = parent;//Не обрабатывается ситуация когда check снутри иерархии
-		Event.fire('layer.oninit', layer);//устанавливается state
-		if(Event.fire('layer.ischeck', layer)){
-			Event.fire('layer.oncheck', layer);//нельзя запускать is show так как ожидается что все oncheckb сделаются и в is будут на их основе соответствующие проверки
+		Event.fire('Layer.oninit', layer);//устанавливается state
+		if(Event.fire('Layer.ischeck', layer)){
+			Event.fire('Layer.oncheck', layer);//нельзя запускать is show так как ожидается что все oncheckb сделаются и в is будут на их основе соответствующие проверки
 		}
 	});//разрыв нужен для того чтобы можно было наперёд определить показывается слой или нет. oncheck у всех. а потом по порядку.
 
-	Event.fire('Infrajs.oncheck');//момент когда доступны слои для подписки и какой-то обработки, доступен unick
+	Event.fire('Controller.oncheck');//момент когда доступны слои для подписки и какой-то обработки, доступен unick
 
 	infrajs.run(infrajs.getWorkLayers(),function(layer){//С чего вдруг oncheck у всех слоёв.. надо только у активных
-		if(Event.fire('layer.isshow',layer)){
-			if(!Event.fire('layer.isrest',layer)){
+		if(Event.fire('Layer.isshow',layer)){
+			if(!Event.fire('Layer.isrest',layer)){
 
-				Event.fire('layer.onshow', layer);//Событие в котором вставляется html
+				Event.fire('Layer.onshow', layer);//Событие в котором вставляется html
 				//infra.fire(layer,'onshow');//своевременное выполнение Event.onext onshow в кэше html когда порядок слоёв не играет роли
 				//при клике делается отметка в конфиге слоя и слой парсится... в oncheck будут подстановки tpl и isRest вернёт false
 			}//onchange показанный слой не реагирует на изменение адресной строки, нельзя привязывать динамику интерфейса к адресной строке, только черещ перепарсивание
 		}else if(layer.showed){
 			//Правильная форма события (conteiner,name,obj)
-			Event.fire('layer.onhide', layer); //нужно для autosave
+			Event.fire('Layer.onhide', layer); //нужно для autosave
 			//infra.fire(layer,'onhide');//сбросить catalog когда скрылся слой поиска в каталоге
 		}
-		layer.showed=Event.fire('layer.isshow',layer);//Свойства showed. Нужно знать предыдущее значение isShow с последней проверки. Используется в admin.js
+		layer.showed=Event.fire('Layer.isshow',layer);//Свойства showed. Нужно знать предыдущее значение isShow с последней проверки. Используется в admin.js
 	});//у родительского слоя showed будет реальное а не старое, назад showed проверять нельзя
 
 
 
-	Event.fire('Infrajs.onshow');//loader, setA, в onshow можно зациклить check
+	Event.fire('Controller.onshow');//loader, setA, в onshow можно зациклить check
 	store.process=false;
 	//onshow1
 		//вызван check (нужен setTimeout чтобы не разворачивало всё.)

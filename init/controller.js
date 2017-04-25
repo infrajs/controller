@@ -1,6 +1,6 @@
 Controller.runAddKeys('divs');
 
-Event.classes['layer'] = function(layer){
+Event.classes['Layer'] = function(layer){
 	infrajs.external.check(layer);
 	infrajs.unickCheck(layer);
 	return layer.id;
@@ -185,7 +185,7 @@ Event.handler('Layer.oncheck', function (layer){
 //========================
 Event.handler('Layer.isshow', function (layer){
 	if (!Event.fire('Layer.ischeck',layer)) return false;
-	//Event.fire('layer.oncheck',layer);
+	//Event.fire('Layer.oncheck',layer);
 },'layer');
 
 Event.handler('Layer.isshow', function (layer){//Родитель скрывает ребёнка если у родителя нет опции что ветка остаётся целой
@@ -370,7 +370,7 @@ Event.handler('Layer.onhide', function (layer){//onhide запускается �
 // infrajs onshow
 //========================
 
-Event.handler('Infrajs.onshow', function () {
+Event.handler('Controller.onshow', function () {
 	//crumb
 	infra.Crumb.setA(document);//Пробежаться по всем ссылкам и добавить спeциальный обработчик на onclick... для перехода по состояниям сайта.
 },'crumb');
