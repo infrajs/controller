@@ -87,19 +87,13 @@ External::$props = array(
 	},
 	'config' => function (&$now, &$ext, &$layer) {//object|string any
 		if (Each::isAssoc($ext) === true) {
-			if (!$now) {
-				$now = array();
-			}
+			if (!$now) $now = array();
 			foreach ($ext as $j => $v) {
-				if (!is_null(@$now[$j])) {
-					continue;
-				}
+				if (isset($now[$j]) && !is_null($now[$j])) continue;
 				$now[$j] = &$ext[$j];
 			}
 		} else {
-			if (is_null($now)) {
-				$now = &$ext;
-			}
+			if (is_null($now)) $now = &$ext;
 		}
 
 		return $now;
