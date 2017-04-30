@@ -17,7 +17,6 @@ use infrajs\controller\External;
  * counter, parsed, unick, external, parsedtpl, onlyclient, parent, is_save_branch, onlyclient
  * 
  **/
-
 Event::$classes['Layer'] = function (&$obj) {
 	return Layer::setId($obj);
 };
@@ -275,24 +274,12 @@ Event::handler('Layer.isshow', function (&$layer) {
 
 Run::runAddKeys('childs');
 Run::runAddList('child');
-Event::handler('Layer.oninit', function () {
-	$root = Crumb::getInstance();
-	if(!$root->is) throw new \Exception('Crumb нужно инициализировать до запуска контроллера');
-	Sequence::set(Template::$scope, Sequence::right('infra.Crumb.query'), $root->query);
-	Sequence::set(Template::$scope, Sequence::right('infra.Crumb.params'), Crumb::$params);
-	Sequence::set(Template::$scope, Sequence::right('infra.Crumb.get'), Crumb::$get);
-
-	$cl = function ($mix = null) {
-		return ext\Crumb::getInstance($mix);
-	};
-	Sequence::set(Template::$scope, Sequence::right('infra.Crumb.getInstance'), $cl);
-	External::add('child', 'layers');
 	
-	External::add('crumb', function (&$now, &$ext, &$layer, &$external, $i) {//проверка external в onchange
-		Crumb::set($layer, 'crumb', $ext);
-		return $layer[$i];
-	});
-}, 'crumb');
+External::add('child', 'layers');
+External::add('crumb', function (&$now, &$ext, &$layer, &$external, $i) {//проверка external в onchange
+	Crumb::set($layer, 'crumb', $ext);
+	return $layer[$i];
+});
 
 
 Event::handler('Layer.oninit', function (&$layer) {
