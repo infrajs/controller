@@ -9,62 +9,62 @@
 
 
 
-infrajs.tplrootTpl=function(layer){
+Controller.tplrootTpl=function(layer){
 	var prop='tplroot';
 	var proptpl=prop+'tpl';
 	if(!layer[proptpl])return;
 	var p=layer[proptpl];
 	if(layer[proptpl].constructor===Array){
-		p=infra.template.parse(p,layer);
+		p=Template.parse(p,layer);
 		layer[prop]=[p];
 	}else{
-		p=infra.template.parse([p],layer);
+		p=Template.parse([p],layer);
 		layer[prop]=p;
 	}
 }
-infrajs.tpldatarootTpl=function(layer){
+Controller.tpldatarootTpl=function(layer){
 	var prop='dataroot';
 	var proptpl=prop+'tpl';
 	if(!layer[proptpl])return;
 	var p=layer[proptpl];
-	p=infra.template.parse([p],layer);
+	p=Template.parse([p],layer);
 	layer[prop]=p;
 }
 
-infrajs.tplTpl=function(layer){
+Controller.tplTpl=function(layer){
 	var prop='tpl';
 	var proptpl=prop+'tpl';
 	if(!layer[proptpl])return;
 	var p=layer[proptpl];
 	if(layer[proptpl].constructor===Array){
-		p=infra.template.parse(p,layer);
+		p=Template.parse(p,layer);
 		layer[prop]=[p];
 	}else{
-		p=infra.template.parse([p],layer);
+		p=Template.parse([p],layer);
 		layer[prop]=p;
 	}
 }
-infrajs.tplJson=function(layer){
+Controller.tplJson=function(layer){
 	var prop='json';
 	var proptpl=prop+'tpl';
 	if(!layer[proptpl])return;
 	var p=layer[proptpl];
 	if(layer[proptpl].constructor===Array){
-		p=infra.template.parse(p,layer);
+		p=Template.parse(p,layer);
 		layer[prop]=[p];
 	}else{
-		p=infra.template.parse([p],layer);
+		p=Template.parse([p],layer);
 		layer[prop]=p;
 	}
 }
-infrajs.tplonlyclient = function(layer){
+Controller.tplonlyclient = function(layer){
 	var parent = layer;
 	while (parent){
 		if (parent['onlyclient']) return true;
 		parent = parent['parent'];
 	}
 }
-infrajs.getData=function(layer){
+Controller.getData=function(layer){
 	//Используется в propcheck.js
 	if(typeof(layer.json)=='undefined')return layer.data;
 	var data=layer.json;//Может быть и undefined
@@ -75,7 +75,7 @@ infrajs.getData=function(layer){
 	}
 	return data;
 }
-infrajs.getTpl=function(layer){
+Controller.getTpl=function(layer){
 	var tpl=layer.tpl;
 	if(typeof(tpl)=='string'){
 		tpl=infra.loadTEXT(tpl);//M доп параметры после :
@@ -87,37 +87,35 @@ infrajs.getTpl=function(layer){
 	if(!tpl)tpl='';
 	return tpl;
 };
-infrajs.getHtml=function(layer){//Вызывается как для основных так и для подслойв tpls frame.
-	if(layer.data||layer.json||layer.tplsm||layer.tplroot){
-		var tpls=infra.template.make(layer.tpl);//С кэшем перепарсивания
-		
-		infrajs.com=infra.com;
-		var repls=[];//- подшаблоны для замены, Важно, что оригинальный распаршеный шаблон не изменяется
-		infra.fora(layer.tplsm,function(tm){//mix tpl
-			var t=infra.template.make(tm);//С кэшем перепарсивания
+Controller.getHtml=function(layer){//Вызывается как для основных так и для подслойв tpls frame.
+	if (layer.data || layer.json || layer.tplsm || layer.tplroot) {
+		var tpls=Template.make(layer.tpl);//С кэшем перепарсивания
+		var repls = [];//- подшаблоны для замены, Важно, что оригинальный распаршеный шаблон не изменяется
+		Each.exec(layer.tplsm, function(tm) { //mix tpl
+			var t = Template.make(tm);//С кэшем перепарсивания
 			repls.push(t);
 			//for(var i in t)repls[i]=t[i];//Нельзя подменять в оригинальном шаблоне, который в других местах может использоваться без подмен
 			//^ из-за этого обработчики указанные в tplsm срабатывают постоянно, так как нельзя поставить отметку о том что обработчик сохранён
 		});
-		layer.data=this.getData(layer);//подменили строку data на объект data
-		tpls = infra.template.includes(tpls, layer, layer.dataroot);
-		var html=infra.template.exec([repls,tpls],layer,layer.tplroot,layer.dataroot);
+		layer.data = Controller.getData(layer); //подменили строку data на объект data
+		tpls = Template.includes(tpls, layer, layer.dataroot);
+		var html = Template.exec([repls, tpls], layer, layer.tplroot, layer.dataroot);
 	}else{
-		var tpl=this.getTpl(layer);
-		infrajs.com=infra.com;
-		var html=tpl;
+		var tpl = Controller.getTpl(layer);
+		
+		var html = tpl;
 	}
 	
-	if(!html)html='';
+	if (!html) html='';
 	return html;
 }
-infrajs.ignoreFirst=function(layer){//depricated
-	return infrajs.ignoreDOM(layer);
+Controller.ignoreFirst=function(layer){//depricated
+	return Controller.ignoreDOM(layer);
 }
-infrajs.ignoreDOM=function(layer){//onlyclient //после какого момента нужно возвращать результат true или false. на чём останавливаться.
+Controller.ignoreDOM=function(layer){//onlyclient //после какого момента нужно возвращать результат true или false. на чём останавливаться.
 	
 	//Вообще полный и постоянный игнор не предусмотрен, только при первой пробежке в случае если нет onlyclient
-	var store=infrajs.store();
+	var store=Controller.store();
 	var first=store['counter']===1;
 	var conf=infra.conf;
 	
@@ -125,15 +123,15 @@ infrajs.ignoreDOM=function(layer){//onlyclient //после какого мом�
 	
 	if (!first) return false;//Значит сервера небыло впринципе
 
-	if (layer && infrajs.tplonlyclient(layer)) return false;
+	if (layer && Controller.tplonlyclient(layer)) return false;
 
 	
 	return first;
 }
 
-infrajs.tplJsonCheck=function(layer){
+Controller.tplJsonCheck=function(layer){
 	if(typeof(layer.jsoncheck)=='undefined')return;
-	var data=infrajs.getData(layer);
+	var data=Controller.getData(layer);
 	if(layer.jsoncheck){//Если true значит да только если данные есть
 		if(!data||(typeof(data.result)!=='undefined'&&!data.result)){
 			layer.is_save_branch = false;

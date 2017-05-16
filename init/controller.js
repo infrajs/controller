@@ -1,8 +1,8 @@
 Controller.runAddKeys('divs');
 
 Event.classes['Layer'] = function(layer){
-	infrajs.external.check(layer);
-	infrajs.unickCheck(layer);
+	Controller.external.check(layer);
+	Controller.unickCheck(layer);
 	return layer.id;
 }
 Event.one('Controller.oninit', function() {
@@ -29,16 +29,16 @@ Event.one('Controller.oninit', function() {
 //Свойство dyn, setCrumb
 //infra.load('-controller/props/external.js');//Уже должен быть
 
-infrajs.runAddKeys('childs');
-infrajs.runAddList('child');
+Controller.runAddKeys('childs');
+Controller.runAddList('child');
 Event.one('Controller.oninit',function(){
 	infra.seq.set(infra.template.scope,infra.seq.right('infra.Crumb'),infra.Crumb);
-	infrajs.externalAdd('child','layers');
+	Controller.externalAdd('child','layers');
 	
 	
 
-	infrajs.externalAdd('crumb',function(now,ext,layer,external,i){//проверка external в onchange
-		infrajs.setCrumb(layer,'crumb',ext);
+	Controller.externalAdd('crumb',function(now,ext,layer,external,i){//проверка external в onchange
+		Controller.setCrumb(layer,'crumb',ext);
 		return layer[i];
 	});	
 });
@@ -61,27 +61,27 @@ Event.handler('Controller.oninit', function () {
 
 Event.handler('Controller.oninit', function () {
 	//tpl
-	var store=infrajs.store();
+	var store=Controller.store();
 	store.divs={};
 }, 'tpl');
 
 
 Event.handler('Layer.oninit', function (layer){
 	//infrajs
-	var store=infrajs.store();
+	var store=Controller.store();
 	layer['store']={'counter':store['counter']};
 	delete layer.is_save_branch;
 });	
 Event.handler('Layer.oninit', function (layer){//это из-за child// всё что после child начинает плыть. по этому надо Crumb каждый раз определять, брать от родителя.
 	//Crumb
 	if(!layer['dyn']){//Делается только один раз
-		infrajs.setCrumb(layer,'crumb',layer['crumb']);
+		Controller.setCrumb(layer,'crumb',layer['crumb']);
 	}
 },'crumb');
 Event.handler('Layer.oninit', function (layer){
 	//Crumb
 	if(!layer['parent'])return;//слой может быть в child с динамическим state только если есть родитель
-	infrajs.setCrumb(layer,'crumb',layer['dyn']['crumb']);//Возможно у родителей обновился state из-за child у детей тоже должен обновиться хотя они не в child
+	Controller.setCrumb(layer,'crumb',layer['dyn']['crumb']);//Возможно у родителей обновился state из-за child у детей тоже должен обновиться хотя они не в child
 },'crumb');
 Event.handler('Layer.oninit', function (layer){
 	//Crumb child
@@ -92,13 +92,13 @@ Event.handler('Layer.oninit', function (layer){
 	else var name='###child###';
 
 	infra.fora(layer['child'], function(l){
-		infrajs.setCrumb(l,'crumb',name);
+		Controller.setCrumb(l,'crumb',name);
 	});
 },'crumb');
 Event.handler('Layer.oninit', function (layer){//Должно быть после external, чтобы все свойства у слоя появились
 	//Crumb childs
 	infra.forx(layer['childs'], function(l,key){//У этого childs ещё не взять external
-		if(!l['crumb'])l['crumb']=infrajs.setCrumb(l,'crumb',key);
+		if(!l['crumb'])l['crumb']=Controller.setCrumb(l,'crumb',key);
 	});
 
 },'crumb');
@@ -121,7 +121,7 @@ Event.handler('Layer.ischeck', function (layer){
 },'layer');
 
 Event.handler('Layer.ischeck', function (layer){//может быть у любого слоя в том числе и у не iswork, и когда нет старого значения
-	if (!infrajs.isWork(layer)) return false;//Нет сохранённого результата, и слой не в работе, если работа началась с infrajs.check(layer) и у layer есть родитель
+	if (!Controller.isWork(layer)) return false;//Нет сохранённого результата, и слой не в работе, если работа началась с Controller.check(layer) и у layer есть родитель
 },'layer');
 
 
@@ -169,10 +169,10 @@ Event.handler('Layer.oncheck', function (layer){
 
 Event.handler('Layer.oncheck', function (layer){
 	//tpl
-	infrajs.tplrootTpl(layer);
-	infrajs.tpldatarootTpl(layer);
-	infrajs.tplTpl(layer);
-	infrajs.tplJson(layer);
+	Controller.tplrootTpl(layer);
+	Controller.tpldatarootTpl(layer);
+	Controller.tplTpl(layer);
+	Controller.tplJson(layer);
 }, 'tpl:div');
 
 
@@ -198,8 +198,8 @@ Event.handler('Layer.isshow', function (layer){//Родитель скрывае
 
 Event.handler('Layer.isshow', function (layer){
 	//is
-	infrajs.istplparse(layer);
-	return infrajs.isCheck(layer);
+	Controller.istplparse(layer);
+	return Controller.isCheck(layer);
 },'is');
 
 /*
@@ -244,14 +244,14 @@ Event.handler('Layer.isshow', function (layer){//tpl должен существ
 
 Event.handler('Layer.isshow', function (layer){//ветка скрывается
 	//tpl
-	return infrajs.tplJsonCheck(layer);
+	return Controller.tplJsonCheck(layer);
 }, 'tpl:div');
 
 Event.handler('Layer.isshow', function (layer){//isShow учитывала зависимости дивов layerindiv ещё не работает
 	//div
 	if (!layer['div']) return;	
 	var start = false;
-	if (infrajs.run(infrajs.getWorkLayers(), function (l) { //Пробежка не по слоям на ветке, а по всем слоям обрабатываемых после.. .то есть и на других ветках тоже
+	if (Controller.run(Controller.getWorkLayers(), function (l) { //Пробежка не по слоям на ветке, а по всем слоям обрабатываемых после.. .то есть и на других ветках тоже
 		if (!start) { 
 			if (layer === l) start = true;
 			return;
@@ -260,7 +260,7 @@ Event.handler('Layer.isshow', function (layer){//isShow учитывала за�
 		if (!l.div) return;
 		if (l.div !== layer.div) return;//ищим совпадение дивов впереди
 		if (Event.fire('Layer.isshow', l)){
-			layer.is_save_branch = infrajs.isParent(l, layer);
+			layer.is_save_branch = Controller.isParent(l, layer);
 			return true;//Слой который дальше показывается в том же диве найден
 		}
 	})) return false;
@@ -275,10 +275,10 @@ Event.handler('Layer.isshow', function (layer){//isShow учитывала за�
 Event.handler('Layer.isrest' , function (layer){//Будем проверять все пока не найдём
 	//infrajs
 
-	if(!infrajs.isWork(layer))return true;//На случай если забежали к родителю а он не в работе
+	if(!Controller.isWork(layer))return true;//На случай если забежали к родителю а он не в работе
 	if(!Event.fire('Layer.isshow',layer))return true;//На случай если забежали окольными путями к слою который не показывается (вообще в check это исключено, но могут быть другие забеги)
 
-	if(layer['parent']&&infrajs.isWork(layer['parent'])&&!Event.fire('Layer.isrest',layer['parent'])){
+	if(layer['parent']&&Controller.isWork(layer['parent'])&&!Event.fire('Layer.isrest',layer['parent'])){
 		return false;//Парсится родитель парсимся и мы
 	}
 
@@ -286,19 +286,19 @@ Event.handler('Layer.isrest' , function (layer){//Будем проверять 
 }, 'layer');
 Event.handler('Layer.isrest' , function (layer){
 	//tpl parsed
-	if(!infrajs.isWork(layer))return true;//На случай если забежали к родителю а он не в работе
+	if(!Controller.isWork(layer))return true;//На случай если забежали к родителю а он не в работе
 	if(!Event.fire('Layer.isshow',layer))return true;//На случай если забежали окольными путями к слою который не показывается (вообще в check это исключено, но могут быть другие забеги)
 
-	if(layer._parsed!=infrajs.parsed(layer)){
+	if(layer._parsed!=Controller.parsed(layer)){
 		return false;//'свойство parsed изменилось';
 	}
 }, 'parsed');
 Event.handler('Layer.isrest' , function (layer){
 	//divparent
-	if(!infrajs.isWork(layer))return true;//На случай если забежали к родителю а он не в работе
+	if(!Controller.isWork(layer))return true;//На случай если забежали к родителю а он не в работе
 	if(!Event.fire('Layer.isshow',layer))return true;//На случай если забежали окольными путями к слою который не показывается (вообще в check это исключено, но могут быть другие забеги)
 
-	var r=infrajs.divparentIsRest(layer);
+	var r=Controller.divparentIsRest(layer);
 	return r;
 }, 'divparent:parsed');
 
@@ -315,12 +315,12 @@ Event.handler('Layer.onshow', function (layer){//Должно идти до tpl
 }, 'layer');
 Event.handler('Layer.onshow', function (layer){
 	//tpl
-	layer._parsed=infrajs.parsed(layer);	//Выставляется после обработки шаблонов в которых в событиях onparse могла измениться data
+	layer._parsed=Controller.parsed(layer);	//Выставляется после обработки шаблонов в которых в событиях onparse могла измениться data
 },'parsed');
 Event.handler('Layer.onshow', function (layer){//До того как сработает событие самого слоя в котором уже будут обработчики вешаться
 	//tpl
-	if(infrajs.ignoreDOM(layer))return;
-	layer.html=infrajs.getHtml(layer);
+	if(Controller.ignoreDOM(layer))return;
+	layer.html=Controller.getHtml(layer);
 },'html:parsed');
 
 
@@ -329,7 +329,7 @@ Event.handler('Layer.onshow', function (layer){//До того как срабо
 	if (!layer.div) return; //При перепарсивании и изменении global или parsed срабатывает ошбка на самом первом слое у которого нет div.
 	var div = document.getElementById(layer.div);
 	if (div) div.style.display = '';
-	if (infrajs.ignoreDOM(layer)) return;
+	if (Controller.ignoreDOM(layer)) return;
 	if (!div){//Мы не можем проверить это в isshow так как для проверки надо чтобы например родитель показался, Но показ идёт одновременно уже без проверок.. сейчас.  По этому сейчас и проверяем. Пользователь не должне допускать таких ситуаций.
 		if (!layer.divcheck && infra.debug()){//Также мы не можем проверить в layer.oninsert.cond так как ситуация когда див не найден это ошибка, у слоя должно быть определено условие при которых он не показывается и это совпадает с тем что нет родителя. В конце концов указываться divparent
 			console.log('Не найден контейнер для слоя:'+'\ndiv:'+layer.div+'\ntpl:'+layer.tpl+'\ntplroot:'+layer.tplroot+'\nparent.tpl:'+(layer.parent?layer.parent.tpl:''));
@@ -347,7 +347,7 @@ Event.handler('Layer.onshow', function (layer){
 	//tpl
 	//слой который показан и не перепарсивается сюда не попадает, но и скрывать из этого дива никого не надо будет ведь этот слой и был показан.
 	//if (!layer.tpl) return;
-	var store=infrajs.store();
+	var store=Controller.store();
 	store.divs[layer.div]=layer;
 }, 'dom:html');
 
@@ -358,7 +358,7 @@ Event.handler('Layer.onshow', function (layer){
 
 Event.handler('Layer.onhide', function (layer){//onhide запускается когда слой ещё виден
 	//tpl
-	var store=infrajs.store();
+	var store=Controller.store();
 	var l=store.divs[layer.div];//Нужно проверить не будет ли див заменён самостоятельно после показа. Сейчас мы знаем что другой слой в этом диве прямо не показывается. Значит после того как покажутся все слои и див останется в вёрстке только тогда нужно его очистить.
 
 	if(l)return;//значит другой слой щас в этом диве покажется и реальное скрытие этого дива ещё впереди. Это чтобы не было скачков
