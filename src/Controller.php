@@ -34,18 +34,24 @@ class Controller
 		echo $html;
 		exit;
 	}*/
+	public static $parsed = '';
 	public static function init(){
 		
 		$conf = Config::get('controller');
 		
 		$crumb = Crumb::getInstance();
 		if ($crumb->value) {
-			header('Infrajs-Cache: false');
+			header('Controller-Cache: false');
 			$html = Controller::check($conf['index']);
 		} else { //Исключение для главной. Полный кэш
-			header('Infrajs-Cache: true');
-			$html = Access::cache(__FILE__, function () use ($conf) {
-				header('Infrajs-Cache: false');
+			header('Controller-Cache: true');
+			
+			Controller::$parsed = '';
+			Event::tik('Controller.parsed');
+			Event::fire('Controller.parsed');
+
+			$html = Access::cache(__FILE__.Controller::$parsed, function () use ($conf) {
+				header('Controller-Cache: false');
 				$html = Controller::check($conf['index']);
 				return $html;
 			});
