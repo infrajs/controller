@@ -32,26 +32,6 @@ Event::handler('Controller.oninit', function &() {
 	});
 	return $r;
 });
-Event::handler('Controller.oninit', function &() {
-	$r = null;
-
-	Template::$scope;
-	$fn = function ($name, $value) {
-		return Layer::find($name, $value);
-	};
-	Sequence::set(Template::$scope, Sequence::right('infrajs.find'), $fn);
-	Sequence::set(Template::$scope, Sequence::right('infrajs.ids'), Controller::$ids);
-	Sequence::set(Template::$scope, Sequence::right('infrajs.names'), Controller::$names);
-
-	Sequence::set(Template::$scope, Sequence::right('Controller.ids'), Controller::$ids);
-	Sequence::set(Template::$scope, Sequence::right('Controller.names'), Controller::$names);
-	return $r;
-
-});
-
-
-
-
 
 Event::handler('Layer.oninit', function &(&$layer) {
 	$r = null;
@@ -329,3 +309,33 @@ Event::handler('Layer.ischeck', function (&$layer) {
 }, 'crumb');
 
 Crumb::init();
+
+Event::one('Controller.oninit', function &() {
+	$r = null;
+
+	Template::$scope;
+
+	Sequence::set(Template::$scope, Sequence::right('infrajs.ids'), Controller::$ids);
+	Sequence::set(Template::$scope, Sequence::right('infrajs.names'), Controller::$names);
+
+	Sequence::set(Template::$scope, Sequence::right('Controller.ids'), Controller::$ids);
+	Sequence::set(Template::$scope, Sequence::right('Controller.names'), Controller::$names);
+
+	
+	
+	return $r;
+
+}, 'Controller');
+
+Event::handler('Controller.oninit', function &() {
+	$r = null;
+	$root = Crumb::getInstance();
+	Sequence::set(Template::$scope, Sequence::right('infra.Crumb.params'), Crumb::$params);
+	Sequence::set(Template::$scope, Sequence::right('infra.Crumb.get'), Crumb::$get);
+	//Sequence::set(Template::$scope, Sequence::right('infra.Crumb.query'), Crumb::$query);
+
+	Sequence::set(Template::$scope, Sequence::right('Crumb.params'), Crumb::$params);
+	Sequence::set(Template::$scope, Sequence::right('Crumb.get'), Crumb::$get);
+	//Sequence::set(Template::$scope, Sequence::right('Crumb.query'), Crumb::$query);
+	return $r;
+}, 'Controller');

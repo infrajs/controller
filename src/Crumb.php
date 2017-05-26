@@ -80,7 +80,7 @@ class Crumb
 	}
 	public static function change($query)
 	{
-		Crumb::$href=$query;
+		Crumb::$href = $query;
 
 		$amp = explode('?', $query, 2);
 

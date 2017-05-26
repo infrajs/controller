@@ -5,59 +5,19 @@ Event.classes['Layer'] = function(layer){
 	Controller.unickCheck(layer);
 	return layer.id;
 }
-Event.one('Controller.oninit', function() {
-	//div
-	//infra.seq.set(infra.template.scope,infra.seq.right('infrajs.find'), Controller.find);
-	infra.seq.set(infra.template.scope,infra.seq.right('infrajs.ids'),Controller.ids);
-	infra.seq.set(infra.template.scope,infra.seq.right('infrajs.names'),Controller.names);
 
-	infra.seq.set(infra.template.scope,infra.seq.right('Controller.ids'), Controller.ids);
-	infra.seq.set(infra.template.scope,infra.seq.right('Controller.names'), Controller.names);
-	
-	/*infrajs.externalAdd('divs',function(now,ext){//Если уже есть пропускаем
-		if(!now)now={};
-		for(var i in ext){
-			if(now[i])continue;
-			now[i]=[];
-			infra.fora(ext[i],function(l){
-				now[i].push({external:l});
-			});
-		}
-		return now;
-	});*/
-}, 'div');
-//Свойство dyn, setCrumb
-//infra.load('-controller/props/external.js');//Уже должен быть
+
 
 Controller.runAddKeys('childs');
 Controller.runAddList('child');
-Event.one('Controller.oninit',function(){
-	infra.seq.set(infra.template.scope,infra.seq.right('infra.Crumb'),infra.Crumb);
-	Controller.externalAdd('child','layers');
-	
-	
 
+Event.one('Controller.oninit',function(){
+	Controller.externalAdd('child','layers');
 	Controller.externalAdd('crumb',function(now,ext,layer,external,i){//проверка external в onchange
 		Controller.setCrumb(layer,'crumb',ext);
 		return layer[i];
 	});	
 });
-Event.handler('Controller.oninit', function () {
-	var root = Crumb.getInstance();
-	Sequence.set(Template.scope, Sequence.right('infra.Crumb.query'), root.query);
-	Sequence.set(Template.scope, Sequence.right('infra.Crumb.params'), Crumb.params);
-	Sequence.set(Template.scope, Sequence.right('infra.Crumb.get'), Crumb.get);
-});
-	/*$cl = function ($mix = null) {
-		return ext\Crumb::getInstance($mix);
-	};
-	Sequence::set(Template::$scope, Sequence::right('infra.Crumb.getInstance'), $cl);
-	External::add('child', 'layers');
-	
-	External::add('crumb', function (&$now, &$ext, &$layer, &$external, $i) {//проверка external в onchange
-		Crumb::set($layer, 'crumb', $ext);
-		return $layer[$i];
-	});*/
 
 Event.handler('Controller.oninit', function () {
 	//tpl
@@ -374,3 +334,31 @@ Event.handler('Controller.onshow', function () {
 	//crumb
 	infra.Crumb.setA(document);//Пробежаться по всем ссылкам и добавить спeциальный обработчик на onclick... для перехода по состояниям сайта.
 },'crumb');
+
+
+
+
+
+Event.one('Controller.oninit', function() {
+	//div
+	Sequence.set(Template.scope, Sequence.right('infrajs.ids'), Controller.ids);
+	Sequence.set(Template.scope, Sequence.right('infrajs.names'), Controller.names);
+
+	Sequence.set(Template.scope, Sequence.right('Controller.ids'), Controller.ids);
+	Sequence.set(Template.scope, Sequence.right('Controller.names'), Controller.names);
+	
+	//Sequence.set(Template.scope, Sequence.right('infra.Crumb'), Crumb);
+	//Sequence.set(Template.scope, Sequence.right('Crumb'), Crumb);
+
+	
+}, 'Controller');
+Event.handler('Controller.oninit', function () {
+	var root = Crumb.getInstance();
+	//Sequence.set(Template.scope, Sequence.right('Crumb.query'), root.query);
+	Sequence.set(Template.scope, Sequence.right('Crumb.params'), Crumb.params);
+	Sequence.set(Template.scope, Sequence.right('Crumb.get'), Crumb.get);
+
+	//Sequence.set(Template.scope, Sequence.right('infra.Crumb.query'), root.query);
+	Sequence.set(Template.scope, Sequence.right('infra.Crumb.params'), Crumb.params);
+	Sequence.set(Template.scope, Sequence.right('infra.Crumb.get'), Crumb.get);
+}, 'Controller');
