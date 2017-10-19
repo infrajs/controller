@@ -332,6 +332,8 @@ Event.handler('Layer.onhide', function (layer){//onhide запускается �
 
 Event.handler('Controller.onshow', function () {
 	//crumb
+	var conf = Config.get('controller');
+	if (!conf.client) return;
 	infra.Crumb.setA(document);//Пробежаться по всем ссылкам и добавить спeциальный обработчик на onclick... для перехода по состояниям сайта.
 },'crumb');
 
