@@ -132,8 +132,15 @@ Event.handler('Layer.oncheck', function (layer){
 	Controller.tplrootTpl(layer);
 	Controller.tpldatarootTpl(layer);
 	Controller.tplTpl(layer);
-	Controller.tplJson(layer);
 }, 'tpl:div');
+
+Event.handler('Layer.isshow', function (layer){
+	Controller.tplJson(layer);
+}, 'Layer');
+
+Event.handler('Layer.onshow', function (layer){
+	Controller.tplJson(layer);
+}, 'Layer');
 
 
 //========================

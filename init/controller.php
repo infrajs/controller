@@ -169,8 +169,11 @@ Event::handler('Layer.oncheck', function (&$layer) {
 	Tpl::tplroottpl($layer);
 	Tpl::dataroottpl($layer);
 	Tpl::tpltpl($layer);
-	Tpl::jsontpl($layer);
 }, 'tpl:div');
+Event::handler('Layer.onshow', function (&$layer) {
+	Tpl::jsontpl($layer);
+},'Layer');
+
 
 
 
