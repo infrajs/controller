@@ -85,6 +85,7 @@ Event::handler('Layer.oncheck', function (&$layer) {
 	$r = null;
 	if (empty($layer['parent'])) return $r;
 	if (isset($layer['div'])) return $r;
+	if (empty($layer['parent']['div'])) return $r;
 	
 	$layer['div'] = $layer['parent']['div'];
 	return $r;

@@ -43,10 +43,11 @@ class External {
 			}
 
 			if ($external) {
-				foreach ($external as $i => &$v) {
+				foreach ($external as $i => $v) {
 					external::merge($layer, $external, $i);
 				}
 			}
+			
 			$r = null;
 			return $r;
 		});
