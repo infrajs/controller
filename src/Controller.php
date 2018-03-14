@@ -6,6 +6,7 @@ use infrajs\event\Event;
 use infrajs\access\Access;
 use infrajs\load\Load;
 use infrajs\view\View;
+use akiyatkin\boo\MemCache;
 use infrajs\config\Config;
 /*//
 Event::fire('Layer.is|on show|check|init',layer);
@@ -36,8 +37,24 @@ class Controller
 	}*/
 	public static $parsed = '';
 	public static function init(){
-		
 		$conf = Config::get('controller');
+
+		header('Controller-Cache: true');
+		Controller::$parsed = '';
+		Event::tik('Controller.parsed');
+		Event::fire('Controller.parsed');
+
+
+		$html = MemCache::func( function ($parsed) use ($conf) {
+			header('Controller-Cache: false'); 
+			
+			$html = Controller::check($conf['index']);
+			return $html;
+		}, [Controller::$parsed], ['infrajs\\access\Access','adminTime'] );
+		
+		echo $html;
+		return !!$html;
+		/*$conf = Config::get('controller');
 		
 		$crumb = Crumb::getInstance();
 		if ($crumb->value) {
@@ -58,7 +75,7 @@ class Controller
 		}
 
 		echo $html;
-		return !!$html;
+		return !!$html;*/
 	}
 	public static function check(&$layers)
 	{
