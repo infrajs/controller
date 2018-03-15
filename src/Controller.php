@@ -43,13 +43,14 @@ class Controller
 		Controller::$parsed = '';
 		Event::tik('Controller.parsed');
 		Event::fire('Controller.parsed');
-		$crumb = Crumb::getInstance();
+		//$crumb = Crumb::getInstance();
+		$query = urldecode($_SERVER['REQUEST_URI']);
 		$html = MemCache::func( function ($parsed) use ($conf) {
 			header('Controller-Cache: false'); 
 			
 			$html = Controller::check($conf['index']);
 			return $html;
-		}, [Controller::$parsed,$crumb->value, Crumb::$get]);
+		}, [Controller::$parsed,$query]);
 		//}, [Controller::$parsed,$crumb->value, Crumb::$get], ['infrajs\\access\Access','adminTime'] );
 		
 		echo $html;
