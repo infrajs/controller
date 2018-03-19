@@ -6,6 +6,7 @@ use infrajs\access\Access;
 use infrajs\template\Template;
 use infrajs\each\Each;
 use infrajs\load\Load;
+use akiyatkin\boo\MemCache;
 
 class Tpl
 {
@@ -120,50 +121,40 @@ class Tpl
 
 		//Проблема при первом session_get конект к базе и вызов session_init в следующем подключении init не вызывается
 		//но для следующего подключения нам нужно понять что есть динамика// По этому загловки отправляются в том числе и руками в скритпах  Cache-Control:no-cache
-		$html = Access::cache('infrajs_getHtml', function () use (&$layer) {
+		$html = MemCache::func( function () use (&$layer) {
 			//Здесь мог быть установлен infrajs['com'] его тоже нужно вернуть/ А вот после loadTEXT мог быть кэш и ничего не установится
-			$html = Tpl::_getHtml($layer);
+			//Вызывается как для основных так и для подслойв tpls frame. Расширяется в tpltpl.prop.js
 
+			if (!empty($layer['data']) || !empty($layer['json']) || !empty($layer['tpls']) || !empty($layer['tplroot'])) {
+				$tpls = Template::make($layer['tpl']);//С кэшем перепарсивания
+						
+				$repls = array();//- подшаблоны для замены, Важно, что оригинальный распаршеный шаблон не изменяется
+				Each::fora($layer['tplsm'], function &($tm) use (&$repls) {
+					//mix tpl
+					
+					$t = Template::make($tm);//С кэшем перепарсивания
+					array_push($repls, $t);
+					//for(var i in t)repls[i]=t[i];//Нельзя подменять в оригинальном шаблоне, который в других местах может использоваться без подмен
+					//^ из-за этого обработчики указанные в tplsm срабатывают постоянно, так как нельзя поставить отметку о том что обработчик сохранён
+					$r = null;
+					return $r;
+				});
+
+				$layer['data'] = &self::getData($layer);//подменили строку data на объект data
+
+				$tpls = Template::includes($tpls, $layer['data'], isset($layer['dataroot'])? $layer['dataroot']: null);
+				$alltpls = array(&$repls,&$tpls);
+
+				$html = Template::exec($alltpls, $layer, isset($layer['tplroot']) ? $layer['tplroot'] : null, isset($layer['dataroot'])? $layer['dataroot']: null);
+			} else {
+				$tpl = self::getTpl($layer);
+
+				
+				$html = $tpl;
+			}
+			if (!$html) $html = '';
 			return $html;
 		}, array($row));//Кэш обновляемый с последней авторизацией админа определяется строкой parsed слоя
-
-		return $html;
-	}
-	public static function _getHtml(&$layer)
-	{
-		//Вызывается как для основных так и для подслойв tpls frame. Расширяется в tpltpl.prop.js
-
-		if (!empty($layer['data']) || !empty($layer['json']) || !empty($layer['tpls']) || !empty($layer['tplroot'])) {
-			$tpls = Template::make($layer['tpl']);//С кэшем перепарсивания
-			
-			
-			$repls = array();//- подшаблоны для замены, Важно, что оригинальный распаршеный шаблон не изменяется
-			Each::fora($layer['tplsm'], function &($tm) use (&$repls) {
-				//mix tpl
-				
-				$t = Template::make($tm);//С кэшем перепарсивания
-				array_push($repls, $t);
-				//for(var i in t)repls[i]=t[i];//Нельзя подменять в оригинальном шаблоне, который в других местах может использоваться без подмен
-				//^ из-за этого обработчики указанные в tplsm срабатывают постоянно, так как нельзя поставить отметку о том что обработчик сохранён
-				$r = null;
-				return $r;
-			});
-
-			$layer['data'] = &self::getData($layer);//подменили строку data на объект data
-
-			$tpls = Template::includes($tpls, $layer['data'], isset($layer['dataroot'])? $layer['dataroot']: null);
-			$alltpls = array(&$repls,&$tpls);
-
-			$html = Template::exec($alltpls, $layer, isset($layer['tplroot']) ? $layer['tplroot'] : null, isset($layer['dataroot'])? $layer['dataroot']: null);
-		} else {
-			$tpl = self::getTpl($layer);
-
-			
-			$html = $tpl;
-		}
-		if (!$html) {
-			$html = '';
-		}
 
 		return $html;
 	}

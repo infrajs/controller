@@ -6,7 +6,10 @@ use infrajs\event\Event;
 use infrajs\access\Access;
 use infrajs\load\Load;
 use infrajs\view\View;
+use infrajs\once\Once;
+use infrajs\nostore\Nostore;
 use akiyatkin\boo\MemCache;
+use akiyatkin\boo\Cache;
 use infrajs\config\Config;
 /*//
 Event::fire('Layer.is|on show|check|init',layer);
@@ -45,14 +48,18 @@ class Controller
 		Event::fire('Controller.parsed');
 		//$crumb = Crumb::getInstance();
 		$query = urldecode($_SERVER['REQUEST_URI']);
-		$html = MemCache::func( function ($parsed) use ($conf) {
-			header('Controller-Cache: false'); 
-			
+		$html = Cache::func( function ($parsed) use ($conf) {
+			header('Controller-Cache: false');
+			//Nostore::$debug=true;
 			$html = Controller::check($conf['index']);
+			//Nostore::$debug=false; var_dump(Nostore::is());
 			return $html;
 		}, [Controller::$parsed,$query]);
 		//}, [Controller::$parsed,$crumb->value, Crumb::$get], ['infrajs\\access\Access','adminTime'] );
-		
+		//echo '<pre>';
+		//print_r(Once::$items[Once::$lastid]['conds']);
+		//echo '</pre>';
+		//Cache::$proccess = true;
 		echo $html;
 		return !!$html;
 		/*$conf = Config::get('controller');
@@ -82,10 +89,12 @@ class Controller
 	{
 		static::$layers = &$layers;
 		//Пробежка по слоям
-
+		
+		
 		Event::tik('Controller');
 		Event::tik('Layer');
 		Event::fire('Controller.oninit');//сборка событий
+		
 		
 		Run::exec(static::$layers, function &(&$layer, &$parent) {
 			//Запускается у всех слоёв в работе
@@ -112,7 +121,7 @@ class Controller
 			}
 			return $r;
 		});//у родительского слоя showed будет реальное а не старое
-			
+		
 		Event::fire('Controller.onshow');
 
 		//loader, setA, seo добавить в html, можно зациклить check
