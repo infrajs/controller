@@ -46,7 +46,7 @@ class Controller
 		Controller::$parsed = '';
 		Event::tik('Controller.parsed');
 		Event::fire('Controller.parsed');
-		//$crumb = Crumb::getInstance();
+		$crumb = Crumb::getInstance();
 		$query = urldecode($_SERVER['REQUEST_URI']);
 		$html = Cache::func( function ($parsed) use ($conf) {
 			header('Controller-Cache: false');
@@ -55,6 +55,9 @@ class Controller
 			//Nostore::$debug=false; var_dump(Nostore::is());
 			return $html;
 		}, [Controller::$parsed,$query]);
+		$r = explode('?',$_SERVER['REQUEST_URI']);
+		if ($r[0] != '/') Once::$items[Once::$lastid]['nostore'] = true;
+
 		//}, [Controller::$parsed,$crumb->value, Crumb::$get], ['infrajs\\access\Access','adminTime'] );
 		//echo '<pre>';
 		//print_r(Once::$items[Once::$lastid]['conds']);
