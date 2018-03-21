@@ -47,7 +47,9 @@ class Controller
 		Event::tik('Controller.parsed');
 		Event::fire('Controller.parsed');
 		$crumb = Crumb::getInstance();
-		$query = urldecode($_SERVER['REQUEST_URI']);
+		$query = Crumb::$href;
+
+
 		$html = Cache::func( function ($parsed) use ($conf) {
 			header('Controller-Cache: false');
 			//Nostore::$debug=true;

@@ -3,6 +3,7 @@
 namespace infrajs\controller;
 use infrajs\sequence\Sequence;
 use infrajs\each\Each;
+use infrajs\path\Path;
 
 
 class Crumb
@@ -138,7 +139,7 @@ class Crumb
 	}
 	public static function init()
 	{
-		$query = urldecode($_SERVER['REQUEST_URI']);
+		$query = Path::toutf(urldecode($_SERVER['REQUEST_URI']));
 		self::change($query);
 	}
 	public function toString()
