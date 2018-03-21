@@ -154,7 +154,9 @@ class Tpl
 			}
 			if (!$html) $html = '';
 			return $html;
-		}, array($row));//Кэш обновляемый с последней авторизацией админа определяется строкой parsed слоя
+		
+		
+		}, array($row),['infrajs\\access\\Access','getDebugTime']);//Кэш обновляемый с последней авторизацией админа определяется строкой parsed слоя
 
 		return $html;
 	}
