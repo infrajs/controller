@@ -50,15 +50,17 @@ class Controller
 		$query = Crumb::$href;
 
 
-		$html = Cache::func( function ($parsed) use ($conf) {
+		$html = Cache::func( function ($parsed, $query) use ($conf) {
 			header('Controller-Cache: false');
 			//Nostore::$debug=true;
 			$html = Controller::check($conf['index']);
 			//Nostore::$debug=false; var_dump(Nostore::is());
+			$r = explode('?',$query);
+			if ($r[0] != '/') Nostore::on();
 			return $html;
-		}, [Controller::$parsed,$query]);
-		$r = explode('?',$_SERVER['REQUEST_URI']);
-		if ($r[0] != '/') Once::$items[Once::$lastid]['nostore'] = true;
+		}, [Controller::$parsed, $query]);
+		
+		
 
 		//}, [Controller::$parsed,$crumb->value, Crumb::$get], ['infrajs\\access\Access','adminTime'] );
 		//echo '<pre>';
