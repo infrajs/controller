@@ -54,18 +54,22 @@ class Controller
 			header('Controller-Cache: false');
 			//Nostore::$debug=true;
 			$html = Controller::check($conf['index']);
-			//Nostore::$debug=false; var_dump(Nostore::is());
 			$r = explode('?',$query);
 			if ($r[0] != '/') Cache::ignore();
+			//var_dump(Nostore::is());
 			return $html;
 		}, [Controller::$parsed, $query]);
 		
-		
+		/*var_dump(Cache::$process);
 
 		//}, [Controller::$parsed,$crumb->value, Crumb::$get], ['infrajs\\access\Access','adminTime'] );
 		//echo '<pre>';
-		//print_r(Once::$items[Once::$lastid]['conds']);
+		echo Once::$lastid.'<br>';
+		var_dump(Once::$items[Once::$lastid]['checked']);
+		//echo '<br>';
+		print_r(Once::$items[Once::$lastid]['time']);
 		//echo '</pre>';
+		//exit;*/
 		//Cache::$proccess = true;
 		echo $html;
 		return !!$html;
