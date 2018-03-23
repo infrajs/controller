@@ -60,14 +60,17 @@ class Controller
 			return $html;
 		}, [Controller::$parsed, $query]);
 		
-		/*var_dump(Cache::$process);
+		//var_dump(Cache::$process);
 
 		//}, [Controller::$parsed,$crumb->value, Crumb::$get], ['infrajs\\access\Access','adminTime'] );
 		//echo '<pre>';
-		echo Once::$lastid.'<br>';
-		var_dump(Once::$items[Once::$lastid]['checked']);
+		//echo Once::$lastid.'<br>';
+		//echo '<pre>';
+		//unset(Cache::$process['result']);
+		//print_r(Cache::$process);
+		//echo '</pre>';
 		//echo '<br>';
-		print_r(Once::$items[Once::$lastid]['time']);
+		//print_r(Once::$items[Once::$lastid]['time']);
 		//echo '</pre>';
 		//exit;*/
 		//Cache::$proccess = true;
