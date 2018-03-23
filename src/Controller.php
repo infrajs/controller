@@ -56,7 +56,7 @@ class Controller
 			$html = Controller::check($conf['index']);
 			//Nostore::$debug=false; var_dump(Nostore::is());
 			$r = explode('?',$query);
-			if ($r[0] != '/') Nostore::on();
+			if ($r[0] != '/') Cache::ignore();
 			return $html;
 		}, [Controller::$parsed, $query]);
 		
