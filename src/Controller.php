@@ -50,7 +50,7 @@ class Controller
 		$query = Crumb::$href;
 
 
-		$html = Cache::func( function ($parsed, $query) use ($conf) {
+		$html = Access::func( function ($parsed, $query) use ($conf) {
 			header('Controller-Cache: false');
 			//Nostore::$debug=true;
 			$html = Controller::check($conf['index']);
