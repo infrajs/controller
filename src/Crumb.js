@@ -167,16 +167,18 @@ infra.Crumb.go = function (href, nopushstate) {
 	var query = href;
 	
 	//var path=(query?('?'+encodeURI(query)):location.pathname);
-	if(!nopushstate) {
-		history.pushState(null,null,query+anchor);
-	} else if (nopushstate === false) { //Тихое изменение состояния
-		history.replaceState(null,null,'/'+query+anchor);
-		infra.Crumb.popstate=false;
+	
+	if (nopushstate === false) { //Тихое изменение состояния
+		history.replaceState(null,null,query+anchor);
+		infra.Crumb.popstate = false;
 		infra.Crumb.change(query);
 		return;
+	} else if(!nopushstate) {
+		history.pushState(null,null,query+anchor);
+		infra.Crumb.popstate=false;
 	}
 	
-	infra.Crumb.popstate=false;
+	
 	infra.Crumb.change(query);
 	Event.tik('Crumb.onchange');
 	Event.fire('Crumb.onchange');
