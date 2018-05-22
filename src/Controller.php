@@ -49,12 +49,12 @@ class Controller
 		$crumb = Crumb::getInstance();
 		$query = Crumb::$href;
 
-
 		$html = Access::func( function ($parsed, $query) use ($conf) {
 			header('Controller-Cache: false');
 			//Nostore::$debug=true;
 			$html = Controller::check($conf['index']);
 			$r = explode('?',$query);
+			if (isset(Crumb::$get['m'])) Cache::ignore();
 			//if ($r[0] != '/') Cache::ignore();
 			//var_dump(Nostore::is());
 			return $html;
