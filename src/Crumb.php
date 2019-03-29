@@ -115,7 +115,7 @@ class Crumb
 			$that->is = true;
 			$that->child = $child;
 			$that->value = (string) isset($right[sizeof($that->path)]) ? $right[sizeof($that->path)] : null;
-			//$that->query = Crumb::short(right.slice(that.path.length));
+			$that->query = Crumb::short(array_slice($right, sizeof($that->path)));
 
 			$child = $that;
 			if (!empty($that->parent)) {
