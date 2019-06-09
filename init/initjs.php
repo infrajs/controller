@@ -18,7 +18,9 @@
 	});
 	$data = Load::json_encode($data);
 ?>
-infrajs.checkAdd(<?php echo $data?>);
-Event.handler('Crumb.onchange', function () {
-	infrajs.check();
-}, 'infrajs');
+setTimeout(function(){
+	infrajs.checkAdd(<?php echo $data?>);
+	Event.handler('Crumb.onchange', function () {
+		infrajs.check();
+	}, 'infrajs');
+},1000);
