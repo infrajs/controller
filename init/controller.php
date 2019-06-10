@@ -319,8 +319,8 @@ Event::one('Controller.oninit', function &() {
 
 	Template::$scope;
 
-	Sequence::set(Template::$scope, Sequence::right('infrajs.ids'), Controller::$ids);
-	Sequence::set(Template::$scope, Sequence::right('infrajs.names'), Controller::$names);
+	//Sequence::set(Template::$scope, Sequence::right('infrajs.ids'), Controller::$ids);
+	//Sequence::set(Template::$scope, Sequence::right('infrajs.names'), Controller::$names);
 
 	Sequence::set(Template::$scope, Sequence::right('Controller.ids'), Controller::$ids);
 	Sequence::set(Template::$scope, Sequence::right('Controller.names'), Controller::$names);
@@ -334,12 +334,13 @@ Event::one('Controller.oninit', function &() {
 Event::handler('Controller.oninit', function &() {
 	$r = null;
 	$root = Crumb::getInstance();
-	Sequence::set(Template::$scope, Sequence::right('infra.Crumb.params'), Crumb::$params);
-	Sequence::set(Template::$scope, Sequence::right('infra.Crumb.get'), Crumb::$get);
+	//Sequence::set(Template::$scope, Sequence::right('infra.Crumb.params'), Crumb::$params);
+	//Sequence::set(Template::$scope, Sequence::right('infra.Crumb.get'), Crumb::$get);
 	//Sequence::set(Template::$scope, Sequence::right('infra.Crumb.query'), Crumb::$query);
-
+	Sequence::set(Template::$scope, Sequence::right('Crumb.query'), $root->query);
+	Sequence::set(Template::$scope, Sequence::right('Crumb.params'), Crumb::$referrer);
 	Sequence::set(Template::$scope, Sequence::right('Crumb.params'), Crumb::$params);
 	Sequence::set(Template::$scope, Sequence::right('Crumb.get'), Crumb::$get);
-	//Sequence::set(Template::$scope, Sequence::right('Crumb.query'), Crumb::$query);
+	
 	return $r;
 }, 'Controller');

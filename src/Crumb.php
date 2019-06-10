@@ -14,6 +14,7 @@ class Crumb
 	public $value;//Строка или null
 	public $query;
 	public static $href;
+	public static $referrer;
 	public static $childs = array();
 	public $counter = 0;
 	public static $globalcounter = 0;
@@ -81,6 +82,7 @@ class Crumb
 	}
 	public static function change($query)
 	{
+		Crumb::$referrer = '/'.Crumb::$href;
 		Crumb::$href = $query;
 
 		$amp = explode('?', $query, 2);

@@ -351,8 +351,8 @@ Event.handler('Controller.onshow', function () {
 
 Event.one('Controller.oninit', function() {
 	//div
-	Sequence.set(Template.scope, Sequence.right('infrajs.ids'), Controller.ids);
-	Sequence.set(Template.scope, Sequence.right('infrajs.names'), Controller.names);
+	//Sequence.set(Template.scope, Sequence.right('infrajs.ids'), Controller.ids);
+	//Sequence.set(Template.scope, Sequence.right('infrajs.names'), Controller.names);
 
 	Sequence.set(Template.scope, Sequence.right('Controller.ids'), Controller.ids);
 	Sequence.set(Template.scope, Sequence.right('Controller.names'), Controller.names);
@@ -362,13 +362,16 @@ Event.one('Controller.oninit', function() {
 
 	
 }, 'Controller');
+
 Event.handler('Controller.oninit', function () {
 	var root = Crumb.getInstance();
-	//Sequence.set(Template.scope, Sequence.right('Crumb.query'), root.query);
+
+	Sequence.set(Template.scope, Sequence.right('Crumb.query'), root.query);
+	Sequence.set(Template.scope, Sequence.right('Crumb.referrer'), Crumb.referrer);
 	Sequence.set(Template.scope, Sequence.right('Crumb.params'), Crumb.params);
 	Sequence.set(Template.scope, Sequence.right('Crumb.get'), Crumb.get);
 
 	//Sequence.set(Template.scope, Sequence.right('infra.Crumb.query'), root.query);
-	Sequence.set(Template.scope, Sequence.right('infra.Crumb.params'), Crumb.params);
-	Sequence.set(Template.scope, Sequence.right('infra.Crumb.get'), Crumb.get);
+	//Sequence.set(Template.scope, Sequence.right('infra.Crumb.params'), Crumb.params);
+	//Sequence.set(Template.scope, Sequence.right('infra.Crumb.get'), Crumb.get);
 }, 'Controller');

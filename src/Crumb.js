@@ -42,6 +42,7 @@ infra.Crumb.prototype={
 infra.Crumb.change=function(query){
 	//static
 	//Запускается паблик у класса
+	Crumb.referrer = '/'+Crumb.search;
 	Crumb.search = query;
 	var amp = query.split('?');
 	if (amp.length > 1) amp = [amp.shift(),amp.join('&')];
@@ -59,6 +60,7 @@ infra.Crumb.change=function(query){
 		var params=amp[1] ? amp[1] : '';
 		var query=amp[0];
 	}
+	//Crumb.refparams = Crumb.params;
 	Crumb.params=params;
 
 	var ar = params.split('&');
@@ -74,14 +76,17 @@ infra.Crumb.change=function(query){
 		}*/
 		get[unescape(k)] = v;
 	}
+	//Crumb.refget = Crumb.get;
 	Crumb.get=get;
 
 	var right = Crumb.right(query);
 	var counter = ++Crumb.counter;
 	var old = Crumb.path;
+	//Crumb.refpath = Crumb.path;
 	Crumb.path=right;
 
 	Crumb.value = right[0] ? right[0] : '';
+	//Crumb.refquery = Crumb.query;
 	Crumb.query = Crumb.short(right);
 	Crumb.href = Crumb.short(right);
 	Crumb.child = Crumb.getInstance(infra.Crumb.value);
@@ -178,7 +183,11 @@ infra.Crumb.go = function (href, nopushstate) {
 		infra.Crumb.popstate=false;
 	}
 	
-	
+	r = query.split('/');
+	if (!r[0]) {
+		r.shift();
+		query = r.join('/');
+	}
 	infra.Crumb.change(query);
 	Event.tik('Crumb.onchange');
 	Event.fire('Crumb.onchange');
