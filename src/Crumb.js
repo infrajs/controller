@@ -42,7 +42,7 @@ infra.Crumb.prototype={
 infra.Crumb.change=function(query){
 	//static
 	//Запускается паблик у класса
-	Crumb.referrer = '/'+Crumb.search;
+	if (Crumb.search) Crumb.referrer = '/'+Crumb.search;
 	Crumb.search = query;
 	var amp = query.split('?');
 	if (amp.length > 1) amp = [amp.shift(),amp.join('&')];
