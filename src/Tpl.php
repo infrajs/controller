@@ -80,10 +80,33 @@ class Tpl
 			//Если массив то это просто строка в виде данных
 			$data = Load::loadTEXT($data[0]);
 		} elseif (is_string($data)) {
-			$data = &Load::loadJSON($data);//Забираем для текущего клиента что-то..
+			
+			$data = &Load::loadJSON($data);//Забираем для текущего клиента что-то..	
 		}
 
 		return $data;
+	}
+	public static function checkRedirect(&$layer) {
+		$prop = 'redirect';
+		$proptpl = $prop.'tpl';
+
+		if (!empty($layer[$proptpl])) {
+			$p = $layer[$proptpl];
+			$p = Template::parse([$p], $layer);
+			$layer[$prop] = $p;
+		}
+		
+		if (empty($layer[$prop])) return;
+
+		$url1 = $_SERVER['REDIRECT_URL'];	
+		$url2 = $layer[$prop];
+		if ($url1 != $url2) {
+			if (!empty($_SERVER['REDIRECT_QUERY_STRING'])) {
+				$url2.='?'.$_SERVER['REDIRECT_QUERY_STRING'];
+			}
+			header('Location: '.$url2);
+			exit;
+		}
 	}
 	public static function getTpl(&$layer)
 	{
@@ -145,7 +168,6 @@ class Tpl
 				});
 
 				$layer['data'] = &self::getData($layer);//подменили строку data на объект data
-
 				$tpls = Template::includes($tpls, $layer['data'], isset($layer['dataroot'])? $layer['dataroot']: null);
 				$alltpls = array(&$repls,&$tpls);
 
@@ -161,7 +183,7 @@ class Tpl
 		
 		
 		}, array($row),['infrajs\\access\\Access','getDebugTime'],[], $level);//Кэш обновляемый с последней авторизацией админа определяется строкой parsed слоя
-
+		Tpl::checkRedirect($layer);
 		return $html;
 	}
 	public static function jsoncheck(&$layer)
