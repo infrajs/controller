@@ -104,6 +104,14 @@ class Tpl
 			if (!empty($_SERVER['REDIRECT_QUERY_STRING'])) {
 				$url2.='?'.$_SERVER['REDIRECT_QUERY_STRING'];
 			}
+			$url2 = explode('/',$url2);
+
+			$url2 = array_map(function ($s) {
+				return urlencode($s);
+			}, $url2);
+			$url2 = implode('/',$url2);
+			//echo $url2;
+			//exit;
 			header('Location: '.$url2);
 			exit;
 		}
