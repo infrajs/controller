@@ -98,20 +98,24 @@ class Tpl
 		
 		if (empty($layer[$prop])) return;
 
-		$url1 = $_SERVER['REDIRECT_URL'];	
+		$r = explode('?',Crumb::$href);
+		$path = array_shift($r);
+		$query = implode('?', $r);
+		
+		$url1 = $path;
 		$url2 = $layer[$prop];
 		if ($url1 != $url2) {
-			if (!empty($_SERVER['REDIRECT_QUERY_STRING'])) {
-				$url2.='?'.$_SERVER['REDIRECT_QUERY_STRING'];
+			if ($query) {
+				$url2.='?'.$query;
 			}
-			$url2 = explode('/',$url2);
+			/*$url2 = explode('/',$url2);
 
 			$url2 = array_map(function ($s) {
 				return urlencode($s);
 			}, $url2);
 			$url2 = implode('/',$url2);
 			//echo $url2;
-			//exit;
+			//exit;*/
 			header('Location: '.$url2);
 			exit;
 		}
