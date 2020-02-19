@@ -195,7 +195,6 @@ class Tpl
 		
 		
 		}, array($row),['infrajs\\access\\Access','getDebugTime'],[], $level);//Кэш обновляемый с последней авторизацией админа определяется строкой parsed слоя
-		Tpl::checkRedirect($layer);
 		return $html;
 	}
 	public static function jsoncheck(&$layer)

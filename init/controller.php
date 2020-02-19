@@ -196,6 +196,7 @@ Event::handler('Layer.isshow', function (&$layer) {
 Event::handler('Layer.onshow', function (&$layer) {
 	if (Layer::pop($layer, 'onlyclient')) return;
 	$layer['html'] = Tpl::getHtml($layer);
+	Tpl::checkRedirect($layer);
 }, 'tpl:div');
 
 Event::handler('Layer.onshow', function (&$layer) {
