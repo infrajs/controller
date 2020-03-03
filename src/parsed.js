@@ -2,17 +2,21 @@
 	//parsed
 	infrajs.parsedinit=function(){
 		infrajs.parsed.props=[];//Расширяется в global.js
-		infrajs.parsedAdd('dataroot');
-		infrajs.parsedAdd('tplroot');
-		infrajs.parsedAdd('json');
-		infrajs.parsedAdd('tpl');
-		infrajs.parsedAdd('is');
-		infrajs.parsedAdd('id');
+		
+		infrajs.parsedAdd('parsed');
 		infrajs.parsedAdd(function(layer){
 			if(!layer.parsedtpl)return '';
 			return infra.template.parse([layer.parsedtpl],layer);
 		});
-		infrajs.parsedAdd('parsed');
+		
+		infrajs.parsedAdd('tpl');
+		infrajs.parsedAdd('json');
+		infrajs.parsedAdd('dataroot');
+		infrajs.parsedAdd('tplroot');
+		infrajs.parsedAdd('id');
+		infrajs.parsedAdd('is');
+		
+		
 
 	};
 	

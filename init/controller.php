@@ -159,12 +159,14 @@ Event::handler('Layer.isshow', function (&$layer) {
  * У слоя созданы свойства
  * tpl, json, dataroot, tplroot, data, tplcheck, datacheck
  **/
-Layer::parsedAdd('tpl');
-Layer::parsedAdd('json');
-Layer::parsedAdd('dataroot');
-Layer::parsedAdd('tplroot');
-Layer::parsedAdd('id');
-
+Event::handler('Controller.oninit', function () {
+	Layer::parsedAdd('tpl');
+	Layer::parsedAdd('json');
+	Layer::parsedAdd('dataroot');
+	Layer::parsedAdd('tplroot');
+	Layer::parsedAdd('id');
+	Layer::parsedAdd('is');
+});
 
 Event::handler('Layer.oncheck', function (&$layer) {
 	Tpl::tplroottpl($layer);
@@ -219,7 +221,7 @@ Event::handler('Layer.onshow', function (&$layer) {
 
 Run::runAddList('layers');
 
-Layer::parsedAdd('is');
+
 
 Event::handler('Layer.isshow', function (&$layer) {
 	$prop = 'is';

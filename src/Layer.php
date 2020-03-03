@@ -74,7 +74,6 @@ class Layer {
 				$str[] = $val;
 			}
 		}
-
 		return implode('|', $str);
 	}
 	public static function parsedAdd($fn)
