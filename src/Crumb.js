@@ -110,8 +110,8 @@ infra.Crumb.change=function(query){
 		that=that.parent;
 	};
 }
-infra.Crumb.init = function(){
-	var listen = function(){
+infra.Crumb.init = () => {
+	let listen = async () => {
 		var src = location.pathname.substr(1);
 		src = decodeURI(src);
 

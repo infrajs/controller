@@ -72,7 +72,6 @@ infrajs.store=function(){//Для единобразного доступа в p
 			timer:false,
 			run:{'keys':{},'list':{}},
 			waits:[],
-			process:false,
 			counter:0,//Счётчик сколько раз перепарсивался сайт, посмотреть можно в firebug
 			alayers:[],//Записываются только слои у которых нет родителя...
 			wlayers:[]//Записываются обрабатываемые сейчас слои
@@ -144,75 +143,73 @@ infrajs.show=function(layer,div){
 	layer.parsed=Math.random();
 	infrajs.check(layer);
 }
-infrajs.check=function(layers){//Пробежка по слоям
-	var store=infrajs.store();
-	if(store.process){//Функция checkNow сейчас выполняется и в каком-то
-		//Момент когда process уже начался но ещё не запустился после timer
-		setTimeout(function(){//обработчике прошёл вызов пробежки...  Если мы добавим текущий слой в массив всех слоёв.. он начнёт участвовать в пробежке в операциях после той в которой был вызов создавший этот слой... короче не добавляем его
-			infrajs.check(layers);
-		},1);//Запоминаем всё в этой ловушке...
-		return;
+infrajs.check = (layers) => {
+	if (infrajs.check.promise) {
+		return infrajs.check.promise = infrajs.check.promise.then(() => infrajs.check(layers))
 	}
-	store.process=true;
-	//процесс характеризуется двумя переменными process и timer... true..true..false.....false
-	store.counter++;
+	return infrajs.check.promise = new Promise((resolve) => {
+		setTimeout(()=>{
+			var store = infrajs.store();
+			//процесс характеризуется двумя переменными process и timer... true..true..false.....false
+			store.counter++;
 
 
-	store.ismainrun=!layers;
-	//store.ismainrun=true;
+			store.ismainrun=!layers;
+			//store.ismainrun=true;
 
-	if(layers){
-		console.log('Controller.check(layers)');
-		var wlayers=layers;
-	}else{//Если конкретные слои не указаны беруться все упоминавшиеся слои
-		console.log('Controller.check()');
-		var wlayers=store.alayers.concat();//далее alayers может наполняться, чтобы не было копии
-	}
+			if (layers) {
+				console.log('Controller.check(layers)');
+				var wlayers=layers;
+			} else { //Если конкретные слои не указаны беруться все упоминавшиеся слои
+				console.log('Controller.check()');
+				var wlayers=store.alayers.concat();//далее alayers может наполняться, чтобы не было копии
+			}
 
-	store.wlayers=wlayers;
-	Event.tik('Controller');
-	Event.tik('Layer');
-	Event.fire('Controller.oninit');//loader
-
-
-	infrajs.run(infrajs.getWorkLayers(),function(layer,parent){//Запускается у всех слоёв в работе которые wlayers
-		if (parent) layer['parent'] = parent;//Не обрабатывается ситуация когда check снутри иерархии
-		Event.fire('Layer.oninit', layer);//устанавливается state
-		if(Event.fire('Layer.ischeck', layer)){
-			Event.fire('Layer.oncheck', layer);//нельзя запускать is show так как ожидается что все oncheckb сделаются и в is будут на их основе соответствующие проверки
-		}
-	});//разрыв нужен для того чтобы можно было наперёд определить показывается слой или нет. oncheck у всех. а потом по порядку.
-
-	Event.fire('Controller.oncheck');//момент когда доступны слои для подписки и какой-то обработки, доступен unick
-
-	infrajs.run(infrajs.getWorkLayers(),function(layer){//С чего вдруг oncheck у всех слоёв.. надо только у активных
-		if(Event.fire('Layer.isshow',layer)){
-			if(!Event.fire('Layer.isrest',layer)){
-
-				Event.fire('Layer.onshow', layer);//Событие в котором вставляется html
-				//infra.fire(layer,'onshow');//своевременное выполнение Event.onext onshow в кэше html когда порядок слоёв не играет роли
-				//при клике делается отметка в конфиге слоя и слой парсится... в oncheck будут подстановки tpl и isRest вернёт false
-			}//onchange показанный слой не реагирует на изменение адресной строки, нельзя привязывать динамику интерфейса к адресной строке, только черещ перепарсивание
-		}else if(layer.showed){
-			//Правильная форма события (conteiner,name,obj)
-			Event.fire('Layer.onhide', layer); //нужно для autosave
-			//infra.fire(layer,'onhide');//сбросить catalog когда скрылся слой поиска в каталоге
-		}
-		layer.showed=Event.fire('Layer.isshow',layer);//Свойства showed. Нужно знать предыдущее значение isShow с последней проверки. Используется в admin.js
-	});//у родительского слоя showed будет реальное а не старое, назад showed проверять нельзя
+			store.wlayers=wlayers;
+			Event.tik('Controller');
+			Event.tik('Layer');
+			Event.fire('Controller.oninit');//loader
 
 
+			infrajs.run(infrajs.getWorkLayers(),function(layer,parent){//Запускается у всех слоёв в работе которые wlayers
+				if (parent) layer['parent'] = parent;//Не обрабатывается ситуация когда check снутри иерархии
+				Event.fire('Layer.oninit', layer);//устанавливается state
+				if(Event.fire('Layer.ischeck', layer)){
+					Event.fire('Layer.oncheck', layer);//нельзя запускать is show так как ожидается что все oncheckb сделаются и в is будут на их основе соответствующие проверки
+				}
+			});//разрыв нужен для того чтобы можно было наперёд определить показывается слой или нет. oncheck у всех. а потом по порядку.
 
-	Event.fire('Controller.onshow');//loader, setA, в onshow можно зациклить check
-	store.process=false;
-	//onshow1
-		//вызван check (нужен setTimeout чтобы не разворачивало всё.)
-			//вызван onshow1
+			Event.fire('Controller.oncheck');//момент когда доступны слои для подписки и какой-то обработки, доступен unick
+
+			infrajs.run(infrajs.getWorkLayers(),function(layer){//С чего вдруг oncheck у всех слоёв.. надо только у активных
+				if(Event.fire('Layer.isshow',layer)){
+					if(!Event.fire('Layer.isrest',layer)){
+
+						Event.fire('Layer.onshow', layer);//Событие в котором вставляется html
+						//infra.fire(layer,'onshow');//своевременное выполнение Event.onext onshow в кэше html когда порядок слоёв не играет роли
+						//при клике делается отметка в конфиге слоя и слой парсится... в oncheck будут подстановки tpl и isRest вернёт false
+					}//onchange показанный слой не реагирует на изменение адресной строки, нельзя привязывать динамику интерфейса к адресной строке, только черещ перепарсивание
+				}else if(layer.showed){
+					//Правильная форма события (conteiner,name,obj)
+					Event.fire('Layer.onhide', layer); //нужно для autosave
+					//infra.fire(layer,'onhide');//сбросить catalog когда скрылся слой поиска в каталоге
+				}
+				layer.showed=Event.fire('Layer.isshow',layer);//Свойства showed. Нужно знать предыдущее значение isShow с последней проверки. Используется в admin.js
+			});//у родительского слоя showed будет реальное а не старое, назад showed проверять нельзя
+
+
+
+			Event.fire('Controller.onshow');//loader, setA, в onshow можно зациклить check
+			delete infrajs.check.promise
+			resolve()
+			//onshow1
+				//вызван check (нужен setTimeout чтобы не разворачивало всё.)
+					//вызван onshow1
+					//вызван onshow2
 			//вызван onshow2
-	//вызван onshow2
-	//событие будет сгенерировано два раза, с одним counter
-
-
+			//событие будет сгенерировано два раза, с одним counter
+		},1)		
+	})
 };// child, layers
 
 infrajs.checkAdd=function(layers){
