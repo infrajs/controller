@@ -277,14 +277,15 @@ Event.handler('Layer.isrest' , function (layer){
 //========================
 // layer onshow
 //========================
-Event.handler('Layer.onshow', function (layer){//Должно идти до tpl
-	//counter
-	layer.counter++;
-}, 'layer');
 Event.handler('Layer.onshow', function (layer){
 	//tpl
 	layer._parsed=Controller.parsed(layer);	//Выставляется после обработки шаблонов в которых в событиях onparse могла измениться data
 },'parsed');
+Event.handler('Layer.onshow', function (layer){//Должно идти до tpl
+	//counter
+	layer.counter++;
+}, 'layer');
+
 Event.handler('Layer.onshow', function (layer){//До того как сработает событие самого слоя в котором уже будут обработчики вешаться
 	//tpl
 	if(Controller.ignoreDOM(layer))return;
