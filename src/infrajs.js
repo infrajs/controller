@@ -61,39 +61,39 @@ infrajs.checkAdd(layer);
 
 
 
-if (!window.infrajs) window.infrajs={};
-window.Controller=window.infrajs;
-infrajs.storeLayer=function(layer){//кэш на каждый iswork
-	if(!layer['store'])layer['store']={'counter':0};//Кэш используется во всех is функциях... iswork кэш, ischeck кэш используется для определения iswork слоя.. путём сравнения ))
+if (!window.infrajs) window.infrajs = {};
+window.Controller = window.infrajs;
+infrajs.storeLayer = function (layer) {//кэш на каждый iswork
+	if (!layer['store']) layer['store'] = { 'counter': 0 };//Кэш используется во всех is функциях... iswork кэш, ischeck кэш используется для определения iswork слоя.. путём сравнения ))
 	return layer['store'];//Очищается кэш в checkNow
 }
-infrajs.store=function(){//Для единобразного доступа в php, набор глобальных переменных
-	if(!this.store.data)this.store.data={
-			timer:false,
-			run:{'keys':{},'list':{}},
-			waits:[],
-			counter:0,//Счётчик сколько раз перепарсивался сайт, посмотреть можно в firebug
-			alayers:[],//Записываются только слои у которых нет родителя...
-			wlayers:[]//Записываются обрабатываемые сейчас слои
+infrajs.store = function () {//Для единобразного доступа в php, набор глобальных переменных
+	if (!this.store.data) this.store.data = {
+		timer: false,
+		run: { 'keys': {}, 'list': {} },
+		waits: [],
+		counter: 0,//Счётчик сколько раз перепарсивался сайт, посмотреть можно в firebug
+		alayers: [],//Записываются только слои у которых нет родителя...
+		wlayers: []//Записываются обрабатываемые сейчас слои
 	};
 	return this.store.data;
 };
 //Чтобы сработал check без аргументов нужно передать слои в add
 //Слои переданные в check напрямую не сохраняются
-infrajs.getDebugLayers=function(){
-	var list=[];
-	infrajs.run(infrajs.getAllLayers(),function(layer){
-		if(layer.debug)list.push(layer);
+infrajs.getDebugLayers = function () {
+	var list = [];
+	infrajs.run(infrajs.getAllLayers(), function (layer) {
+		if (layer.debug) list.push(layer);
 	});
 	return list;
 }
-infrajs.getWorkLayers=function(){
-	 var store=infrajs.store();
-	 return store.wlayers;
+infrajs.getWorkLayers = function () {
+	var store = infrajs.store();
+	return store.wlayers;
 };
-infrajs.getAllLayers=function(){
-	 var store=infrajs.store();
-	 return store.alayers;
+infrajs.getAllLayers = function () {
+	var store = infrajs.store();
+	return store.alayers;
 };
 
 /* controller.check=function(layers){//Пробежка по слоям
@@ -138,63 +138,65 @@ infrajs.getAllLayers=function(){
 	},1);//Если вызывать infrajs.check() и вместе с этим переход по ссылке проверка слоёв сработает только один раз за счёт это паузы.. два вызова объединяться за это время в один.
 
 };// child, layers*/
-infrajs.show=function(layer,div){
-	layer.div=div;
-	layer.parsed=Math.random();
+infrajs.show = function (layer, div) {
+	layer.div = div;
+	layer.parsed = Math.random();
 	infrajs.check(layer);
 }
 infrajs.check = (layers) => {
 	if (infrajs.check.promise) {
+		//При поторном запросе добаляем в очередь на запуск после уже выполняющегося
 		return infrajs.check.promise = infrajs.check.promise.then(() => infrajs.check(layers))
 	}
 	return infrajs.check.promise = new Promise((resolve) => {
-		setTimeout(()=>{
+		setTimeout(async () => {
 			var store = infrajs.store();
 			//процесс характеризуется двумя переменными process и timer... true..true..false.....false
 			store.counter++;
 
 
-			store.ismainrun=!layers;
+			store.ismainrun = !layers;
 			//store.ismainrun=true;
 
 			if (layers) {
 				console.log('Controller.check(layers)');
-				var wlayers=layers;
+				var wlayers = layers;
 			} else { //Если конкретные слои не указаны беруться все упоминавшиеся слои
 				console.log('Controller.check()');
-				var wlayers=store.alayers.concat();//далее alayers может наполняться, чтобы не было копии
+				var wlayers = store.alayers.concat();//далее alayers может наполняться, чтобы не было копии
 			}
 
-			store.wlayers=wlayers;
+			store.wlayers = wlayers;
 			Event.tik('Controller');
 			Event.tik('Layer');
 			Event.fire('Controller.oninit');//loader
+			let {Fire} = await import('/vendor/akiyatkin/load/Fire.js')
+			await Fire.on(Controller,'oninit')
 
-
-			infrajs.run(infrajs.getWorkLayers(),function(layer,parent){//Запускается у всех слоёв в работе которые wlayers
+			infrajs.run(infrajs.getWorkLayers(), function (layer, parent) {//Запускается у всех слоёв в работе которые wlayers
 				if (parent) layer['parent'] = parent;//Не обрабатывается ситуация когда check снутри иерархии
 				Event.fire('Layer.oninit', layer);//устанавливается state
-				if(Event.fire('Layer.ischeck', layer)){
+				if (Event.fire('Layer.ischeck', layer)) {
 					Event.fire('Layer.oncheck', layer);//нельзя запускать is show так как ожидается что все oncheckb сделаются и в is будут на их основе соответствующие проверки
 				}
 			});//разрыв нужен для того чтобы можно было наперёд определить показывается слой или нет. oncheck у всех. а потом по порядку.
 
 			Event.fire('Controller.oncheck');//момент когда доступны слои для подписки и какой-то обработки, доступен unick
 
-			infrajs.run(infrajs.getWorkLayers(),function(layer){//С чего вдруг oncheck у всех слоёв.. надо только у активных
-				if(Event.fire('Layer.isshow',layer)){
-					if(!Event.fire('Layer.isrest',layer)){
+			infrajs.run(infrajs.getWorkLayers(), function (layer) {//С чего вдруг oncheck у всех слоёв.. надо только у активных
+				if (Event.fire('Layer.isshow', layer)) {
+					if (!Event.fire('Layer.isrest', layer)) {
 
 						Event.fire('Layer.onshow', layer);//Событие в котором вставляется html
 						//infra.fire(layer,'onshow');//своевременное выполнение Event.onext onshow в кэше html когда порядок слоёв не играет роли
 						//при клике делается отметка в конфиге слоя и слой парсится... в oncheck будут подстановки tpl и isRest вернёт false
 					}//onchange показанный слой не реагирует на изменение адресной строки, нельзя привязывать динамику интерфейса к адресной строке, только черещ перепарсивание
-				}else if(layer.showed){
+				} else if (layer.showed) {
 					//Правильная форма события (conteiner,name,obj)
 					Event.fire('Layer.onhide', layer); //нужно для autosave
 					//infra.fire(layer,'onhide');//сбросить catalog когда скрылся слой поиска в каталоге
 				}
-				layer.showed=Event.fire('Layer.isshow',layer);//Свойства showed. Нужно знать предыдущее значение isShow с последней проверки. Используется в admin.js
+				layer.showed = Event.fire('Layer.isshow', layer);//Свойства showed. Нужно знать предыдущее значение isShow с последней проверки. Используется в admin.js
 			});//у родительского слоя showed будет реальное а не старое, назад showed проверять нельзя
 
 
@@ -203,21 +205,21 @@ infrajs.check = (layers) => {
 			delete infrajs.check.promise
 			resolve()
 			//onshow1
-				//вызван check (нужен setTimeout чтобы не разворачивало всё.)
-					//вызван onshow1
-					//вызван onshow2
+			//вызван check (нужен setTimeout чтобы не разворачивало всё.)
+			//вызван onshow1
+			//вызван onshow2
 			//вызван onshow2
 			//событие будет сгенерировано два раза, с одним counter
-		},1)		
+		}, 1)
 	})
 };// child, layers
 
-infrajs.checkAdd=function(layers){
-	var store=infrajs.store();
-	infra.fora(layers,function(layer){
-		if(infra.fora(store.alayers,function(rl){
-			if(rl===layer)return true;
-		}))return;
+infrajs.checkAdd = function (layers) {
+	var store = infrajs.store();
+	infra.fora(layers, function (layer) {
+		if (infra.fora(store.alayers, function (rl) {
+			if (rl === layer) return true;
+		})) return;
 		store.alayers.push(layer);//Только если рассматриваемый слой ещё не добавлен
 	});
 };
@@ -272,19 +274,19 @@ infrajs.is=function(name,layer){//def undefined быть не может
 
 infrajs.run = function (layers, callback, parent) {
 	var r;
-	var props=infrajs.store();
-	props=props['run'];
-	r=infra.fora(layers, function (layer){
-		r = callback.apply(infrajs,[layer,parent]);
+	var props = infrajs.store();
+	props = props['run'];
+	r = infra.fora(layers, function (layer) {
+		r = callback.apply(infrajs, [layer, parent]);
 		if (r !== undefined) return r;//выход
-		r = infra.foro(layer,function(val,name){
-			if (props['list'].hasOwnProperty(name)){
-				r=infrajs.run(val,callback,layer);
-				if(r!==undefined)return r;
-			} else if (props['keys'].hasOwnProperty(name)){
-				r=infra.foro(val, function (v,i){
-					r=infrajs.run(v, callback, layer);
-					if (r!==undefined) return r;
+		r = infra.foro(layer, function (val, name) {
+			if (props['list'].hasOwnProperty(name)) {
+				r = infrajs.run(val, callback, layer);
+				if (r !== undefined) return r;
+			} else if (props['keys'].hasOwnProperty(name)) {
+				r = infra.foro(val, function (v, i) {
+					r = infrajs.run(v, callback, layer);
+					if (r !== undefined) return r;
 				});
 				if (r !== undefined) return r;
 			}
@@ -320,34 +322,34 @@ infrajs.run = function (layers, callback, parent) {
 	});
 	return r;
 }*/
-infrajs.runAddKeys=function(name){
-	var props=infrajs.store();
-	props['run']['keys'][name]=true;
+infrajs.runAddKeys = function (name) {
+	var props = infrajs.store();
+	props['run']['keys'][name] = true;
 }
-infrajs.runAddList=function(name){
-	var props=infrajs.store();
-	props['run']['list'][name]=true;
+infrajs.runAddList = function (name) {
+	var props = infrajs.store();
+	props['run']['list'][name] = true;
 }
 
 
-infrajs.isWork=function(layer){
-	var store=infrajs.store();
-	var cache=infrajs.storeLayer(layer);
-	return cache['counter']&&store['counter']==cache['counter'];//Если слой в работе метки будут одинаковые
+infrajs.isWork = function (layer) {
+	var store = infrajs.store();
+	var cache = infrajs.storeLayer(layer);
+	return cache['counter'] && store['counter'] == cache['counter'];//Если слой в работе метки будут одинаковые
 }
-infrajs.isParent=function(layer,parent){
-	 while(layer){
-		 if(parent===layer)return true;
-		 layer=layer.parent;
-	 }
-	 return false;
+infrajs.isParent = function (layer, parent) {
+	while (layer) {
+		if (parent === layer) return true;
+		layer = layer.parent;
+	}
+	return false;
 },
 
 
-infrajs.isSaveBranch = function(layer,val){
-	if(typeof(val)!=='undefined')layer.is_save_branch = val;
-	return layer.is_save_branch;
-}
+	infrajs.isSaveBranch = function (layer, val) {
+		if (typeof (val) !== 'undefined') layer.is_save_branch = val;
+		return layer.is_save_branch;
+	}
 /*controller.getParent=function(layer){//пробежка по infrajs_getWorkLayers не гарантирует правильного родителя
 	if(typeof(layer['parent']))!='undefined')return layer['parent'];
 	var ls=[infrajs.getAllLayers(),infrajs.getWorkLayers()];
@@ -357,6 +359,6 @@ infrajs.isSaveBranch = function(layer,val){
 	if(!layer['parent'])layer['parent']=false;
 	return layer['parent'];
 }*/
-infrajs.checkNow=function(){
+infrajs.checkNow = function () {
 
 };
