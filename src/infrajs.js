@@ -170,8 +170,9 @@ infrajs.check = (layers) => {
 			Event.tik('Controller');
 			Event.tik('Layer');
 			Event.fire('Controller.oninit');//loader
-			let {Fire} = await import('/vendor/akiyatkin/load/Fire.js')
-			await Fire.on(Controller,'oninit')
+
+			let { Fire } = await import('/vendor/akiyatkin/load/Fire.js')
+			await Fire.on(Controller, 'init')
 
 			infrajs.run(infrajs.getWorkLayers(), function (layer, parent) {//Запускается у всех слоёв в работе которые wlayers
 				if (parent) layer['parent'] = parent;//Не обрабатывается ситуация когда check снутри иерархии
@@ -271,7 +272,41 @@ infrajs.is=function(name,layer){//def undefined быть не может
  * занчения по ключу более важны и перехватывают инициативу в случае конфликат
  */
 //run
-
+infrajs.fora = async function (el, callback, group, key) {//Бежим по массиву рекурсивно
+	if (el instanceof Array) {
+		for (let i = 0; i < el.length; i++) {
+			const v = el[i];
+			let r = await infra.fora(v, callback, el, i);
+			if (r != null) return r;
+		}
+	} else if (el != null) {
+		return await callback(el, key, group);
+	}
+};
+infrajs.runa = async function (layers, callback, parent) {
+	let props = infrajs.store();
+	props = props['run'];
+	let r = await infrajs.fora(layers, async function (layer) {
+		let r = await callback.apply(infrajs, [layer, parent]);
+		if (r != null) return r;
+		for (const name in layer) {
+			let val = layer[name]
+			if (props['list'].hasOwnProperty(name)) {
+				let r = await infrajs.runa(val, callback, layer);
+				if (r != null) return r;
+			} else if (props['keys'].hasOwnProperty(name)) {
+				if (!val || typeof (val) !== 'object') continue;
+				
+				for (let i in val) {
+					let v = val[i]
+					let r = await infrajs.runa(v, callback, layer);
+					if (r != null) return r;
+				}
+			}
+		}
+	});
+	return r;
+}
 infrajs.run = function (layers, callback, parent) {
 	var r;
 	var props = infrajs.store();
@@ -333,8 +368,8 @@ infrajs.runAddList = function (name) {
 
 
 infrajs.isWork = function (layer) {
-	var store = infrajs.store();
-	var cache = infrajs.storeLayer(layer);
+	var store = Controller.store();
+	var cache = Controller.storeLayer(layer);
 	return cache['counter'] && store['counter'] == cache['counter'];//Если слой в работе метки будут одинаковые
 }
 infrajs.isParent = function (layer, parent) {

@@ -2,9 +2,10 @@
 	"pub":["client","index"],
 	"conf":"infrajs\\controller\\Controller",
 	"js":[
+		
+		"src/infrajs.js",
 		"src/parsed.js",
 		"src/Crumb.js",
-		"src/infrajs.js",
 		"src/Layer.js",
 		"src/External.js",
 		"src/tpl.js",

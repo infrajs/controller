@@ -41,14 +41,14 @@ Event::handler('Layer.oninit', function &(&$layer) {
 	}
 	//Layer::setId($layer);//layer.name добавим в архив
 	return $r;
-}, 'layer');
+}, 'Layer');
 
 
 Event::handler('Layer.isshow', function (&$layer) {
 	$r = null;
 	if (!Event::fire('Layer.ischeck', $layer)) return false;
 	return $r;
-}, 'layer');
+}, 'Layer');
 
 Event::handler('Layer.isshow', function (&$layer) {
 	//Родитель скрывает ребёнка если у родителя нет опции что ветка остаётся целой
@@ -57,23 +57,23 @@ Event::handler('Layer.isshow', function (&$layer) {
 	//Какой-то родитель таки не показывается, например пустой слой, теперь нужно узнать скрывает родитель свою ветку или нет
 	if (!empty($layer['parent']['is_save_branch'])) return;
 	return false;
-}, 'layer');
+}, 'Layer');
 
 Event::handler('Layer.isshow', function (&$layer) {
 	if (empty($layer['tpl'])) {
 		$layer['is_save_branch'] = true;
 		return false;
 	}
-}, 'layer');
+}, 'Layer');
 
 //Свойство counter есть на клиенте
 Event::handler('Layer.oncheck', function (&$layer) {
 	$layer['counter'] = 0;
 
-}, 'layer');
+}, 'Layer');
 Event::handler('Layer.onshow', function (&$layer) {
 	$layer['counter']++;
-}, 'layer');
+}, 'Layer');
 
 /**
  * div, divs, divtpl
@@ -123,7 +123,7 @@ Event::handler('Layer.isshow', function (&$layer) {
 		$layer['is_save_branch'] = true;
 		return false;
 	}
-}, 'layer');
+}, 'Layer');
 */
 
 Event::handler('Layer.isshow', function (&$layer) {
@@ -309,7 +309,7 @@ Event::handler('Layer.oninit', function (&$layer) {
 Event::handler('Layer.ischeck', function ($layer){
 	if (empty($layer['parent'])) return;
 	if (!Event::fire('Layer.ischeck', $layer['parent'])) return false;
-}, 'layer');
+}, 'Layer');
 
 Event::handler('Layer.ischeck', function (&$layer) {
 	if (!$layer['crumb']->is) return false;
