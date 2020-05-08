@@ -17,6 +17,7 @@
 		return $r;
 	});
 	$data = Load::json_encode($data);
+	header('Content-type: application/javascript');
 ?>
 setTimeout(function(){
 	infrajs.checkAdd(<?php echo $data?>);
