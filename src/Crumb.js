@@ -1,27 +1,27 @@
 
-infra.Crumb = function () { };
-window.Crumb = infra.Crumb;
-infra.Crumb.childs = {};
-infra.Crumb.prototype = {
+let Crumb = function () { };
+
+Crumb.childs = {};
+Crumb.prototype = {
 
 	getInstance: function (name) {
 		//static public
 		//Запускается у объектов и класса
 		if (!name) name = '';
 		var right = [];
-		if (this instanceof infra.Crumb) right = this.path;
+		if (this instanceof Crumb) right = this.path;
 		right = this.right(right.concat(this.right(name)));
 		if (right[0] === '') right = [];
 		var short = this.short(right);
-		if (!infra.Crumb.childs[short]) {
-			var that = new infra.Crumb();
+		if (!Crumb.childs[short]) {
+			var that = new Crumb();
 			that.path = right;
 			that.name = right[right.length - 1] ? right[right.length - 1] : '';
 			that.value = that.query = that.is = that.counter = null;
-			infra.Crumb.childs[short] = that;
+			Crumb.childs[short] = that;
 			if (that.name) that.parent = that.getInstance('//');
 		}
-		return infra.Crumb.childs[short];
+		return Crumb.childs[short];
 	},
 	right: function (short) {
 		//static
@@ -39,7 +39,7 @@ infra.Crumb.prototype = {
 	}
 }
 
-infra.Crumb.change = function (query) {
+Crumb.change = function (query) {
 	//static
 	//Запускается паблик у класса
 	if (Crumb.search) Crumb.referrer = '/' + Crumb.search;
@@ -89,20 +89,20 @@ infra.Crumb.change = function (query) {
 	//Crumb.refquery = Crumb.query;
 	Crumb.query = Crumb.short(right);
 	Crumb.href = Crumb.short(right);
-	Crumb.child = Crumb.getInstance(infra.Crumb.value);
+	Crumb.child = Crumb.getInstance(Crumb.value);
 
-	var that = infra.Crumb.getInstance(infra.Crumb.path);
+	var that = Crumb.getInstance(Crumb.path);
 	var child = null;
 	while (that) {
 		that.counter = counter;
 		that.is = true;
 		that.child = child;
 		that.value = right[that.path.length] ? right[that.path.length] : '';
-		that.query = infra.Crumb.short(right.slice(that.path.length));
+		that.query = Crumb.short(right.slice(that.path.length));
 		child = that;
 		that = that.parent;
 	};
-	that = infra.Crumb.getInstance(old);
+	that = Crumb.getInstance(old);
 	if (!that) return;
 	while (that) {
 		if (that.counter == counter) break;
@@ -110,7 +110,7 @@ infra.Crumb.change = function (query) {
 		that = that.parent;
 	};
 }
-infra.Crumb.init = () => {
+Crumb.init = () => {
 	let listen = async () => {
 		var src = location.pathname.substr(1);
 		src = decodeURI(src);
@@ -135,7 +135,7 @@ infra.Crumb.init = () => {
 		listen();//Даже если html5 не поддерживается мы всё равно считаем первую загрузку а дальше уже будут полные переходы и всё повториться
 	});
 }
-infra.Crumb.isInternal = function (href) {
+Crumb.isInternal = function (href) {
 	if (href == '.') return true;
 	if (typeof (href) == 'undefined' || href == null) return false;//У ссылки нет ссылки
 	//if(/^javascript:/.test(href))return false;
@@ -149,7 +149,7 @@ infra.Crumb.isInternal = function (href) {
 	if (href[0] == '~') return false;
 	return true;
 }
-infra.Crumb.go = function (href, nopushstate) {
+Crumb.go = function (href, nopushstate) {
 	if (!Crumb.isInternal(href)) return;
 	href = href.split('#', 2);
 	if (href[1]) var anchor = '#' + href[1];
@@ -175,12 +175,12 @@ infra.Crumb.go = function (href, nopushstate) {
 
 	if (nopushstate === false) { //Тихое изменение состояния
 		history.replaceState(null, null, query + anchor);
-		infra.Crumb.popstate = false;
-		infra.Crumb.change(query);
+		Crumb.popstate = false;
+		Crumb.change(query);
 		return;
 	} else if (!nopushstate) {
 		history.pushState(null, null, query + anchor);
-		infra.Crumb.popstate = false;
+		Crumb.popstate = false;
 	}
 
 	let r = query.split('/');
@@ -188,12 +188,12 @@ infra.Crumb.go = function (href, nopushstate) {
 		r.shift();
 		query = r.join('/');
 	}
-	infra.Crumb.change(query);
+	Crumb.change(query);
 	Event.tik('Crumb.onchange');
 	Event.fire('Crumb.onchange');
 
 }
-infra.Crumb.handA = function (a) {
+Crumb.handA = function (a) {
 	var ainfra = a.getAttribute('infra');
 	//nothref заменяем на infra=false
 	if (ainfra) return;//Ссылка проверена обновлять её не нужно
@@ -208,7 +208,7 @@ infra.Crumb.handA = function (a) {
 		if (is == 'false') return;
 
 		let href = a.getAttribute('href');
-		if (!infra.Crumb.isInternal(a.getAttribute('href'))) return;
+		if (!Crumb.isInternal(a.getAttribute('href'))) return;
 
 		if (!event.defaultPrevented) { //Добавляется ли адрес в историю? Кто отменил стандартное действие тот и добавил в историю
 			event.preventDefault();
@@ -221,16 +221,16 @@ infra.Crumb.handA = function (a) {
 
 		// && location.pathname+location.search == href
 		if (r.length > 1 && location.pathname + location.search == r1) {
-			infra.Crumb.anchor = href;
+			Crumb.anchor = href;
 			return;
 		}
 		href = decodeURI(href);
-		infra.Crumb.a = a;
-		infra.Crumb.go(href, true);
-		infra.Crumb.a = false;
+		Crumb.a = a;
+		Crumb.go(href, true);
+		Crumb.a = false;
 	});
 }
-infra.Crumb.setA = function (div) {
+Crumb.setA = function (div) {
 
 	if (typeof (div) == 'string') div = document.getElementById(div);
 	if (!div) return;
@@ -239,7 +239,7 @@ infra.Crumb.setA = function (div) {
 
 	for (var i = 0, len = as.length; i < len; i++) {
 		var a = as[i];
-		infra.Crumb.handA(a);
+		Crumb.handA(a);
 	}
 }
 /*public $name;
@@ -253,10 +253,14 @@ infra.Crumb.setA = function (div) {
 	static $params;//Всё что после первого амперсанда
 	static $get;
 	public $is;*/
-infra.Crumb.value = '';
-infra.Crumb.query = null;
-infra.Crumb.path = [];
-infra.Crumb.counter = 0;
-infra.Crumb.getInstance = infra.Crumb.prototype.getInstance;
-infra.Crumb.right = infra.Crumb.prototype.right;
-infra.Crumb.short = infra.Crumb.prototype.short;
+Crumb.value = '';
+Crumb.query = null;
+Crumb.path = [];
+Crumb.counter = 0;
+Crumb.getInstance = Crumb.prototype.getInstance;
+Crumb.right = Crumb.prototype.right;
+Crumb.short = Crumb.prototype.short;
+
+window.Crumb = infra.Crumb = Crumb;
+
+export { Crumb }

@@ -1,3 +1,5 @@
+import { Crumb } from '/vendor/infrajs/controller/src/Crumb.js'
+
 Controller.runAddKeys('divs');
 
 Event.classes['Layer'] = function (layer) {
@@ -352,7 +354,7 @@ Event.handler('Controller.onshow', function () {
 	//crumb
 	var conf = Config.get('controller');
 	if (!conf.client) return;
-	infra.Crumb.setA(document);//Пробежаться по всем ссылкам и добавить спeциальный обработчик на onclick... для перехода по состояниям сайта.
+	Crumb.setA(document);//Пробежаться по всем ссылкам и добавить спeциальный обработчик на onclick... для перехода по состояниям сайта.
 }, 'crumb');
 
 
@@ -367,7 +369,7 @@ Event.one('Controller.oninit', function () {
 	Sequence.set(Template.scope, Sequence.right('Controller.ids'), Controller.ids);
 	Sequence.set(Template.scope, Sequence.right('Controller.names'), Controller.names);
 
-	//Sequence.set(Template.scope, Sequence.right('infra.Crumb'), Crumb);
+	//Sequence.set(Template.scope, Sequence.right('Crumb'), Crumb);
 	//Sequence.set(Template.scope, Sequence.right('Crumb'), Crumb);
 
 
@@ -381,7 +383,7 @@ Event.handler('Controller.oninit', function () {
 	Sequence.set(Template.scope, Sequence.right('Crumb.params'), Crumb.params);
 	Sequence.set(Template.scope, Sequence.right('Crumb.get'), Crumb.get);
 
-	//Sequence.set(Template.scope, Sequence.right('infra.Crumb.query'), root.query);
-	//Sequence.set(Template.scope, Sequence.right('infra.Crumb.params'), Crumb.params);
-	//Sequence.set(Template.scope, Sequence.right('infra.Crumb.get'), Crumb.get);
+	//Sequence.set(Template.scope, Sequence.right('Crumb.query'), root.query);
+	//Sequence.set(Template.scope, Sequence.right('Crumb.params'), Crumb.params);
+	//Sequence.set(Template.scope, Sequence.right('Crumb.get'), Crumb.get);
 }, 'Controller');

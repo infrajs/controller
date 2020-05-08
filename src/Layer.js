@@ -1,4 +1,4 @@
-window.Layer = {
+let Layer = {
 	pop: function (layer, prop) {
 		var parent = layer;
 		while (parent) {
@@ -15,3 +15,5 @@ window.Layer = {
 		return false;
 	}
 }
+window.Layer = Layer
+export {Layer}
