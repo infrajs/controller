@@ -63,7 +63,8 @@ Controller.checkAdd(layer);
 
 
 let Controller = {}
-
+Controller.ids = {};
+Controller.names = {};
 Controller.storeLayer = function (layer) {//кэш на каждый iswork
 	if (!layer['store']) layer['store'] = { 'counter': 0 };//Кэш используется во всех is функциях... iswork кэш, ischeck кэш используется для определения iswork слоя.. путём сравнения ))
 	return layer['store'];//Очищается кэш в checkNow

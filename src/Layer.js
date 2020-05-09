@@ -1,4 +1,8 @@
+import { Fire } from '/vendor/akiyatkin/load/Fire.js'
+
 let Layer = {
+	on: (...params) => Fire.on(Layer, ...params),
+    hand: (...params) => Fire.hand(Layer, ...params),
 	pop: function (layer, prop) {
 		var parent = layer;
 		while (parent) {
