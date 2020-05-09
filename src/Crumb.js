@@ -261,6 +261,7 @@ Crumb.getInstance = Crumb.prototype.getInstance;
 Crumb.right = Crumb.prototype.right;
 Crumb.short = Crumb.prototype.short;
 
-window.Crumb = infra.Crumb = Crumb;
+if (!window.infra) window.infra = {}
+window.Crumb = window.infra.Crumb = Crumb;
 
 export { Crumb }

@@ -1,3 +1,5 @@
+import { Event } from '/vendor/infrajs/event/Event.js'
+import { Fire } from '/vendor/akiyatkin/load/Fire.js'
 /*
 
 
@@ -39,35 +41,34 @@ layer={
 	showed
 }
 //Функции для написания плагинов
-infrajs.store(name);
-infrajs.storeLayer(layer);
-infrajs.getLayers(iswork);
+Controller.store(name);
+Controller.storeLayer(layer);
+Controller.getLayers(iswork);
 
-infrajs.run(layers,callback);
+Controller.run(layers,callback);
 
 
-infrajs.isSaveBranch(layer,val);
-infrajs.isParent(layer,parent);
-infrajs.isWork(layer);
+Controller.isSaveBranch(layer,val);
+Controller.isParent(layer,parent);
+Controller.isWork(layer);
 
 Event.fire('Layer.is rest|show|check',layer);
-infrajs.handler('Layer.is rest|show|check',callback(layer));
+Controller.handler('Layer.is rest|show|check',callback(layer));
 
 
 
-infrajs.check(layer);
-infrajs.checkAdd(layer);
+Controller.check(layer);
+Controller.checkAdd(layer);
 */
 
 
+let Controller = {}
 
-if (!window.infrajs) window.infrajs = {};
-window.Controller = window.infrajs;
-infrajs.storeLayer = function (layer) {//кэш на каждый iswork
+Controller.storeLayer = function (layer) {//кэш на каждый iswork
 	if (!layer['store']) layer['store'] = { 'counter': 0 };//Кэш используется во всех is функциях... iswork кэш, ischeck кэш используется для определения iswork слоя.. путём сравнения ))
 	return layer['store'];//Очищается кэш в checkNow
 }
-infrajs.store = function () {//Для единобразного доступа в php, набор глобальных переменных
+Controller.store = function () {//Для единобразного доступа в php, набор глобальных переменных
 	if (!this.store.data) this.store.data = {
 		timer: false,
 		run: { 'keys': {}, 'list': {} },
@@ -80,30 +81,30 @@ infrajs.store = function () {//Для единобразного доступа 
 };
 //Чтобы сработал check без аргументов нужно передать слои в add
 //Слои переданные в check напрямую не сохраняются
-infrajs.getDebugLayers = function () {
+Controller.getDebugLayers = function () {
 	var list = [];
-	infrajs.run(infrajs.getAllLayers(), function (layer) {
+	Controller.run(Controller.getAllLayers(), function (layer) {
 		if (layer.debug) list.push(layer);
 	});
 	return list;
 }
-infrajs.getWorkLayers = function () {
-	var store = infrajs.store();
+Controller.getWorkLayers = function () {
+	var store = Controller.store();
 	return store.wlayers;
 };
-infrajs.getAllLayers = function () {
-	var store = infrajs.store();
+Controller.getAllLayers = function () {
+	var store = Controller.store();
 	return store.alayers;
 };
 
 /* controller.check=function(layers){//Пробежка по слоям
 
-	var store=infrajs.store();
+	var store=Controller.store();
 
 	if(store.process&&!store.timer){//Функция checkNow сейчас выполняется и в каком-то
 		//Момент когда process уже начался но ещё не запустился после timer
 		setTimeout(function(){//обработчике прошёл вызов пробежки...  Если мы добавим текущий слой в массив всех слоёв.. он начнёт участвовать в пробежке в операциях после той в которой был вызов создавший этот слой... короче не добавляем его
-			infrajs.check(layers);
+			Controller.check(layers);
 		},1);//Запоминаем всё в этой ловушке...
 		return;
 	}
@@ -131,26 +132,26 @@ infrajs.getAllLayers = function () {
 
 			Event.fire('Controller.oncheck');//loader
 
-			infrajs.checkNow();
+			Controller.checkNow();
 			store.process=false;
 
 			Event.fire('Controller.onshow');//loader, setA, в onshow можно зациклить check
-	},1);//Если вызывать infrajs.check() и вместе с этим переход по ссылке проверка слоёв сработает только один раз за счёт это паузы.. два вызова объединяться за это время в один.
+	},1);//Если вызывать Controller.check() и вместе с этим переход по ссылке проверка слоёв сработает только один раз за счёт это паузы.. два вызова объединяться за это время в один.
 
 };// child, layers*/
-infrajs.show = function (layer, div) {
+Controller.show = function (layer, div) {
 	layer.div = div;
 	layer.parsed = Math.random();
-	infrajs.check(layer);
+	Controller.check(layer);
 }
-infrajs.check = (layers) => {
-	if (infrajs.check.promise) {
+Controller.check = (layers) => {
+	if (Controller.check.promise) {
 		//При поторном запросе добаляем в очередь на запуск после уже выполняющегося
-		return infrajs.check.promise = infrajs.check.promise.then(() => infrajs.check(layers))
+		return Controller.check.promise = Controller.check.promise.then(() => Controller.check(layers))
 	}
-	return infrajs.check.promise = new Promise((resolve) => {
+	return Controller.check.promise = new Promise((resolve) => {
 		setTimeout(async () => {
-			var store = infrajs.store();
+			var store = Controller.store();
 			//процесс характеризуется двумя переменными process и timer... true..true..false.....false
 			store.counter++;
 
@@ -170,11 +171,9 @@ infrajs.check = (layers) => {
 			Event.tik('Controller');
 			Event.tik('Layer');
 			Event.fire('Controller.oninit');//loader
-
-			let { Fire } = await import('/vendor/akiyatkin/load/Fire.js')
 			await Fire.on(Controller, 'init')
 
-			infrajs.run(infrajs.getWorkLayers(), function (layer, parent) {//Запускается у всех слоёв в работе которые wlayers
+			Controller.run(Controller.getWorkLayers(), function (layer, parent) {//Запускается у всех слоёв в работе которые wlayers
 				if (parent) layer['parent'] = parent;//Не обрабатывается ситуация когда check снутри иерархии
 				Event.fire('Layer.oninit', layer);//устанавливается state
 				if (Event.fire('Layer.ischeck', layer)) {
@@ -184,7 +183,7 @@ infrajs.check = (layers) => {
 
 			Event.fire('Controller.oncheck');//момент когда доступны слои для подписки и какой-то обработки, доступен unick
 
-			infrajs.run(infrajs.getWorkLayers(), function (layer) {//С чего вдруг oncheck у всех слоёв.. надо только у активных
+			Controller.run(Controller.getWorkLayers(), function (layer) {//С чего вдруг oncheck у всех слоёв.. надо только у активных
 				if (Event.fire('Layer.isshow', layer)) {
 					if (!Event.fire('Layer.isrest', layer)) {
 
@@ -203,7 +202,7 @@ infrajs.check = (layers) => {
 
 
 			Event.fire('Controller.onshow');//loader, setA, в onshow можно зациклить check
-			delete infrajs.check.promise
+			delete Controller.check.promise
 			resolve()
 			//onshow1
 			//вызван check (нужен setTimeout чтобы не разворачивало всё.)
@@ -215,8 +214,8 @@ infrajs.check = (layers) => {
 	})
 };// child, layers
 
-infrajs.checkAdd = function (layers) {
-	var store = infrajs.store();
+Controller.checkAdd = function (layers) {
+	var store = Controller.store();
 	infra.fora(layers, function (layer) {
 		if (infra.fora(store.alayers, function (rl) {
 			if (rl === layer) return true;
@@ -224,20 +223,20 @@ infrajs.checkAdd = function (layers) {
 		store.alayers.push(layer);//Только если рассматриваемый слой ещё не добавлен
 	});
 };
-/*infrajs.isAdd=function(name,callback){//def undefined быть не может
-	var store=infrajs.store();
+/*Controller.isAdd=function(name,callback){//def undefined быть не может
+	var store=Controller.store();
 	if(!store[name])store[name]=[];//Если ещё нет создали очередь
 	return store[name].push(callback);
 }
-infrajs.is=function(name,layer){//def undefined быть не может
+Controller.is=function(name,layer){//def undefined быть не может
 	if(typeof(layer)=='function')exit;
-	var store=infrajs.store();
+	var store=Controller.store();
 	//Обновлять с новым check нужно только результат в слое, подписки в store сохраняются, Обновлять только в случае когда слой в работе
 	if(!layer) return store[name];//Без параметров возвращается массив подписчиков
-	var cache=infrajs.storeLayer(layer)//кэш сбрасываемый каждый iswork
+	var cache=Controller.storeLayer(layer)//кэш сбрасываемый каждый iswork
 
 
-	if(!infrajs.isWork(layer)){//если не в работе.
+	if(!Controller.isWork(layer)){//если не в работе.
 			//return false;//Проверять isWork перед is( в функциях
 			//для show старое - показан, скрыт
 			//для rest всегда true - в покое
@@ -272,7 +271,7 @@ infrajs.is=function(name,layer){//def undefined быть не может
  * занчения по ключу более важны и перехватывают инициативу в случае конфликат
  */
 //run
-infrajs.fora = async function (el, callback, group, key) {//Бежим по массиву рекурсивно
+Controller.fora = async function (el, callback, group, key) {//Бежим по массиву рекурсивно
 	if (el instanceof Array) {
 		for (let i = 0; i < el.length; i++) {
 			const v = el[i];
@@ -283,23 +282,23 @@ infrajs.fora = async function (el, callback, group, key) {//Бежим по ма
 		return await callback(el, key, group);
 	}
 };
-infrajs.runa = async function (layers, callback, parent) {
-	let props = infrajs.store();
+Controller.runa = async function (layers, callback, parent) {
+	let props = Controller.store();
 	props = props['run'];
-	let r = await infrajs.fora(layers, async function (layer) {
-		let r = await callback.apply(infrajs, [layer, parent]);
+	let r = await Controller.fora(layers, async function (layer) {
+		let r = await callback.apply(Controller, [layer, parent]);
 		if (r != null) return r;
 		for (const name in layer) {
 			let val = layer[name]
 			if (props['list'].hasOwnProperty(name)) {
-				let r = await infrajs.runa(val, callback, layer);
+				let r = await Controller.runa(val, callback, layer);
 				if (r != null) return r;
 			} else if (props['keys'].hasOwnProperty(name)) {
 				if (!val || typeof (val) !== 'object') continue;
 				
 				for (let i in val) {
 					let v = val[i]
-					let r = await infrajs.runa(v, callback, layer);
+					let r = await Controller.runa(v, callback, layer);
 					if (r != null) return r;
 				}
 			}
@@ -307,20 +306,20 @@ infrajs.runa = async function (layers, callback, parent) {
 	});
 	return r;
 }
-infrajs.run = function (layers, callback, parent) {
+Controller.run = function (layers, callback, parent) {
 	var r;
-	var props = infrajs.store();
+	var props = Controller.store();
 	props = props['run'];
 	r = infra.fora(layers, function (layer) {
-		r = callback.apply(infrajs, [layer, parent]);
+		r = callback.apply(Controller, [layer, parent]);
 		if (r !== undefined) return r;//выход
 		r = infra.foro(layer, function (val, name) {
 			if (props['list'].hasOwnProperty(name)) {
-				r = infrajs.run(val, callback, layer);
+				r = Controller.run(val, callback, layer);
 				if (r !== undefined) return r;
 			} else if (props['keys'].hasOwnProperty(name)) {
 				r = infra.foro(val, function (v, i) {
-					r = infrajs.run(v, callback, layer);
+					r = Controller.run(v, callback, layer);
 					if (r !== undefined) return r;
 				});
 				if (r !== undefined) return r;
@@ -332,14 +331,14 @@ infrajs.run = function (layers, callback, parent) {
 }
 /*controller.run=function(layers,callback,parent){
 	var r;
-	var props=infrajs.store();
+	var props=Controller.store();
 	props=props['run'];
 	r=infra.fora(layers,function(layer){
-		r=callback.apply(infrajs,[layer,parent]);
+		r=callback.apply(Controller,[layer,parent]);
 		if(r!==undefined)return r;//выход
 		r=infra.foro(layer,function(val,name){
 			if(props['list'].hasOwnProperty(name)){
-				r=infrajs.run(val,callback,layer);
+				r=Controller.run(val,callback,layer);
 				if(r!==undefined)return r;
 			}
 		});
@@ -347,7 +346,7 @@ infrajs.run = function (layers, callback, parent) {
 		r=infra.foro(layer,function(val,name){
 			if(props['keys'].hasOwnProperty(name)){
 				r=infra.foro(val,function(v,i){
-					r=infrajs.run(v,callback,layer);
+					r=Controller.run(v,callback,layer);
 					if(r!==undefined)return r;
 				});
 				if(r!==undefined)return r;
@@ -357,22 +356,22 @@ infrajs.run = function (layers, callback, parent) {
 	});
 	return r;
 }*/
-infrajs.runAddKeys = function (name) {
-	var props = infrajs.store();
+Controller.runAddKeys = function (name) {
+	var props = Controller.store();
 	props['run']['keys'][name] = true;
 }
-infrajs.runAddList = function (name) {
-	var props = infrajs.store();
+Controller.runAddList = function (name) {
+	var props = Controller.store();
 	props['run']['list'][name] = true;
 }
 
 
-infrajs.isWork = function (layer) {
+Controller.isWork = function (layer) {
 	var store = Controller.store();
 	var cache = Controller.storeLayer(layer);
 	return cache['counter'] && store['counter'] == cache['counter'];//Если слой в работе метки будут одинаковые
 }
-infrajs.isParent = function (layer, parent) {
+Controller.isParent = function (layer, parent) {
 	while (layer) {
 		if (parent === layer) return true;
 		layer = layer.parent;
@@ -381,19 +380,22 @@ infrajs.isParent = function (layer, parent) {
 },
 
 
-	infrajs.isSaveBranch = function (layer, val) {
+Controller.isSaveBranch = function (layer, val) {
 		if (typeof (val) !== 'undefined') layer.is_save_branch = val;
 		return layer.is_save_branch;
 	}
-/*controller.getParent=function(layer){//пробежка по infrajs_getWorkLayers не гарантирует правильного родителя
+/*controller.getParent=function(layer){//пробежка по Controller_getWorkLayers не гарантирует правильного родителя
 	if(typeof(layer['parent']))!='undefined')return layer['parent'];
-	var ls=[infrajs.getAllLayers(),infrajs.getWorkLayers()];
-	layer['parent']=infrajs.run(ls,function(l,parent){
+	var ls=[Controller.getAllLayers(),Controller.getWorkLayers()];
+	layer['parent']=Controller.run(ls,function(l,parent){
 		if(layer===l)return parent;
 	});
 	if(!layer['parent'])layer['parent']=false;
 	return layer['parent'];
 }*/
-infrajs.checkNow = function () {
+Controller.checkNow = function () {
 
 };
+
+window.Controller = window.infrajs = Controller
+export {Controller}
