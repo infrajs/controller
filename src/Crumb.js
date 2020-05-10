@@ -1,3 +1,5 @@
+import { Seq } from '/vendor/infrajs/sequence/Seq.js'
+import { Event } from '/vendor/infrajs/event/Event.js'
 
 let Crumb = function () { };
 
@@ -26,16 +28,16 @@ Crumb.prototype = {
 	right: function (short) {
 		//static
 		//Запускается у класса
-		return infra.seq.right(short, '/');
+		return Seq.right(short, '/');
 	},
 	short: function (right) {
 		//static
 		//Запускается у класса
-		return infra.seq.short(right, '/');
+		return Seq.short(right, '/');
 	},
 	toString: function () {
 		//public
-		return this.short(this.path);
+		return Seq.short(this.path);
 	}
 }
 
@@ -260,8 +262,5 @@ Crumb.counter = 0;
 Crumb.getInstance = Crumb.prototype.getInstance;
 Crumb.right = Crumb.prototype.right;
 Crumb.short = Crumb.prototype.short;
-
-if (!window.infra) window.infra = {}
-window.Crumb = window.infra.Crumb = Crumb;
 
 export { Crumb }
