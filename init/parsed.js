@@ -1,1 +1,0 @@
-infrajs.parsedinit();

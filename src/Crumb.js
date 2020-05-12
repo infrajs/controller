@@ -112,7 +112,7 @@ Crumb.change = function (query) {
 		that = that.parent;
 	};
 }
-Crumb.init = () => {
+Crumb.init = async () => {
 	let listen = async () => {
 		var src = location.pathname.substr(1);
 		src = decodeURI(src);
@@ -125,17 +125,9 @@ Crumb.init = () => {
 		Event.tik('Crumb.onchange');
 		Event.fire('Crumb.onchange');
 	}
-
-	if (document.readyState !== "loading") {
-		window.addEventListener('popstate', listen, false); //Генерировать заранее нельзя
-		return setTimeout(function () {
-			listen();
-		}, 1);
-	}
-	document.addEventListener("DOMContentLoaded", function () {
-		window.addEventListener('popstate', listen, false); //Генерировать заранее нельзя
-		listen();//Даже если html5 не поддерживается мы всё равно считаем первую загрузку а дальше уже будут полные переходы и всё повториться
-	});
+	//await DOM()
+	window.addEventListener('popstate', listen, false)
+	listen()
 }
 Crumb.isInternal = function (href) {
 	if (href == '.') return true;
@@ -232,8 +224,7 @@ Crumb.handA = function (a) {
 		Crumb.a = false;
 	});
 }
-Crumb.setA = function (div) {
-
+Crumb.setA = async (div) => {
 	if (typeof (div) == 'string') div = document.getElementById(div);
 	if (!div) return;
 
@@ -263,4 +254,6 @@ Crumb.getInstance = Crumb.prototype.getInstance;
 Crumb.right = Crumb.prototype.right;
 Crumb.short = Crumb.prototype.short;
 
+window.Crumb = Crumb
+Crumb.init()
 export { Crumb }

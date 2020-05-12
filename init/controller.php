@@ -35,7 +35,9 @@ Event::handler('Controller.oninit', function &() {
 
 Event::handler('Layer.oninit', function &(&$layer) {
 	$r = null;
-	while (!empty($layer['external']) && !Layer::pop($layer, 'onlyclient')) {
+	while (!empty($layer['external']) 
+	//&& !Layer::pop($layer, 'onlyclient')
+	) {
 		$ext = &$layer['external'];
 		External::checkExt($layer, $ext);
 	}
@@ -196,14 +198,18 @@ Event::handler('Layer.isshow', function (&$layer) {
 
 
 Event::handler('Layer.onshow', function (&$layer) {
-	if (Layer::pop($layer, 'onlyclient')) return;
-	$layer['html'] = Tpl::getHtml($layer);
-	Tpl::checkRedirect($layer);
+	if (Layer::pop($layer, 'onlyclient')) {
+		$layer['html'] = Template::parse('vendor/infrajs/controller/onlyclient.tpl', $layer);
+		//return;
+	} else {
+		$layer['html'] = Tpl::getHtml($layer);	
+		Tpl::checkRedirect($layer);
+	}
 }, 'tpl:div');
 
 Event::handler('Layer.onshow', function (&$layer) {
 	//tpl
-	if (Layer::pop($layer, 'onlyclient')) return;
+	//if (Layer::pop($layer, 'onlyclient')) return;
 	if(!empty($layer['div'])){
 		$div = $layer['div'];
 	}else{
@@ -321,9 +327,6 @@ Event::one('Controller.oninit', function &() {
 	$r = null;
 
 	Template::$scope;
-
-	//Sequence::set(Template::$scope, Sequence::right('infrajs.ids'), Controller::$ids);
-	//Sequence::set(Template::$scope, Sequence::right('infrajs.names'), Controller::$names);
 
 	Sequence::set(Template::$scope, Sequence::right('Controller.ids'), Controller::$ids);
 	Sequence::set(Template::$scope, Sequence::right('Controller.names'), Controller::$names);

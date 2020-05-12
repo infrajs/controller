@@ -1,2 +1,1 @@
 
-infrajs.runAddList('layers');	

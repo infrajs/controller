@@ -1,10 +1,24 @@
 import { Crumb } from '/vendor/infrajs/controller/src/Crumb.js'
+import { Event } from '/vendor/infrajs/event/Event.js'
+import { Controller } from '/vendor/infrajs/controller/src/Controller.js'
+import { External } from '/vendor/infrajs/controller/src/External.js'
+import { Tpl } from '/vendor/infrajs/controller/src/Tpl.js'
+import { Load } from '/vendor/infrajs/load/Load.js'
+import { Access } from '/vendor/infrajs/access/Access.js'
+import { View } from '/vendor/infrajs/view/View.js'
+import { Parsed } from '/vendor/infrajs/controller/src/Parsed.js'
+import { Seq } from '/vendor/infrajs/sequence/Seq.js'
+import layers from '/-controller/'
+
+
 
 Controller.runAddKeys('divs');
 
+Controller.runAddList('layers');
+
 Event.classes['Layer'] = function (layer) {
-	Controller.external.check(layer);
-	Controller.unickCheck(layer);
+	External.check(layer);
+	External.unickCheck(layer);
 	return layer.id;
 }
 
@@ -13,19 +27,24 @@ Event.classes['Layer'] = function (layer) {
 Controller.runAddKeys('childs');
 Controller.runAddList('child');
 
-Event.one('Controller.oninit', function () {
-	Controller.externalAdd('child', 'layers');
-	Controller.externalAdd('crumb', function (now, ext, layer, external, i) {//проверка external в onchange
-		Controller.setCrumb(layer, 'crumb', ext);
-		return layer[i];
-	});
+let setCrumb = function (layer, name, value) {
+	if (!layer.dyn) layer.dyn = {};
+	layer.dyn[name] = value;
+	var root = layer.parent ? layer.parent[name] : Crumb.getInstance();//От родителя всегда сможем наследовать
+	if (layer.dyn[name]) layer[name] = root.getInstance(layer.dyn[name]);
+	else layer[name] = root;
+}
+
+
+External.add('child', 'layers');
+External.add('crumb', function (now, ext, layer, external, i) {//проверка external в onchange
+	setCrumb(layer, 'crumb', ext);
+	return layer[i];
 });
 
-Event.handler('Controller.oninit', function () {
-	//tpl
-	var store = Controller.store();
-	store.divs = {};
-}, 'tpl');
+
+//tpl
+Controller.store().divs = {};
 
 
 Event.handler('Layer.oninit', function (layer) {
@@ -37,13 +56,13 @@ Event.handler('Layer.oninit', function (layer) {
 Event.handler('Layer.oninit', function (layer) {//это из-за child// всё что после child начинает плыть. по этому надо Crumb каждый раз определять, брать от родителя.
 	//Crumb
 	if (!layer['dyn']) {//Делается только один раз
-		Controller.setCrumb(layer, 'crumb', layer['crumb']);
+		setCrumb(layer, 'crumb', layer['crumb']);
 	}
 }, 'crumb');
 Event.handler('Layer.oninit', function (layer) {
 	//Crumb
 	if (!layer['parent']) return;//слой может быть в child с динамическим state только если есть родитель
-	Controller.setCrumb(layer, 'crumb', layer['dyn']['crumb']);//Возможно у родителей обновился state из-за child у детей тоже должен обновиться хотя они не в child
+	setCrumb(layer, 'crumb', layer['dyn']['crumb']);//Возможно у родителей обновился state из-за child у детей тоже должен обновиться хотя они не в child
 }, 'crumb');
 Event.handler('Layer.oninit', function (layer) {
 	//Crumb child
@@ -54,13 +73,13 @@ Event.handler('Layer.oninit', function (layer) {
 	else var name = '###child###';
 
 	infra.fora(layer['child'], function (l) {
-		Controller.setCrumb(l, 'crumb', name);
+		setCrumb(l, 'crumb', name);
 	});
 }, 'crumb');
 Event.handler('Layer.oninit', function (layer) {//Должно быть после external, чтобы все свойства у слоя появились
 	//Crumb childs
 	infra.forx(layer['childs'], function (l, key) {//У этого childs ещё не взять external
-		if (!l['crumb']) l['crumb'] = Controller.setCrumb(l, 'crumb', key);
+		if (!l['crumb']) l['crumb'] = setCrumb(l, 'crumb', key);
 	});
 
 }, 'crumb');
@@ -79,7 +98,7 @@ Event.handler('Layer.ischeck', function (layer) {
 //========================
 Event.handler('Layer.ischeck', function (layer) {
 	if (!layer['parent']) return;
-	
+
 	if (!Controller.isWork(layer['parent'])) {
 		if (!layer['parent'].showed) return false;
 		return;
@@ -138,17 +157,17 @@ Event.handler('Layer.oncheck', function (layer) {
 
 Event.handler('Layer.oncheck', function (layer) {
 	//tpl
-	Controller.tplrootTpl(layer);
-	Controller.tpldatarootTpl(layer);
-	Controller.tplTpl(layer);
+	Tpl.rootTpl(layer);
+	Tpl.datarootTpl(layer);
+	Tpl.tpl(layer);
 }, 'tpl:div');
 
 Event.handler('Layer.isshow', function (layer) {
-	Controller.tplJson(layer);
+	Tpl.json(layer);
 }, 'Layer');
 
 Event.handler('Layer.onshow', function (layer) {
-	Controller.tplJson(layer);
+	Tpl.json(layer);
 }, 'Layer');
 
 
@@ -176,8 +195,17 @@ Event.handler('Layer.isshow', function (layer) {//Родитель скрыва�
 
 Event.handler('Layer.isshow', function (layer) {
 	//is
-	Controller.istplparse(layer);
-	return Controller.isCheck(layer);
+	var prop = 'is';
+	var proptpl = prop + 'tpl';
+	if (layer[proptpl]) {
+		var p = layer[proptpl];
+		p = Template.parse([p], layer);
+		layer[prop] = p;
+	}
+
+	let is = (layer.is === undefined) ? true : layer.is;
+	if (is == '0') is = false;//В шаблоне false не удаётся вернуть
+	return is;
 }, 'is');
 
 /*
@@ -214,7 +242,7 @@ Event.handler('Layer.isshow', function (layer) {
 Event.handler('Layer.isshow', function (layer) {//tpl должен существовать, ветка скрывается
 	//tpl
 	if (!layer.tplcheck) return;
-	var res = infra.loadTEXT(layer.tpl);
+	var res = Load.loadTEXT(layer.tpl);
 	if (res) return;//Без шаблона в любом случае показывать нечего... так что вариант показа когда нет результата не рассматриваем
 	layer.is_save_branch = false;
 	return false;
@@ -222,13 +250,15 @@ Event.handler('Layer.isshow', function (layer) {//tpl должен сущест�
 
 Event.handler('Layer.isshow', function (layer) {//ветка скрывается
 	//tpl
-	return Controller.tplJsonCheck(layer);
+	return Tpl.jsonCheck(layer);
 }, 'tpl:div');
 
 Event.handler('Layer.isshow', function (layer) {//isShow учитывала зависимости дивов layerindiv ещё не работает
 	//div
+	
 	if (!layer['div']) return;
 	var start = false;
+	
 	if (Controller.run(Controller.getWorkLayers(), function (l) { //Пробежка не по слоям на ветке, а по всем слоям обрабатываемых после.. .то есть и на других ветках тоже
 		if (!start) {
 			if (layer === l) start = true;
@@ -268,7 +298,7 @@ Event.handler('Layer.isrest', function (layer) {
 	if (!Controller.isWork(layer)) return true;//На случай если забежали к родителю а он не в работе
 	if (!Event.fire('Layer.isshow', layer)) return true;//На случай если забежали окольными путями к слою который не показывается (вообще в check это исключено, но могут быть другие забеги)
 
-	if (layer._parsed != Controller.parsed(layer)) {
+	if (layer._parsed != Parsed.get(layer)) {
 		return false;//'свойство parsed изменилось';
 	}
 }, 'parsed');
@@ -277,8 +307,12 @@ Event.handler('Layer.isrest', function (layer) {
 	if (!Controller.isWork(layer)) return true;//На случай если забежали к родителю а он не в работе
 	if (!Event.fire('Layer.isshow', layer)) return true;//На случай если забежали окольными путями к слою который не показывается (вообще в check это исключено, но могут быть другие забеги)
 
-	var r = Controller.divparentIsRest(layer);
-	return r;
+	if (!layer.divparent) return;
+	var store = Controller.store();
+	var l = store.divs[layer.divparent];
+	if (!l) return;
+	if (!Event.fire('Layer.isrest', l)) return r;
+
 }, 'divparent:parsed');
 
 
@@ -290,7 +324,7 @@ Event.handler('Layer.isrest', function (layer) {
 //========================
 Event.handler('Layer.onshow', function (layer) {
 	//tpl
-	layer._parsed = Controller.parsed(layer);	//Выставляется после обработки шаблонов в которых в событиях onparse могла измениться data
+	layer._parsed = Parsed.get(layer);	//Выставляется после обработки шаблонов в которых в событиях onparse могла измениться data
 }, 'parsed');
 Event.handler('Layer.onshow', function (layer) {//Должно идти до tpl
 	//counter
@@ -299,8 +333,8 @@ Event.handler('Layer.onshow', function (layer) {//Должно идти до tpl
 
 Event.handler('Layer.onshow', function (layer) {//До того как сработает событие самого слоя в котором уже будут обработчики вешаться
 	//tpl
-	if (Controller.ignoreDOM(layer)) return;
-	layer.html = Controller.getHtml(layer);
+	if (Tpl.ignoreDOM(layer)) return;
+	layer.html = Tpl.getHtml(layer);
 }, 'html:parsed');
 
 
@@ -309,15 +343,15 @@ Event.handler('Layer.onshow', function (layer) {//До того как сраб�
 	if (!layer.div) return; //При перепарсивании и изменении global или parsed срабатывает ошбка на самом первом слое у которого нет div.
 	var div = document.getElementById(layer.div);
 	//if (div) div.style.display = ''; //ЗАЧЕМ ЭТО? 04.05.19
-	if (Controller.ignoreDOM(layer)) return;
+	if (Tpl.ignoreDOM(layer)) return;
 	if (!div) {//Мы не можем проверить это в isshow так как для проверки надо чтобы например родитель показался, Но показ идёт одновременно уже без проверок.. сейчас.  По этому сейчас и проверяем. Пользователь не должне допускать таких ситуаций.
-		if (!layer.divcheck && infra.debug()) {//Также мы не можем проверить в layer.oninsert.cond так как ситуация когда див не найден это ошибка, у слоя должно быть определено условие при которых он не показывается и это совпадает с тем что нет родителя. В конце концов указываться divparent
+		if (!layer.divcheck && Access.debug()) {//Также мы не можем проверить в layer.oninsert.cond так как ситуация когда див не найден это ошибка, у слоя должно быть определено условие при которых он не показывается и это совпадает с тем что нет родителя. В конце концов указываться divparent
 			console.log('Не найден контейнер для слоя:' + '\ndiv:' + layer.div + '\ntpl:' + layer.tpl + '\ntplroot:' + layer.tplroot + '\nparent.tpl:' + (layer.parent ? layer.parent.tpl : ''));
 		}
 		return false;
 	}
 	if (div) {
-		infra.html(layer.html, layer.div);
+		View.html(layer.html, layer.div);
 		delete layer.html;//нефиг в памяти весеть
 	}
 }, 'dom:html');
@@ -342,7 +376,7 @@ Event.handler('Layer.onhide', function (layer) {//onhide запускается 
 	var l = store.divs[layer.div];//Нужно проверить не будет ли див заменён самостоятельно после показа. Сейчас мы знаем что другой слой в этом диве прямо не показывается. Значит после того как покажутся все слои и див останется в вёрстке только тогда нужно его очистить.
 
 	if (l) return;//значит другой слой щас в этом диве покажется и реальное скрытие этого дива ещё впереди. Это чтобы не было скачков
-	infra.htmlclear(layer.div);
+	View.htmlclear(layer.div);
 }, 'controller');
 
 
@@ -350,40 +384,19 @@ Event.handler('Layer.onhide', function (layer) {//onhide запускается 
 // infrajs onshow
 //========================
 
-Event.handler('Controller.onshow', function () {
-	//crumb
-	var conf = Config.get('controller');
-	if (!conf.client) return;
-	Crumb.setA(document);//Пробежаться по всем ссылкам и добавить спeциальный обработчик на onclick... для перехода по состояниям сайта.
-}, 'crumb');
 
 
 
 
 
-Event.one('Controller.oninit', function () {
-	//div
-	//Sequence.set(Template.scope, Sequence.right('infrajs.ids'), Controller.ids);
-	//Sequence.set(Template.scope, Sequence.right('infrajs.names'), Controller.names);
-
-	Sequence.set(Template.scope, Sequence.right('Controller.ids'), Controller.ids);
-	Sequence.set(Template.scope, Sequence.right('Controller.names'), Controller.names);
-
-	//Sequence.set(Template.scope, Sequence.right('Crumb'), Crumb);
-	//Sequence.set(Template.scope, Sequence.right('Crumb'), Crumb);
 
 
-}, 'Controller');
+Seq.set(Template.scope, Seq.right('Controller.ids'), Controller.ids);
+Seq.set(Template.scope, Seq.right('Controller.names'), Controller.names);
 
-Event.handler('Controller.oninit', function () {
-	var root = Crumb.getInstance();
+Seq.set(Template.scope, Seq.right('Crumb.query'), Crumb.getInstance().query);
+Seq.set(Template.scope, Seq.right('Crumb.referrer'), Crumb.referrer);
+Seq.set(Template.scope, Seq.right('Crumb.params'), Crumb.params);
+Seq.set(Template.scope, Seq.right('Crumb.get'), Crumb.get);
 
-	Sequence.set(Template.scope, Sequence.right('Crumb.query'), root.query);
-	Sequence.set(Template.scope, Sequence.right('Crumb.referrer'), Crumb.referrer);
-	Sequence.set(Template.scope, Sequence.right('Crumb.params'), Crumb.params);
-	Sequence.set(Template.scope, Sequence.right('Crumb.get'), Crumb.get);
-
-	//Sequence.set(Template.scope, Sequence.right('Crumb.query'), root.query);
-	//Sequence.set(Template.scope, Sequence.right('Crumb.params'), Crumb.params);
-	//Sequence.set(Template.scope, Sequence.right('Crumb.get'), Crumb.get);
-}, 'Controller');
+Controller.checkAdd(layers);

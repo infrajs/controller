@@ -72,9 +72,7 @@ class Tpl
 	public static function &getData(&$layer)
 	{
 		//Используется в propcheck.js
-		if (!isset($layer['json'])) {
-			return $layer['data'];
-		}
+		if (empty($layer['json'])) return $layer['data'];
 		$data = isset($layer['json'])?$layer['json']:null;
 		if (Each::isAssoc($data) === false) {
 			//Если массив то это просто строка в виде данных

@@ -1,23 +1,7 @@
 {
 	"pub":["client","index"],
 	"conf":"infrajs\\controller\\Controller",
-	"js":[
-		
-		"src/Controller.js",
-		"src/parsed.js",
-		"src/Crumb.js",
-		"src/Layer.js",
-		"src/External.js",
-		"src/tpl.js",
-		"src/divparent.js",
-		"src/infrajs-crumb.js",
-		"src/is.js",
-		"init/parsed.js",
-		"init/controller.js",
-		"init/initjs.php",
-		"init/layers.js",
-		"init/crumb.js"
-	],
+	"js":["infra.js"],
 	"dependencies":["event","sequence","template","each"],
 	"client":true,
 	"index":{

@@ -1,33 +1,17 @@
+import { Controller } from '/vendor/infrajs/controller/src/Controller.js'
+
 //Свойство external
 //unick:(number),//Уникальное обозначение слоя
 //Нужно для уникальной идентификации какого-то слоя. Для хранения данных слоя в глобальной области при генерации слоя на сервере и его отсутствия на клиенте. Slide
 
-
+let External = {};
 let counter = 1;
-Controller.unickCheck = function (layer) {
+External.unickCheck = function (layer) {
 	if (!layer.id) layer.id = counter++;
 	Controller.ids[layer.id] = layer;
 	if (layer.name) Controller.names[layer.name] = layer;
 }
-Controller.find = function (name, value) {
-	var right = infra.seq.right(name);
-	var r = Controller.run(Controller.getAllLayers(), function (layer) {
-		if (infra.seq.get(layer, right) == value) return layer;
-	});
-	if (r) return r;
-	return Controller.run(Controller.getWorkLayers(), function (layer) { //В работе могут быть слои которые небыли добавлены к общему списку
-		if (infra.seq.get(layer, right) == value) return layer;
-	});
-}
-Controller.getUnickLayer = function (unick) {//depricated Controller.find('id',unick);
-	return Controller.find('id', unick);
-}
-
-
-
-
-Controller.external = {};
-Controller.external.props = { //Расширяется в env.js
+External.props = { //Расширяется в env.js
 	'div': function (now, ext) {
 		return ext;
 	},
@@ -59,17 +43,17 @@ Controller.external.props = { //Расширяется в env.js
 		return now;
 	}
 }
-Controller.externalAdd = function (name, func) {
-	Controller.external.props[name] = func;
+External.add = function (name, func) {
+	External.props[name] = func;
 }
 
-Controller.external.check = function (layer) {
+External.check = function (layer) {
 	while (layer.external) {
 		var ext = layer.external;
 		this.checkExt(layer, ext);
 	}
 }
-Controller.external.merge = function (layer, external, i) {//Используется в configinherit
+External.merge = function (layer, external, i) {//Используется в configinherit
 	if (external[i] === layer[i]) {
 	} else if (this.props[i]) {
 		var func = this.props[i];
@@ -83,7 +67,7 @@ Controller.external.merge = function (layer, external, i) {//Используе�
 		if (layer[i] === undefined) layer[i] = external[i];
 	}
 }
-Controller.external.checkExt = function (layer, external) {
+External.checkExt = function (layer, external) {
 	if (!external) return;
 	delete layer.external;
 	/* ie изменить порядок неудаётся
@@ -99,7 +83,7 @@ Controller.external.checkExt = function (layer, external) {
 			}
 		}
 		infra.fora(external,function(external){
-			if(typeof(external)=='string')var external=infra.loadJSON(external);
+			if(typeof(external)=='string')var external=Load.loadJSON(external);
 
 			if(external)for(var i in external){
 				if(typeof(layer[i])!=='undefined')continue;//Свойство было указано до external и не удалялось
@@ -113,10 +97,14 @@ Controller.external.checkExt = function (layer, external) {
 	*/
 
 	infra.fora(external, function (external) {
-		if (typeof (external) == 'string') var external = infra.loadJSON(external);
+		if (typeof (external) == 'string') var external = Load.loadJSON(external);
 		//Есть или нет external проверяется на случай ошибок или отсутствия файла external	
 		if (external) for (var i in external) {
-			Controller.external.merge(layer, external, i);
+			External.merge(layer, external, i);
 		}
 	});
 }
+
+
+window.External = External
+export {External}
