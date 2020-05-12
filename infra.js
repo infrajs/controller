@@ -21,6 +21,6 @@ Event.handler('Controller.onshow', function () {
 	DOM.tikok('show')
 }, 'crumb');
 
-DOM.hand('show', () => {
+DOM.race('show', () => {
 	Crumb.setA(document);
 })

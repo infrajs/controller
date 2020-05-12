@@ -2,6 +2,7 @@ import { Each } from '/vendor/infrajs/each/Each.js'
 import { Event } from '/vendor/infrajs/event/Event.js'
 import { Fire } from '/vendor/akiyatkin/load/Fire.js'
 import { Layer } from '/vendor/infrajs/controller/src/Layer.js'
+import { DOM } from '/vendor/akiyatkin/load/DOM.js'
 
 let Controller = {
 	on: async (...params) => await Fire.on(Controller, ...params),
@@ -119,6 +120,7 @@ Controller.check = (layers) => {
 	}
 	return Controller.check.promise = new Promise((resolve) => {
 		setTimeout(async () => {
+			await DOM.wait('show')
 			var store = Controller.store();
 			//процесс характеризуется двумя переменными process и timer... true..true..false.....false
 			store.counter++;
@@ -156,8 +158,9 @@ Controller.check = (layers) => {
 
 			Controller.run(Controller.getWorkLayers(), function (layer) {//С чего вдруг oncheck у всех слоёв.. надо только у активных
 				if (Event.fire('Layer.isshow', layer)) {
+					
 					if (!Event.fire('Layer.isrest', layer)) {
-
+						
 						Event.fire('Layer.onshow', layer);//Событие в котором вставляется html
 						//infra.fire(layer,'onshow');//своевременное выполнение Event.onext onshow в кэше html когда порядок слоёв не играет роли
 						//при клике делается отметка в конфиге слоя и слой парсится... в oncheck будут подстановки tpl и isRest вернёт false
@@ -274,7 +277,7 @@ Controller.runAddList = function (name) {
 Controller.isWork = function (layer) {
 	var store = Controller.store();
 	var cache = Controller.storeLayer(layer);
-	return cache['counter'] && store['counter'] == cache['counter'];//Если слой в работе метки будут одинаковые
+	return store['counter'] == cache['counter'];//Если слой в работе метки будут одинаковые
 }
 Controller.isParent = function (layer, parent) {
 	while (layer) {

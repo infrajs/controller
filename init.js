@@ -10,8 +10,6 @@ import { Parsed } from '/vendor/infrajs/controller/src/Parsed.js'
 import { Seq } from '/vendor/infrajs/sequence/Seq.js'
 import layers from '/-controller/'
 
-
-
 Controller.runAddKeys('divs');
 
 Controller.runAddList('layers');
@@ -283,21 +281,22 @@ Event.handler('Layer.isshow', function (layer) {//isShow учитывала за
 Event.handler('Layer.isrest', function (layer) {//Будем проверять все пока не найдём
 	//infrajs
 	if (!Controller.isWork(layer)) return true;//На случай если забежали к родителю а он не в работе	
-
+	
 	//когда родитель в томже диве и скрыт а у скрытого родитель не спокоен и надо дочерний слой перепарсить, но из за скрытого промежуточного родителя проверка обрывалась. Теперь проверка продолжается и вроде ок.
 	if (!Event.fire('Layer.isshow', layer) && (layer['parent'] && Event.fire('Layer.isrest', layer['parent']))) return true;//На случай если забежали окольными путями к слою который не показывается (вообще в check это исключено, но могут быть другие забеги)
 
 	if (layer['parent'] && Controller.isWork(layer['parent']) && !Event.fire('Layer.isrest', layer['parent'])) {
-
 		return false;//Парсится родитель парсимся и мы
 	}
 	if (!layer.showed) return false;//Ещё Непоказанный слой должен перепарситься..
+	
+	
 }, 'Layer');
 Event.handler('Layer.isrest', function (layer) {
 	//tpl parsed
 	if (!Controller.isWork(layer)) return true;//На случай если забежали к родителю а он не в работе
 	if (!Event.fire('Layer.isshow', layer)) return true;//На случай если забежали окольными путями к слою который не показывается (вообще в check это исключено, но могут быть другие забеги)
-
+	
 	if (layer._parsed != Parsed.get(layer)) {
 		return false;//'свойство parsed изменилось';
 	}

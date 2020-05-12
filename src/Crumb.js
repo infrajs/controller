@@ -148,12 +148,12 @@ Crumb.go = function (href, nopushstate) {
 	href = href.split('#', 2);
 	if (href[1]) var anchor = '#' + href[1];
 	else var anchor = '';
-
+	
 	href = href[0];
-
-	Crumb.anchor = anchor;
-
-	if (href == '.') { //Правильная ссылка на главную страницу
+	let oldanchor = Crumb.anchor
+	Crumb.anchor = anchor
+	
+	if (href == '.') {
 		href = '';
 	} else if (href[0] == '?') {//Относительная ссылка
 		href = location.pathname + href;
@@ -182,7 +182,10 @@ Crumb.go = function (href, nopushstate) {
 		r.shift();
 		query = r.join('/');
 	}
+	
 	Crumb.change(query);
+	
+	if (anchor && query == Crumb.query) return
 	Event.tik('Crumb.onchange');
 	Event.fire('Crumb.onchange');
 
