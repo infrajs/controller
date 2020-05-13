@@ -123,7 +123,6 @@ Event.handler('Layer.ischeck', function (layer) {
 //========================
 Event.handler('Layer.oncheck', function (layer) {//Свойство counter должно быть до tpl чтобы counter прибавился а потом парсились
 	//counter
-	//if (layer.debugRubrics) console.log('Слой debugRubrics div content ', layer.div, layer);
 	if (!layer.counter) layer.counter = 0;
 }, 'layer');
 
