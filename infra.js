@@ -14,6 +14,7 @@ Event.handler('Crumb.onchange', () => {
 }, 'Controller')
 
 Controller.hand('init', async () => {
+	await import('/-collect/js')
 	await import('./init.js')
 })
 
