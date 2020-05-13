@@ -5,9 +5,10 @@ import { Layer } from '/vendor/infrajs/controller/src/Layer.js'
 import { DOM } from '/vendor/akiyatkin/load/DOM.js'
 
 let Controller = {
-	on: async (...params) => await Fire.on(Controller, ...params),
-	hand: async (...params) => await Fire.hand(Controller, ...params),
-	wait: async (...params) => await Fire.wait(Controller, ...params)
+	on: (...params) => Fire.on(Controller, ...params),
+	tikon: (...params) => Fire.tikon(Controller, ...params),
+	hand: (...params) => Fire.hand(Controller, ...params),
+	wait: (...params) => Fire.wait(Controller, ...params)
 }
 
 /*
@@ -156,11 +157,11 @@ Controller.check = (layers) => {
 
 			Event.fire('Controller.oncheck');//момент когда доступны слои для подписки и какой-то обработки, доступен unick
 
-			Controller.run(Controller.getWorkLayers(), function (layer) {//С чего вдруг oncheck у всех слоёв.. надо только у активных
+			await Controller.runa(Controller.getWorkLayers(), async (layer) => {//С чего вдруг oncheck у всех слоёв.. надо только у активных
 				if (Event.fire('Layer.isshow', layer)) {
 					
 					if (!Event.fire('Layer.isrest', layer)) {
-						
+						await Layer.tikon('show', layer)
 						Event.fire('Layer.onshow', layer);//Событие в котором вставляется html
 						//infra.fire(layer,'onshow');//своевременное выполнение Event.onext onshow в кэше html когда порядок слоёв не играет роли
 						//при клике делается отметка в конфиге слоя и слой парсится... в oncheck будут подстановки tpl и isRest вернёт false

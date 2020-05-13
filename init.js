@@ -3,11 +3,13 @@ import { Event } from '/vendor/infrajs/event/Event.js'
 import { Controller } from '/vendor/infrajs/controller/src/Controller.js'
 import { External } from '/vendor/infrajs/controller/src/External.js'
 import { Tpl } from '/vendor/infrajs/controller/src/Tpl.js'
+import { Layer } from '/vendor/infrajs/controller/src/Layer.js'
 import { Load } from '/vendor/infrajs/load/Load.js'
 import { Access } from '/vendor/infrajs/access/Access.js'
 import { View } from '/vendor/infrajs/view/View.js'
 import { Parsed } from '/vendor/infrajs/controller/src/Parsed.js'
 import { Seq } from '/vendor/infrajs/sequence/Seq.js'
+
 import layers from '/-controller/'
 
 Controller.runAddKeys('divs');
@@ -245,10 +247,10 @@ Event.handler('Layer.isshow', function (layer) {//tpl должен сущест�
 	return false;
 }, 'tplcheck:tpl,is');
 
-Event.handler('Layer.isshow', function (layer) {//ветка скрывается
-	//tpl
-	return Tpl.jsonCheck(layer);
-}, 'tpl:div');
+// Event.handler('Layer.isshow', function (layer) {//ветка скрывается
+// 	//tpl
+// 	return Tpl.jsonCheck(layer);
+// }, 'tpl:div');
 
 Event.handler('Layer.isshow', function (layer) {//isShow учитывала зависимости дивов layerindiv ещё не работает
 	//div
@@ -320,20 +322,28 @@ Event.handler('Layer.isrest', function (layer) {
 //========================
 // layer onshow
 //========================
-Event.handler('Layer.onshow', function (layer) {
-	//tpl
-	layer._parsed = Parsed.get(layer);	//Выставляется после обработки шаблонов в которых в событиях onparse могла измениться data
-}, 'parsed');
-Event.handler('Layer.onshow', function (layer) {//Должно идти до tpl
-	//counter
-	layer.counter++;
-}, 'Layer');
 
-Event.handler('Layer.onshow', function (layer) {//До того как сработает событие самого слоя в котором уже будут обработчики вешаться
-	//tpl
-	if (Tpl.ignoreDOM(layer)) return;
-	layer.html = Tpl.getHtml(layer);
-}, 'html:parsed');
+Layer.hand('show', async layer => { //Должно идти до tpl
+ 	layer._parsed = Parsed.get(layer)	//Выставляется после обработки шаблонов в которых в событиях onparse могла измениться data
+ 	layer.counter++;
+ 	if (Tpl.ignoreDOM(layer)) return;
+ 	layer.html = await Tpl.getHtml(layer); //До того как сработает событие самого слоя в котором уже будут обработчики вешаться
+});
+
+// Event.handler('Layer.onshow', function (layer) {
+// 	//tpl
+// 	layer._parsed = Parsed.get(layer);	//Выставляется после обработки шаблонов в которых в событиях onparse могла измениться data
+// }, 'parsed');
+// Event.handler('Layer.onshow', function (layer) {//Должно идти до tpl
+// 	//counter
+// 	layer.counter++;
+// }, 'Layer');
+
+// Event.handler('Layer.onshow', function (layer) {//До того как сработает событие самого слоя в котором уже будут обработчики вешаться
+// 	//tpl
+// 	if (Tpl.ignoreDOM(layer)) return;
+// 	layer.html = Tpl.getHtml(layer);
+// }, 'html:parsed');
 
 
 Event.handler('Layer.onshow', function (layer) {//До того как сработает событие самого слоя в котором уже будут обработчики вешаться

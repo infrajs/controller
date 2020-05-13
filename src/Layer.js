@@ -1,6 +1,7 @@
 import { Fire } from '/vendor/akiyatkin/load/Fire.js'
 
 let Layer = {
+	tikon: (...params) => Fire.tikon(Layer, ...params),
 	on: (...params) => Fire.on(Layer, ...params),
     hand: (...params) => Fire.hand(Layer, ...params),
 	pop: function (layer, prop) {
