@@ -1,5 +1,6 @@
 import { Controller } from '/vendor/infrajs/controller/src/Controller.js'
-
+import { Load } from '/vendor/infrajs/load/Load.js'
+import { Each } from '/vendor/infrajs/each/Each.js'
 //Свойство external
 //unick:(number),//Уникальное обозначение слоя
 //Нужно для уникальной идентификации какого-то слоя. Для хранения данных слоя в глобальной области при генерации слоя на сервере и его отсутствия на клиенте. Slide

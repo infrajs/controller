@@ -16,11 +16,7 @@ Controller.runAddKeys('divs');
 
 Controller.runAddList('layers');
 
-Event.classes['Layer'] = function (layer) {
-	External.check(layer);
-	External.unickCheck(layer);
-	return layer.id;
-}
+
 
 
 

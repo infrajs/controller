@@ -1,4 +1,6 @@
 import { Fire } from '/vendor/akiyatkin/load/Fire.js'
+import { External } from '/vendor/infrajs/controller/src/External.js'
+import { Event } from '/vendor/infrajs/event/Event.js'
 
 let Layer = {
 	tikon: (...params) => Fire.tikon(Layer, ...params),
@@ -20,5 +22,12 @@ let Layer = {
 		return false;
 	}
 }
+
+Event.classes['Layer'] = function (layer) {
+	External.check(layer);
+	External.unickCheck(layer);
+	return layer.id;
+}
+
 window.Layer = Layer
 export {Layer}
