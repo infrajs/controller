@@ -121,7 +121,7 @@ Controller.check = (layers) => {
 	}
 	return Controller.check.promise = new Promise((resolve) => {
 		setTimeout(async () => {
-			await DOM.wait('show')
+			await DOM.wait('load')
 			var store = Controller.store();
 			//процесс характеризуется двумя переменными process и timer... true..true..false.....false
 			store.counter++;

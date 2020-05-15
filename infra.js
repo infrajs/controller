@@ -19,9 +19,9 @@ Controller.hand('init', async () => {
 })
 
 Event.handler('Controller.onshow', function () {
-	DOM.tikok('show')
+	DOM.tikok('load')
 }, 'crumb');
 
-DOM.race('show', () => {
+DOM.race('load', () => {
 	Crumb.setA(document);
 })
