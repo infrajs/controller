@@ -19,7 +19,7 @@ Controller.hand('init', async () => {
 })
 
 Event.handler('Controller.onshow', function () {
-	DOM.tikok('load')
+	DOM.tikon('load')
 }, 'crumb');
 
 DOM.race('load', () => {

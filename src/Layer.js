@@ -2,10 +2,7 @@ import { Fire } from '/vendor/akiyatkin/load/Fire.js'
 import { External } from '/vendor/infrajs/controller/src/External.js'
 import { Event } from '/vendor/infrajs/event/Event.js'
 
-let Layer = {
-	tikon: (...params) => Fire.tikon(Layer, ...params),
-	on: (...params) => Fire.on(Layer, ...params),
-    hand: (...params) => Fire.hand(Layer, ...params),
+let Layer = { ...Fire, 
 	pop: function (layer, prop) {
 		var parent = layer;
 		while (parent) {

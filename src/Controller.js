@@ -4,12 +4,7 @@ import { Fire } from '/vendor/akiyatkin/load/Fire.js'
 import { Layer } from '/vendor/infrajs/controller/src/Layer.js'
 import { DOM } from '/vendor/akiyatkin/load/DOM.js'
 
-let Controller = {
-	on: (...params) => Fire.on(Controller, ...params),
-	tikon: (...params) => Fire.tikon(Controller, ...params),
-	hand: (...params) => Fire.hand(Controller, ...params),
-	wait: (...params) => Fire.wait(Controller, ...params)
-}
+let Controller = { ...Fire }
 
 /*
 
@@ -155,6 +150,7 @@ Controller.check = (layers) => {
 				}
 			});//разрыв нужен для того чтобы можно было наперёд определить показывается слой или нет. oncheck у всех. а потом по порядку.
 
+			await Controller.on('check')
 			Event.fire('Controller.oncheck');//момент когда доступны слои для подписки и какой-то обработки, доступен unick
 
 			await Controller.runa(Controller.getWorkLayers(), async (layer) => {//С чего вдруг oncheck у всех слоёв.. надо только у активных
