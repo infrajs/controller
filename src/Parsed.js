@@ -1,4 +1,5 @@
 import { Template } from '/vendor/infrajs/template/Template.js'
+
 //parsed
 let Parsed = {}
 Parsed.props = [];//Расширяется в global.js
