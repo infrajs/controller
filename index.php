@@ -4,7 +4,14 @@
 	
 	$data = Controller::$conf['index'];
 	Run::exec($data, function &(&$layer) {
-		while (!empty($layer['external']) && !Layer::pop($layer, 'onlyclient')) {
+
+		// while (!empty($layer['external']) && !Layer::pop($layer, 'onlyclient')) {
+		// 	$ext = &$layer['external'];
+		// 	External::checkExt($layer, $ext);
+		// }
+
+		// Нужно чтобы нумерация слоёв на сервере совпадала с нумерацией в браузере
+		while (!empty($layer['external'])) {
 			$ext = &$layer['external'];
 			External::checkExt($layer, $ext);
 		}

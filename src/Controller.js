@@ -112,11 +112,11 @@ Controller.show = function (layer, div) {
 Controller.check = (layers) => {
 	if (Controller.check.promise) {
 		//При поторном запросе добаляем в очередь на запуск после уже выполняющегося
-		return Controller.check.promise = Controller.check.promise.then(() => Controller.check(layers))
+		return Controller.check.promise.then(() => Controller.check(layers))
+		//return Controller.check.promise = Controller.check.promise.then(() => Controller.check(layers))
 	}
 	return Controller.check.promise = new Promise((resolve) => {
 		setTimeout(async () => {
-			await DOM.wait('load')
 			var store = Controller.store();
 			//процесс характеризуется двумя переменными process и timer... true..true..false.....false
 			store.counter++;
@@ -149,15 +149,16 @@ Controller.check = (layers) => {
 					Event.fire('Layer.oncheck', layer);//нельзя запускать is show так как ожидается что все oncheckb сделаются и в is будут на их основе соответствующие проверки
 				}
 			});//разрыв нужен для того чтобы можно было наперёд определить показывается слой или нет. oncheck у всех. а потом по порядку.
-
-			await Controller.on('check')
+			
+			await Controller.ok('check')
+			
 			Event.fire('Controller.oncheck');//момент когда доступны слои для подписки и какой-то обработки, доступен unick
 
 			await Controller.runa(Controller.getWorkLayers(), async (layer) => {//С чего вдруг oncheck у всех слоёв.. надо только у активных
 				if (Event.fire('Layer.isshow', layer)) {
 					
 					if (!Event.fire('Layer.isrest', layer)) {
-						await Layer.tikon('show', layer)
+						await Layer.ok('show', layer)
 						Event.fire('Layer.onshow', layer);//Событие в котором вставляется html
 						//infra.fire(layer,'onshow');//своевременное выполнение Event.onext onshow в кэше html когда порядок слоёв не играет роли
 						//при клике делается отметка в конфиге слоя и слой парсится... в oncheck будут подстановки tpl и isRest вернёт false
@@ -174,6 +175,7 @@ Controller.check = (layers) => {
 
 
 			Event.fire('Controller.onshow');//loader, setA, в onshow можно зациклить check
+			
 			delete Controller.check.promise
 			resolve()
 			//onshow1

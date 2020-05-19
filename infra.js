@@ -10,7 +10,7 @@ Event.handler('Crumb.onchange', () => {
 }, 'Controller')
 
 Event.handler('Controller.onshow', function () {
-	DOM.tikon('load')
+	DOM.ok('load')
 }, 'crumb');
 
 
@@ -18,6 +18,6 @@ Controller.hand('init', async () => {
 	await import('/-collect/js')
 	await import('./init.js')
 })
-DOM.done('load', () => {
+DOM.done('load', href => {
 	Crumb.setA(document);
 })
