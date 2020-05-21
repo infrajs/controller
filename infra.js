@@ -1,13 +1,12 @@
-import { Controller } from '/vendor/infrajs/controller/src/Controller.js'
+
 import { Crumb } from '/vendor/infrajs/controller/src/Crumb.js'
 import { Event } from '/vendor/infrajs/event/Event.js'
 import { DOM } from '../../akiyatkin/load/DOM.js'
 
-
 let next = false
-Event.handler('Crumb.onchange', () => {
+Event.handler('Crumb.onchange', async () => {
 	if (next) {
-		Controller.check()
+		DOM.emit('check')
 	}
 	next = true
 }, 'Controller')
@@ -28,7 +27,7 @@ DOM.hand('load', async src => {
 
 
 //Подписаться один раз и отложить
-Controller.once('init', async () => {
+DOM.once('check', async () => {
 //DOM.once('check', async () => {
 	await import('/-collect/js')
 	await import('./init.js') //Подиски которые нужно дождаться

@@ -1,16 +1,22 @@
-import { Controller } from '/vendor/infrajs/controller/src/Controller.js'
 import { Load } from '/vendor/infrajs/load/Load.js'
 import { Each } from '/vendor/infrajs/each/Each.js'
 //Свойство external
 //unick:(number),//Уникальное обозначение слоя
 //Нужно для уникальной идентификации какого-то слоя. Для хранения данных слоя в глобальной области при генерации слоя на сервере и его отсутствия на клиенте. Slide
+import { DOM } from '/vendor/akiyatkin/load/DOM.js'
+let Controller
+
+DOM.once('check', async () => {
+	Controller = (await import('/vendor/infrajs/controller/src/Controller.js')).Controller
+})
 
 let External = {};
 let counter = 1000;
 External.unickCheck = function (layer) {
-	if (!layer.id) layer.id = ++counter;
-	Controller.ids[layer.id] = layer;
-	if (layer.name) Controller.names[layer.name] = layer;
+	if (!layer.id) layer.id = ++counter
+	if (!Controller) return
+	Controller.ids[layer.id] = layer
+	if (layer.name) Controller.names[layer.name] = layer
 }
 External.props = { //Расширяется в env.js
 	'div': function (now, ext) {
@@ -61,7 +67,7 @@ External.merge = function (layer, external, i) {//Используется в co
 		while (typeof (func) == 'string') {//Указана не сама обработка а свойство с такойже обработкой
 			func = this.props[func];
 		}
-		layer[i] = func.apply(Controller, [layer[i], external[i], layer, external, i]);
+		layer[i] = func(layer[i], external[i], layer, external, i);
 	} else if (typeof (external[i]) == 'function') {//Функции вызываются сначало у описания потом у external потому что external добавляется потом
 		if (layer[i] === undefined) layer[i] = external[i];
 	} else {

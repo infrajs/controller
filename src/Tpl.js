@@ -1,6 +1,4 @@
-import { Controller } from '/vendor/infrajs/controller/src/Controller.js'
 import { Template } from '/vendor/infrajs/template/Template.js'
-import { Load as OldLoad } from '/vendor/infrajs/load/Load.js'
 import { Load } from '/vendor/akiyatkin/load/Load.js'
 //Обработка onshow и onhide, tpl, data
 //onlyclient - парсить  на клиенте при первом запуске
