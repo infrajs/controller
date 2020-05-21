@@ -6,9 +6,9 @@ import { Each } from '/vendor/infrajs/each/Each.js'
 //Нужно для уникальной идентификации какого-то слоя. Для хранения данных слоя в глобальной области при генерации слоя на сервере и его отсутствия на клиенте. Slide
 
 let External = {};
-let counter = 1;
+let counter = 1000;
 External.unickCheck = function (layer) {
-	if (!layer.id) layer.id = counter++;
+	if (!layer.id) layer.id = ++counter;
 	Controller.ids[layer.id] = layer;
 	if (layer.name) Controller.names[layer.name] = layer;
 }
@@ -108,4 +108,4 @@ External.checkExt = function (layer, external) {
 
 
 window.External = External
-export {External}
+export { External }

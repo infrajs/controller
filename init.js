@@ -10,7 +10,6 @@ import { View } from '/vendor/infrajs/view/View.js'
 import { Parsed } from '/vendor/infrajs/controller/src/Parsed.js'
 import { Seq } from '/vendor/infrajs/sequence/Seq.js'
 
-import layers from '/-controller/'
 
 Controller.runAddKeys('divs');
 
@@ -241,12 +240,7 @@ Event.handler('Layer.isshow', function (layer) {//tpl должен сущест�
 	if (res) return;//Без шаблона в любом случае показывать нечего... так что вариант показа когда нет результата не рассматриваем
 	layer.is_save_branch = false;
 	return false;
-}, 'tplcheck:tpl,is');
-
-// Event.handler('Layer.isshow', function (layer) {//ветка скрывается
-// 	//tpl
-// 	return Tpl.jsonCheck(layer);
-// }, 'tpl:div');
+}, 'tplcheck:tpl,is')
 
 Event.handler('Layer.isshow', function (layer) {//isShow учитывала зависимости дивов layerindiv ещё не работает
 	//div
@@ -341,8 +335,8 @@ Layer.hand('show', async layer => { //Должно идти до tpl
 // 	layer.html = Tpl.getHtml(layer);
 // }, 'html:parsed');
 
-
-Event.handler('Layer.onshow', function (layer) {//До того как сработает событие самого слоя в котором уже будут обработчики вешаться
+Layer.hand('show', async layer => {
+//Event.handler('Layer.onshow', function (layer) {//До того как сработает событие самого слоя в котором уже будут обработчики вешаться
 	//tpl
 	if (!layer.div) return; //При перепарсивании и изменении global или parsed срабатывает ошбка на самом первом слое у которого нет div.
 	var div = document.getElementById(layer.div);
@@ -355,20 +349,21 @@ Event.handler('Layer.onshow', function (layer) {//До того как сраб�
 		return false;
 	}
 	if (div) {
-		View.html(layer.html, layer.div);
+		await View.html(layer.html, layer.div);
 		delete layer.html;//нефиг в памяти весеть
 	}
-}, 'dom:html');
+//}, 'dom:html');
+})
 
-
-Event.handler('Layer.onshow', function (layer) {
+Layer.hand('show', async layer => {
+//Event.handler('Layer.onshow', function (layer) {
 	//tpl
 	//слой который показан и не перепарсивается сюда не попадает, но и скрывать из этого дива никого не надо будет ведь этот слой и был показан.
 	//if (!layer.tpl) return;
 	var store = Controller.store();
 	store.divs[layer.div] = layer;
-}, 'dom:html');
-
+//}, 'dom:html');
+})
 
 //========================
 // layer onhide
@@ -399,9 +394,9 @@ Event.handler('Layer.onhide', function (layer) {//onhide запускается 
 Seq.set(Template.scope, Seq.right('Controller.ids'), Controller.ids);
 Seq.set(Template.scope, Seq.right('Controller.names'), Controller.names);
 
-Seq.set(Template.scope, Seq.right('Crumb.query'), Crumb.getInstance().query);
+/*Seq.set(Template.scope, Seq.right('Crumb.query'), Crumb.getInstance().query);
 Seq.set(Template.scope, Seq.right('Crumb.referrer'), Crumb.referrer);
 Seq.set(Template.scope, Seq.right('Crumb.params'), Crumb.params);
-Seq.set(Template.scope, Seq.right('Crumb.get'), Crumb.get);
+Seq.set(Template.scope, Seq.right('Crumb.get'), Crumb.get);*/
+Template.scope.Crumb = Crumb
 
-Controller.checkAdd(layers);

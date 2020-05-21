@@ -11,6 +11,40 @@ let Layer = { ...Fire,
 			parent = parent['parent'];
 		}
 	},
+	run (layers, callback) {
+		if (!layers) return
+		let r
+		for (let layer of [layers].flat()) {
+			r = callback(layer)
+			if (r != null) return r
+			r = Layer.run(layer.layers, callback)
+			if (r != null) return r
+
+			r = Layer.run(layer.child, callback)
+			if (r != null) return r
+			if (layer.divs) {
+				for (let i in layer.divs) {
+					r = Layer.run(layer.divs[i], callback)
+					if (r != null) return r
+				}
+			}
+			if (layer.childs) {
+				for (let i in layer.childs) {
+					r = Layer.run(layer.childs[i], callback)
+					if (r != null) return r
+				}
+			}
+			r = Layer.run(layer.systemlayers, callback)
+			if (r != null) return r
+		}
+	},
+	async get (id) {
+		let layers = (await import('/-controller/')).default
+		let layer = Layer.run(layers, layer => {
+			if (layer.id == id) return layer
+		})
+		if (layer) return layer
+	},
 	isParent: function (layer, parent) {
 		while (layer) {
 			if (parent === layer) return true;
@@ -27,4 +61,4 @@ Event.classes['Layer'] = function (layer) {
 }
 
 window.Layer = Layer
-export {Layer}
+export { Layer }

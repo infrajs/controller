@@ -37,7 +37,7 @@ Crumb.prototype = {
 	},
 	toString: function () {
 		//public
-		return Seq.short(this.path);
+		return Seq.short(this.path, '/');
 	}
 }
 

@@ -18,6 +18,7 @@ use infrajs\controller\External;
  * 
  **/
 Event::$classes['Layer'] = function (&$obj) {
+	//return $obj['id'];
 	return Layer::setId($obj);
 };
 

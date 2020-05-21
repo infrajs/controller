@@ -3,8 +3,9 @@
 	use infrajs\load\Load;
 	
 	$data = Controller::$conf['index'];
+	
 	Run::exec($data, function &(&$layer) {
-
+		Layer::setId($layer);
 		// while (!empty($layer['external']) && !Layer::pop($layer, 'onlyclient')) {
 		// 	$ext = &$layer['external'];
 		// 	External::checkExt($layer, $ext);

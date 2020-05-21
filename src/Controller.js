@@ -3,6 +3,8 @@ import { Event } from '/vendor/infrajs/event/Event.js'
 import { Fire } from '/vendor/akiyatkin/load/Fire.js'
 import { Layer } from '/vendor/infrajs/controller/src/Layer.js'
 import { DOM } from '/vendor/akiyatkin/load/DOM.js'
+import { External } from '/vendor/infrajs/controller/src/External.js'
+import layers from '/-controller/'
 
 let Controller = { ...Fire }
 
@@ -120,7 +122,10 @@ Controller.check = (layers) => {
 			var store = Controller.store();
 			//процесс характеризуется двумя переменными process и timer... true..true..false.....false
 			store.counter++;
-			await Controller.on('init')
+
+			await Layer.tik('show')
+			await Layer.tik('init')
+			await Controller.fire('init')
 
 			store.ismainrun = !layers;
 			//store.ismainrun=true;
@@ -144,21 +149,20 @@ Controller.check = (layers) => {
 			await Controller.runa(Controller.getWorkLayers(), async (layer, parent) => {//Запускается у всех слоёв в работе которые wlayers
 				if (parent) layer['parent'] = parent;//Не обрабатывается ситуация когда check снутри иерархии
 				Event.fire('Layer.oninit', layer);//устанавливается state
-				await Layer.on('init', layer)
+				await Layer.fire('init', layer)
 				if (Event.fire('Layer.ischeck', layer)) {
 					Event.fire('Layer.oncheck', layer);//нельзя запускать is show так как ожидается что все oncheckb сделаются и в is будут на их основе соответствующие проверки
 				}
 			});//разрыв нужен для того чтобы можно было наперёд определить показывается слой или нет. oncheck у всех. а потом по порядку.
 			
-			await Controller.ok('check')
+			await Controller.fire('check')
 			
 			Event.fire('Controller.oncheck');//момент когда доступны слои для подписки и какой-то обработки, доступен unick
 
 			await Controller.runa(Controller.getWorkLayers(), async (layer) => {//С чего вдруг oncheck у всех слоёв.. надо только у активных
 				if (Event.fire('Layer.isshow', layer)) {
-					
 					if (!Event.fire('Layer.isrest', layer)) {
-						await Layer.ok('show', layer)
+						await Layer.fire('show', layer)
 						Event.fire('Layer.onshow', layer);//Событие в котором вставляется html
 						//infra.fire(layer,'onshow');//своевременное выполнение Event.onext onshow в кэше html когда порядок слоёв не играет роли
 						//при клике делается отметка в конфиге слоя и слой парсится... в oncheck будут подстановки tpl и isRest вернёт false
@@ -188,7 +192,15 @@ Controller.check = (layers) => {
 	})
 };// child, layers
 
+Controller.mainlayer = layers
+Controller.mainlayer.systemlayers = []
 Controller.checkAdd = function (layers) {
+	if (Controller.mainlayer !== layers) {
+		Controller.mainlayer.systemlayers.push(layers)
+	}
+	Controller.run(layers, layer => {
+		External.unickCheck(layer);
+	})
 	var store = Controller.store();
 	Each.exec(layers, function (layer) {
 		if (infra.fora(store.alayers, function (rl) {
@@ -295,7 +307,7 @@ Controller.checkNow = function () {
 
 };
 
-
+Controller.checkAdd(layers);
 
 window.Controller = Controller
 export { Controller }
