@@ -162,7 +162,6 @@ Controller.check = (layers) => {
 			await Controller.runa(Controller.getWorkLayers(), async (layer) => {//С чего вдруг oncheck у всех слоёв.. надо только у активных
 				layer['isshow'] = Event.fire('Layer.isshow', layer)
 				if (Event.fire('Layer.isshow', layer)) {
-
 					hak(layer)
 
 					layer['isrest'] = Event.fire('Layer.isrest', layer)
