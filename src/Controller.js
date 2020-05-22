@@ -114,8 +114,8 @@ Controller.show = function (layer, div) {
 Controller.check = (layers) => {
 	if (Controller.check.promise) {
 		//При поторном запросе добаляем в очередь на запуск после уже выполняющегося
-		return Controller.check.promise.then(() => Controller.check(layers))
-		//return Controller.check.promise = Controller.check.promise.then(() => Controller.check(layers))
+		//return Controller.check.promise.then(() => Controller.check(layers))
+		return Controller.check.promise = Controller.check.promise.then(() => Controller.check(layers))
 	}
 	return Controller.check.promise = new Promise((resolve) => {
 		setTimeout(async () => {
@@ -160,7 +160,12 @@ Controller.check = (layers) => {
 			Event.fire('Controller.oncheck');//момент когда доступны слои для подписки и какой-то обработки, доступен unick
 
 			await Controller.runa(Controller.getWorkLayers(), async (layer) => {//С чего вдруг oncheck у всех слоёв.. надо только у активных
+				layer['isshow'] = Event.fire('Layer.isshow', layer)
 				if (Event.fire('Layer.isshow', layer)) {
+
+					hak(layer)
+
+					layer['isrest'] = Event.fire('Layer.isrest', layer)
 					if (!Event.fire('Layer.isrest', layer)) {
 						await Layer.fire('show', layer)
 						Event.fire('Layer.onshow', layer);//Событие в котором вставляется html
@@ -189,10 +194,39 @@ Controller.check = (layers) => {
 			//вызван onshow2
 			//событие будет сгенерировано два раза, с одним counter
 		}, 1)
+	}).then(() => {
+		//delete Controller.check.promise
 	})
 };// child, layers
+function hak(layer) {
+	if (!layer.div) return
+	if (layer._parsed) return
+	let div = document.getElementById(layer.div)
+	if (!div) return
+	let parsed = div.dataset.parsed
+	if (!parsed) return
+	layer.showed = true
+	layer._parsed = parsed
+	div.dataset.parsed = ''
+}
+Layer.hand('isshow')
+/*Layer.hand('init', layer => {
+	if (!layer.div) return
+	if (layer._parsed) return
+	let div = document.getElementById(layer.div)
+	if (!div) return
+	let parsed = div.dataset.parsed
+	if (!parsed) return
+	layer.showed = true
+	layer._parsed = parsed
+	// while (layer.parent) {
+	// 	//layer = layer.parent
+	// 	//layer.showed = true
+	// }
+})*/
 
 Controller.mainlayer = layers
+Controller.mainlayer.showed = true
 Controller.mainlayer.systemlayers = []
 Controller.checkAdd = function (layers) {
 	if (Controller.mainlayer !== layers) {

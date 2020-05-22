@@ -1,7 +1,13 @@
 import { Seq } from '/vendor/infrajs/sequence/Seq.js'
 import { Event } from '/vendor/infrajs/event/Event.js'
+import { Fire } from '/vendor/akiyatkin/load/Fire.js'
 
 let Crumb = function () { };
+
+Crumb.emit = Fire.emit
+Crumb.hand = Fire.hand
+Crumb.fire = Fire.fire
+
 
 Crumb.childs = {};
 Crumb.prototype = {
@@ -124,6 +130,7 @@ Crumb.init = async () => {
 		Crumb.change(query);
 		Event.tik('Crumb.onchange');
 		Event.fire('Crumb.onchange');
+		Crumb.emit('change')
 	}
 	//await DOM()
 	window.addEventListener('popstate', listen, false)
@@ -188,6 +195,7 @@ Crumb.go = function (href, nopushstate) {
 	if (anchor && query == Crumb.query) return
 	Event.tik('Crumb.onchange');
 	Event.fire('Crumb.onchange');
+	Crumb.emit('change')
 
 }
 Crumb.handA = function (a) {

@@ -4,12 +4,14 @@ import { Event } from '/vendor/infrajs/event/Event.js'
 import { DOM } from '../../akiyatkin/load/DOM.js'
 
 let next = false
-Event.handler('Crumb.onchange', async () => {
+Crumb.hand('change', async () => {
+//Event.handler('Crumb.onchange', async () => {
 	if (next) {
-		DOM.emit('check')
+		await DOM.emit('check')
 	}
 	next = true
-}, 'Controller')
+//}, 'Controller')
+})
 
 
 Event.handler('Controller.onshow', async () => {

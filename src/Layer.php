@@ -70,7 +70,7 @@ class Layer {
 		for ($i = 0, $l = sizeof(self::$props);$i < $l;++$i) {
 			$call = self::$props[$i];
 			$val = $call($layer);
-			if (!is_null($val)) {
+			if ($val) {
 				$str[] = $val;
 			}
 		}
@@ -83,8 +83,8 @@ class Layer {
 				if (!isset($layer[$fn])) {
 					return '';
 				}
-
-				return print_r($layer[$fn], true);
+				if (is_array($layer[$fn])) return 'arr';
+				return $layer[$fn];
 			};
 		} else {
 			$func = $fn;

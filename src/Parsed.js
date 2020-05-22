@@ -7,24 +7,31 @@ Parsed.props = [];//Расширяется в global.js
 //Обработка - перепарсиваем слой если изменились какие-то атрибуты
 Parsed.get = layer => { 
 	//Функция возвращает строку характеризующую настройки слоя 
-	let str = ''
+	let str = []
 	for (let i = 0, l = Parsed.props.length; i < l; i++) {
 		let val = Parsed.props[i](layer)
 		if (typeof (val) == 'undefined') val = ''
-		str += '|' + val;
+		if (!val) continue
+		str.push(val);
 	}
-	return str;
+	return str.join('|');
 }
 
 Parsed.add = function (fn) {
-	if (typeof (fn) == 'string') var func = function (layer) { return layer[fn] };
+	if (typeof (fn) == 'string') var func = function (layer) { 
+		if (typeof(layer[fn]) == 'object') {
+			//console.log(layer[fn])
+			return 'arr'
+		}
+		return layer[fn]
+	};
 	else var func = fn;
 	Parsed.props.push(func);
 }
 
 Parsed.add('parsed');
 Parsed.add(function (layer) {
-	if (!layer.parsedtpl) return '';
+	if (!layer.parsedtpl) return 'pt';
 	return Template.parse([layer.parsedtpl], layer);
 });
 

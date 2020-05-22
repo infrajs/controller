@@ -273,24 +273,35 @@ Event.handler('Layer.isrest', function (layer) {//Будем проверять 
 	//infrajs
 	if (!Controller.isWork(layer)) return true;//На случай если забежали к родителю а он не в работе	
 	
+	//if (!layer.div) return true
+	
 	//когда родитель в томже диве и скрыт а у скрытого родитель не спокоен и надо дочерний слой перепарсить, но из за скрытого промежуточного родителя проверка обрывалась. Теперь проверка продолжается и вроде ок.
 	if (!Event.fire('Layer.isshow', layer) && (layer['parent'] && Event.fire('Layer.isrest', layer['parent']))) return true;//На случай если забежали окольными путями к слою который не показывается (вообще в check это исключено, но могут быть другие забеги)
+	
 
-	if (layer['parent'] && Controller.isWork(layer['parent']) && !Event.fire('Layer.isrest', layer['parent'])) {
+	if (layer['parent'] 
+		//&& layer['parent']['parent'] 
+		&& Controller.isWork(layer['parent']) && !Event.fire('Layer.isrest', layer['parent'])) {
+
 		return false;//Парсится родитель парсимся и мы
 	}
-	if (!layer.showed) return false;//Ещё Непоказанный слой должен перепарситься..
+
 	
+	if (!layer.showed) return false;//Ещё Непоказанный слой должен перепарситься..
 	
 }, 'Layer');
 Event.handler('Layer.isrest', function (layer) {
 	//tpl parsed
+
 	if (!Controller.isWork(layer)) return true;//На случай если забежали к родителю а он не в работе
+
 	if (!Event.fire('Layer.isshow', layer)) return true;//На случай если забежали окольными путями к слою который не показывается (вообще в check это исключено, но могут быть другие забеги)
-	
-	if (layer._parsed != Parsed.get(layer)) {
+	if (layer.div && layer._parsed != Parsed.get(layer)) {
+	//if (layer._parsed != Parsed.get(layer)) {
 		return false;//'свойство parsed изменилось';
 	}
+
+
 }, 'parsed');
 Event.handler('Layer.isrest', function (layer) {
 	//divparent
@@ -301,7 +312,7 @@ Event.handler('Layer.isrest', function (layer) {
 	var store = Controller.store();
 	var l = store.divs[layer.divparent];
 	if (!l) return;
-	if (!Event.fire('Layer.isrest', l)) return r;
+	if (!Event.fire('Layer.isrest', l)) return false;
 
 }, 'divparent:parsed');
 
@@ -349,7 +360,7 @@ Layer.hand('show', async layer => {
 		return false;
 	}
 	if (div) {
-		await View.html(layer.html, layer.div);
+		await View.html(layer.html, layer.div, layer._parsed);
 		delete layer.html;//нефиг в памяти весеть
 	}
 //}, 'dom:html');
@@ -374,7 +385,6 @@ Event.handler('Layer.onhide', function (layer) {//onhide запускается 
 	//tpl
 	var store = Controller.store();
 	var l = store.divs[layer.div];//Нужно проверить не будет ли див заменён самостоятельно после показа. Сейчас мы знаем что другой слой в этом диве прямо не показывается. Значит после того как покажутся все слои и див останется в вёрстке только тогда нужно его очистить.
-
 	if (l && l != layer) return;//значит другой слой щас в этом диве покажется и реальное скрытие этого дива ещё впереди. Это чтобы не было скачков
 	View.htmlclear(layer.div);
 }, 'controller');

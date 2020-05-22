@@ -27,7 +27,7 @@ Event::handler('Controller.oninit', function &() {
 	Layer::parsedAdd('parsed');
 	Layer::parsedAdd(function ($layer) {
 		if (!isset($layer['parsedtpl'])) {
-			return '';
+			return 'pt';
 		}
 		return Template::parse(array($layer['parsedtpl']), $layer);
 	});
@@ -75,7 +75,7 @@ Event::handler('Layer.oncheck', function (&$layer) {
 
 }, 'Layer');
 Event::handler('Layer.onshow', function (&$layer) {
-	$layer['counter']++;
+	//$layer['counter']++;
 }, 'Layer');
 
 /**
@@ -169,6 +169,9 @@ Event::handler('Controller.oninit', function () {
 	Layer::parsedAdd('tplroot');
 	Layer::parsedAdd('id');
 	Layer::parsedAdd('is');
+	Layer::parsedAdd(function ($layer) { 
+		return 's';
+	});
 });
 
 Event::handler('Layer.oncheck', function (&$layer) {
@@ -216,7 +219,8 @@ Event::handler('Layer.onshow', function (&$layer) {
 	}else{
 		$div = null;
 	}
-	$r = View::html($layer['html'], $div);
+	if (empty($layer['_parsed'])) $layer['_parsed'] = '';
+	$r = View::html($layer['html'], $div, $layer['_parsed']);
 	if (!$r && (!isset($layer['divcheck']) || !$layer['divcheck'])) {
 		echo 'Не найден div '.$layer['div'].' infra_html<br>';
 	}
