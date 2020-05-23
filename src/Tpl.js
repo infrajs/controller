@@ -118,7 +118,7 @@ Tpl.getHtml = async layer => {//Вызывается как для основн�
 	return html;
 }
 
-Tpl.ignoreDOM = function (layer) {//onlyclient //после какого момента нужно возвращать результат true или false. на чём останавливаться.
+/*Tpl.ignoreDOM = function (layer) {//onlyclient //после какого момента нужно возвращать результат true или false. на чём останавливаться.
 	return false
 	//Вообще полный и постоянный игнор не предусмотрен, только при первой пробежке в случае если нет onlyclient
 	var store = Controller.store();
@@ -130,7 +130,7 @@ Tpl.ignoreDOM = function (layer) {//onlyclient //после какого мом�
 
 
 	return first;
-}
+}*/
 
 // Tpl.jsonCheck = function (layer) {
 // 	if (typeof (layer.jsoncheck) == 'undefined') return;

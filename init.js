@@ -327,7 +327,7 @@ Event.handler('Layer.isrest', function (layer) {
 Layer.hand('show', async layer => { //Должно идти до tpl
  	layer._parsed = Parsed.get(layer)	//Выставляется после обработки шаблонов в которых в событиях onparse могла измениться data
  	layer.counter++;
- 	if (Tpl.ignoreDOM(layer)) return;
+ 	//if (Tpl.ignoreDOM(layer)) return;
  	layer.html = await Tpl.getHtml(layer); //До того как сработает событие самого слоя в котором уже будут обработчики вешаться
 });
 
@@ -352,7 +352,7 @@ Layer.hand('show', async layer => {
 	if (!layer.div) return; //При перепарсивании и изменении global или parsed срабатывает ошбка на самом первом слое у которого нет div.
 	var div = document.getElementById(layer.div);
 	//if (div) div.style.display = ''; //ЗАЧЕМ ЭТО? 04.05.19
-	if (Tpl.ignoreDOM(layer)) return;
+	//if (Tpl.ignoreDOM(layer)) return;
 	if (!div) {//Мы не можем проверить это в isshow так как для проверки надо чтобы например родитель показался, Но показ идёт одновременно уже без проверок.. сейчас.  По этому сейчас и проверяем. Пользователь не должне допускать таких ситуаций.
 		if (!layer.divcheck && Access.debug()) {//Также мы не можем проверить в layer.oninsert.cond так как ситуация когда див не найден это ошибка, у слоя должно быть определено условие при которых он не показывается и это совпадает с тем что нет родителя. В конце концов указываться divparent
 			console.log('Не найден контейнер для слоя:' + '\ndiv:' + layer.div + '\ntpl:' + layer.tpl + '\ntplroot:' + layer.tplroot + '\nparent.tpl:' + (layer.parent ? layer.parent.tpl : ''));
