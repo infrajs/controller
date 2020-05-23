@@ -5,12 +5,10 @@ import { DOM } from '../../akiyatkin/load/DOM.js'
 
 let next = false
 Crumb.hand('change', async () => {
-//Event.handler('Crumb.onchange', async () => {
 	if (next) {
 		await DOM.emit('check')
 	}
 	next = true
-//}, 'Controller')
 })
 
 
@@ -19,29 +17,12 @@ Event.handler('Controller.onshow', async () => {
 	await DOM.emit('load')
 }, 'crumb');
 
-
-/*let first = true
-DOM.hand('load', async src => {
-	if (!first) await Controller.check()
-	first = false
-})*/
-
-
-
 //Подписаться один раз и отложить
 DOM.once('check', async () => {
 //DOM.once('check', async () => {
 	await import('/-collect/js')
 	await import('./init.js') //Подиски которые нужно дождаться
 })
-
-
-
-
-
-
-
-
 
 
 

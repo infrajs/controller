@@ -360,7 +360,10 @@ Layer.hand('show', async layer => {
 		return false;
 	}
 	if (div) {
-		await View.html(layer.html, layer.div, layer._parsed);
+		let div = document.getElementById(layer.div)
+		div.style.opacity = 0
+		await View.html(layer.html, layer.div, layer._parsed)
+		
 		delete layer.html;//нефиг в памяти весеть
 	}
 //}, 'dom:html');
