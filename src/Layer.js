@@ -40,10 +40,21 @@ let Layer = { ...Fire,
 	},
 	async get (id) {
 		let layers = (await import('/-controller/')).default
-		let layer = Layer.run(layers, layer => {
+		return Layer.run(layers, layer => {
 			if (layer.id == id) return layer
 		})
-		if (layer) return layer
+	},
+	async getById (id) {
+		let layers = (await import('/-controller/')).default
+		return Layer.run(layers, layer => {
+			if (layer.id == id) return layer
+		})
+	},
+	async getByName (name) {
+		let layers = (await import('/-controller/')).default
+		return Layer.run(layers, layer => {
+			if (layer.name == name) return layer
+		})
 	},
 	isParent: function (layer, parent) {
 		while (layer) {
