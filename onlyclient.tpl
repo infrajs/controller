@@ -1,12 +1,15 @@
 <script type="module">
 	import { DOM } from '/vendor/akiyatkin/load/DOM.js'
 
-	let div = document.getElementById("{div}")
-	let context = div.firstElementChild
-	setTimeout(async () => {
-		if (!context.closest('html')) return
-		let View = (await import('/vendor/infrajs/view/View.js')).View
-		let Tpl = (await import('/vendor/infrajs/controller/src/Tpl.js')).Tpl
+	import { Tpl } from '/vendor/infrajs/controller/src/Tpl.js'
+	import { View } from '/vendor/infrajs/view/View.js'
+
+	//let div = document.getElementById("{div}")
+	//let context = div.firstElementChild
+	//setTimeout(async () => {
+	//	if (!context.closest('html')) return
+	//	let View = (await import('/vendor/infrajs/view/View.js')).View
+	//	let Tpl = (await import('/vendor/infrajs/controller/src/Tpl.js')).Tpl
 		Tpl.getHtml({
 			tpl:{~json(tpl)},
 			data:{~json(data)},
@@ -21,6 +24,6 @@
 			await View.html(html, "{div}")
 			DOM.emit('load')
 		})
-	}, 5000)
+	//}, 5000)
 	
 </script>
