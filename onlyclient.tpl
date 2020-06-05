@@ -1,8 +1,11 @@
 <script type="module">
 	import { DOM } from '/vendor/akiyatkin/load/DOM.js'
+	import { Load } from '/vendor/akiyatkin/load/Load.js'
 
 	import { Tpl } from '/vendor/infrajs/controller/src/Tpl.js'
+	import { Layer } from '/vendor/infrajs/controller/src/Layer.js'
 	import { View } from '/vendor/infrajs/view/View.js'
+	import { Global } from '/vendor/infrajs/layer-global/Global.js'
 
 	//let div = document.getElementById("{div}")
 	//let context = div.firstElementChild
@@ -22,6 +25,17 @@
 			config:{~json(config)}
 		}).then( async html => {
 			await View.html(html, "{div}")
+			
+			let g = {~json(global)}
+			let json = {~json(json)}
+			if (g) [g].flat(2).map(n => {
+				if (!n) return
+				var g = Global.get(n)
+				if (json) g.unloads[json] = true
+				g.layers[{id}] = Layer.getById({id})
+			})
+			
+			//await Load.drop('json',{~json(json)})
 			DOM.emit('load')
 		})
 	//}, 5000)
