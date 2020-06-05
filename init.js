@@ -329,26 +329,7 @@ Layer.hand('show', async layer => { //Должно идти до tpl
  	layer.counter++;
  	//if (Tpl.ignoreDOM(layer)) return;
  	layer.html = await Tpl.getHtml(layer); //До того как сработает событие самого слоя в котором уже будут обработчики вешаться
-});
 
-// Event.handler('Layer.onshow', function (layer) {
-// 	//tpl
-// 	layer._parsed = Parsed.get(layer);	//Выставляется после обработки шаблонов в которых в событиях onparse могла измениться data
-// }, 'parsed');
-// Event.handler('Layer.onshow', function (layer) {//Должно идти до tpl
-// 	//counter
-// 	layer.counter++;
-// }, 'Layer');
-
-// Event.handler('Layer.onshow', function (layer) {//До того как сработает событие самого слоя в котором уже будут обработчики вешаться
-// 	//tpl
-// 	if (Tpl.ignoreDOM(layer)) return;
-// 	layer.html = Tpl.getHtml(layer);
-// }, 'html:parsed');
-
-Layer.hand('show', async layer => {
-//Event.handler('Layer.onshow', function (layer) {//До того как сработает событие самого слоя в котором уже будут обработчики вешаться
-	//tpl
 	if (!layer.div) return; //При перепарсивании и изменении global или parsed срабатывает ошбка на самом первом слое у которого нет div.
 	var div = document.getElementById(layer.div);
 	//if (div) div.style.display = ''; //ЗАЧЕМ ЭТО? 04.05.19
@@ -358,20 +339,13 @@ Layer.hand('show', async layer => {
 			console.log('Не найден контейнер для слоя:' + '\ndiv:' + layer.div + '\ntpl:' + layer.tpl + '\ntplroot:' + layer.tplroot + '\nparent.tpl:' + (layer.parent ? layer.parent.tpl : ''));
 		}
 		return false;
-	}
-	if (div) {
-		let div = document.getElementById(layer.div)
+	} else {
 		div.style.opacity = 0
 		await View.html(layer.html, layer.div, layer._parsed)
 		
 		delete layer.html;//нефиг в памяти весеть
 	}
-//}, 'dom:html');
-})
 
-Layer.hand('show', async layer => {
-//Event.handler('Layer.onshow', function (layer) {
-	//tpl
 	//слой который показан и не перепарсивается сюда не попадает, но и скрывать из этого дива никого не надо будет ведь этот слой и был показан.
 	//if (!layer.tpl) return;
 	var store = Controller.store();

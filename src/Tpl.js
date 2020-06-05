@@ -81,7 +81,7 @@ Tpl.getData = async layer => {
 Tpl.getTpl = async layer => {
 	var tpl = layer.tpl;
 	if (typeof (tpl) == 'string') {
-		tpl = await Load.on('text', tpl)
+		tpl = await Load.fire('text', tpl)
 		//tpl = OldLoad.loadTEXT(tpl);//M доп параметры после :
 	} else if (tpl && tpl.constructor == Array) {
 		tpl = tpl[0];
@@ -113,7 +113,6 @@ Tpl.getHtml = async layer => {//Вызывается как для основн�
 		var tpl = await Tpl.getTpl(layer)
 		var html = tpl
 	}
-	
 	if (!html) html = '';
 	return html;
 }
