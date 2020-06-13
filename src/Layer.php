@@ -85,6 +85,7 @@ class Layer {
 				}
 				if (is_array($layer[$fn])) return 'arr';
 				return $layer[$fn];
+				//return json_encode($layer[$fn], JSON_UNESCAPED_UNICODE);
 			};
 		} else {
 			$func = $fn;

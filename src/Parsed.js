@@ -12,6 +12,7 @@ Parsed.get = layer => {
 		let val = Parsed.props[i](layer)
 		if (typeof (val) == 'undefined') val = ''
 		if (!val) continue
+		if (typeof(val) == 'boolean') val = val ? 1 : 0;
 		str.push(val);
 	}
 	return str.join('|');

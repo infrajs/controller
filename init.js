@@ -340,7 +340,11 @@ Layer.hand('show', async layer => { //Должно идти до tpl
 		}
 		return false;
 	} else {
-		div.style.opacity = 0
+		
+		if (Layer.pop(layer, 'showanimate')) {
+			div.style.opacity = 0
+		}
+		
 		await View.html(layer.html, layer.div, layer._parsed)
 		
 		delete layer.html;//нефиг в памяти весеть
@@ -362,7 +366,9 @@ Event.handler('Layer.onhide', function (layer) {//onhide запускается 
 	//tpl
 	var store = Controller.store();
 	var l = store.divs[layer.div];//Нужно проверить не будет ли див заменён самостоятельно после показа. Сейчас мы знаем что другой слой в этом диве прямо не показывается. Значит после того как покажутся все слои и див останется в вёрстке только тогда нужно его очистить.
-	if (l && l != layer) return;//значит другой слой щас в этом диве покажется и реальное скрытие этого дива ещё впереди. Это чтобы не было скачков
+	//if (l && l != layer) return;//значит другой слой щас в этом диве покажется и реальное скрытие этого дива ещё впереди. Это чтобы не было скачков
+	//console.log('hide', layer.div, l)
+	if (l && l != layer) return;
 	View.htmlclear(layer.div);
 }, 'controller');
 
