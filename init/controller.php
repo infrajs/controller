@@ -202,11 +202,11 @@ Event::handler('Layer.isshow', function (&$layer) {
 
 
 Event::handler('Layer.onshow', function (&$layer) {
+	
 	if (Layer::pop($layer, 'onlyclient')) {
 		$row = Layer::parsed($layer);
 		$layer['_parsed'] = $row;
 		$layer['html'] = Template::parse('vendor/infrajs/controller/onlyclient.tpl', $layer);
-		//return;
 	} else {
 		$layer['html'] = Tpl::getHtml($layer);	
 		Tpl::checkRedirect($layer);

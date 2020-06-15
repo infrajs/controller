@@ -1,7 +1,12 @@
 
 import { Crumb } from '/vendor/infrajs/controller/src/Crumb.js'
 import { Event } from '/vendor/infrajs/event/Event.js'
-import { DOM } from '../../akiyatkin/load/DOM.js'
+import { DOM } from '/vendor/akiyatkin/load/DOM.js'
+
+
+//Для onlyclient
+let counter = localStorage.getItem('infra_counter')||0
+localStorage.setItem('infra_counter', ++counter)
 
 let next = false
 Crumb.hand('change', async () => {
