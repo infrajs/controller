@@ -41,6 +41,9 @@
 				})
 			})();
 			
+		} else {
+			let div = document.getElementById('{div}')
+			div.dataset.parsed=''
 		}
 		
 	</script>
