@@ -5,7 +5,7 @@
 		import { Load } from '/vendor/akiyatkin/load/Load.js'
 
 		//Кэшируется динамика
-		let counter = localStorage.getItem('infra_counter') 
+		let counter = localStorage.getItem('infra_counter')||1
 		//counter = 1
 		if (counter != 1 && {firstvisitempty?:1?:0}) {
 			(async () => {
