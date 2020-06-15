@@ -1,10 +1,11 @@
 import { Each } from '/vendor/infrajs/each/Each.js'
 import { Event } from '/vendor/infrajs/event/Event.js'
 import { Fire } from '/vendor/akiyatkin/load/Fire.js'
-import { Layer } from '/vendor/infrajs/controller/src/Layer.js'
+
 import { DOM } from '/vendor/akiyatkin/load/DOM.js'
 import { External } from '/vendor/infrajs/controller/src/External.js'
 import layers from '/-controller/'
+let Layer
 
 let Controller = { ...Fire }
 
@@ -119,6 +120,7 @@ Controller.check = (layers) => {
 	}
 	return Controller.check.promise = new Promise((resolve) => {
 		setTimeout(async () => {
+			let Layer = (await import('/vendor/infrajs/controller/src/Layer.js')).Layer
 			var store = Controller.store();
 			//процесс характеризуется двумя переменными process и timer... true..true..false.....false
 			store.counter++;
@@ -208,7 +210,7 @@ function hak(layer) {
 	layer._parsed = parsed
 	div.dataset.parsed = ''
 }
-Layer.hand('isshow')
+
 /*Layer.hand('init', layer => {
 	if (!layer.div) return
 	if (layer._parsed) return

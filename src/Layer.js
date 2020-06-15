@@ -1,5 +1,4 @@
 import { Fire } from '/vendor/akiyatkin/load/Fire.js'
-import { External } from '/vendor/infrajs/controller/src/External.js'
 import { Event } from '/vendor/infrajs/event/Event.js'
 
 let Layer = { ...Fire, 
@@ -64,12 +63,15 @@ let Layer = { ...Fire,
 		return false;
 	}
 }
+DOM.once('check', async () => {
+	let External = (await import('/vendor/infrajs/controller/src/External.js')).External
+	Event.classes['Layer'] = function (layer) {
+		External.check(layer);
+		External.unickCheck(layer);
+		return layer.id;
+	}	
+})
 
-Event.classes['Layer'] = function (layer) {
-	External.check(layer);
-	External.unickCheck(layer);
-	return layer.id;
-}
 
 window.Layer = Layer
 export { Layer }
