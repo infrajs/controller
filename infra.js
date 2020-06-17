@@ -1,4 +1,3 @@
-
 import { Crumb } from '/vendor/infrajs/controller/src/Crumb.js'
 import { Event } from '/vendor/infrajs/event/Event.js'
 import { DOM } from '/vendor/akiyatkin/load/DOM.js'
@@ -32,12 +31,14 @@ DOM.once('check', async () => {
 
 
 let ws = new WeakSet() 
-DOM.done('load', href => {
+DOM.done('load', () => {
 	Crumb.setA(document);
 	let cls = cls => document.getElementsByClassName(cls)
+	//Для элементов с классом a или btn, но не для ссылок
 	for (let a of cls('a')) {
 		if (ws.has(a)) continue
 		if (!a.dataset.crumb) continue
+		if (a.tagName == 'A') continue
 		ws.add(a)
 		a.addEventListener('click', async () => {
 			Crumb.go(a.dataset.crumb)
@@ -46,6 +47,7 @@ DOM.done('load', href => {
 	for (let a of cls('btn')) {
 		if (ws.has(a)) continue
 		if (!a.dataset.crumb) continue
+		if (a.tagName == 'A') continue
 		ws.add(a)
 		a.addEventListener('click', async () => {
 			Crumb.go(a.dataset.crumb)

@@ -204,12 +204,11 @@ Crumb.handA = function (a) {
 	if (ainfra) return;//Ссылка проверена обновлять её не нужно
 	a.setAttribute('infra', 'true');
 	a.addEventListener('click', function (event) {
-
-
+		
 		var is = a.getAttribute('infra');
 		if (is != 'true') return;
 
-		var is = a.getAttribute('data-crumb');
+		var is = a.dataset.crumb;
 		if (is == 'false') return;
 
 		let href = a.getAttribute('href');
@@ -233,7 +232,8 @@ Crumb.handA = function (a) {
 		Crumb.a = a;
 		Crumb.go(href, true);
 		Crumb.a = false;
-	});
+		
+	})
 }
 Crumb.setA = async (div) => {
 	if (typeof (div) == 'string') div = document.getElementById(div);
