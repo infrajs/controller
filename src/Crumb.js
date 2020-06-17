@@ -82,7 +82,7 @@ Crumb.change = function (query) {
 		} else {
 			v='';
 		}*/
-		get[unescape(k)] = v;
+		get[decodeURI(k)] = decodeURI(v);
 	}
 	//Crumb.refget = Crumb.get;
 	Crumb.get = get;
