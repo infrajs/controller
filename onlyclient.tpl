@@ -7,7 +7,10 @@
 		//Кэшируется динамика
 		let counter = localStorage.getItem('infra_counter')||1
 		//counter = 1
-		if (counter != 1 && {firstvisitempty?:0?:1}) {
+		if (counter == 1 && {firstvisitempty?:1?:0}) {
+			let div = document.getElementById('{div}')
+			div.dataset.parsed=''
+		} else {
 			(async () => {
 				let Tpl = (await import('/vendor/infrajs/controller/src/Tpl.js')).Tpl
 				let Layer = (await import('/vendor/infrajs/controller/src/Layer.js')).Layer
@@ -41,9 +44,6 @@
 				})
 			})();
 			
-		} else {
-			let div = document.getElementById('{div}')
-			div.dataset.parsed=''
 		}
 		
 	</script>
