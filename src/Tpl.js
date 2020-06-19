@@ -68,12 +68,12 @@ Tpl.onlyclient = function (layer) {
 Tpl.getData = async layer => {
 	//Используется в propcheck.js
 	if (!layer.json) return layer.data
-	var data = layer.json //Может быть и undefined
+	let data = layer.json //Может быть и undefined
 	if (data && data.constructor === Array) {//Если массив то это просто строка в виде данных
-		data = await Load.on('text', data[0])
+		data = await Load.fire('text', data[0])
 		//data = OldLoad.loadTEXT(data[0]);
 	} else if (typeof (data) === 'string') {
-		data = await Load.on('json', data)
+		data = await Load.fire('json', data)
 		//data = OldLoad.loadJSON(data);//Забираем для текущего клиента что-то..
 	}
 	return data;

@@ -115,8 +115,8 @@ Controller.show = function (layer, div) {
 Controller.check = (layers) => {
 	if (Controller.check.promise) {
 		//При поторном запросе добаляем в очередь на запуск после уже выполняющегося
-		//return Controller.check.promise.then(() => Controller.check(layers))
-		return Controller.check.promise = Controller.check.promise.then(() => Controller.check(layers))
+		return Controller.check.promise.then(() => Controller.check(layers))
+		//return Controller.check.promise = Controller.check.promise.then(() => Controller.check(layers))
 	}
 	return Controller.check.promise = new Promise((resolve) => {
 		setTimeout(async () => {

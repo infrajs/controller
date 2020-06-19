@@ -327,8 +327,9 @@ Event.handler('Layer.isrest', function (layer) {
 Layer.hand('show', async layer => { //Должно идти до tpl
  	layer._parsed = Parsed.get(layer)	//Выставляется после обработки шаблонов в которых в событиях onparse могла измениться data
  	layer.counter++;
- 	//if (Tpl.ignoreDOM(layer)) return;
+	//if (Tpl.ignoreDOM(layer)) return;
  	layer.html = await Tpl.getHtml(layer); //До того как сработает событие самого слоя в котором уже будут обработчики вешаться
+	
 
 	if (!layer.div) return; //При перепарсивании и изменении global или parsed срабатывает ошбка на самом первом слое у которого нет div.
 	var div = document.getElementById(layer.div);
@@ -344,9 +345,7 @@ Layer.hand('show', async layer => { //Должно идти до tpl
 		if (Layer.pop(layer, 'showanimate')) {
 			div.style.opacity = 0
 		}
-		
 		await View.html(layer.html, layer.div, layer._parsed)
-		
 		delete layer.html;//нефиг в памяти весеть
 	}
 
