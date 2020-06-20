@@ -35,10 +35,12 @@ DOM.done('load', () => {
 	Crumb.setA(document);
 	let cls = cls => document.getElementsByClassName(cls)
 	//Для элементов с классом a или btn, но не для ссылок
+	
 	for (let a of cls('a')) {
 		if (ws.has(a)) continue
 		if (!a.dataset.crumb) continue
 		if (a.tagName == 'A') continue
+		
 		ws.add(a)
 		a.addEventListener('click', async () => {
 			Crumb.go(a.dataset.crumb)
