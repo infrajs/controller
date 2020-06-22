@@ -343,7 +343,6 @@ Layer.hand('show', async layer => { //Должно идти до tpl
 	} else {
 		
 		if (Layer.pop(layer, 'showanimate')) {
-			console.log(1)
 			div.style.opacity = 0
 			div.style.transition = "none"
 		}
