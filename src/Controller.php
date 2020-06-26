@@ -46,18 +46,20 @@ class Controller
 		Controller::$parsed = '';
 		Event::tik('Controller.parsed');
 		Event::fire('Controller.parsed');
-		
-		$query = Crumb::$href;
-		unset($_GET['t']);
+	
+		//Метки которые не меняют кэш контроллера
+		$get = array_diff_key(Crumb::$get, array_flip(['t','utm_medium','utm_source','utm_content','utm_term','utm_campaign','yclid','gclid']));
 
 		$html = Access::func( function ($parsed, $get) use ($conf) {
 			header('Controller-Cache: false');
+			
 			$html = Controller::check($conf['index']);
-			//$crumb = Crumb::getInstance();
-			if (sizeof($get)) Cache::ignore(); //Контроллер с get параметрами на верхнем уровне ничего не кэширует из-за переполнения
-			if (isset(Crumb::$get['m'])) Cache::ignore();
+			
+			if ($get) Cache::ignore(); //Контроллер с get параметрами на верхнем уровне ничего не кэширует из-за возможного переполнения кэша
+			//Переполнение может быть и из-за адресов /asdf /asdeasdf234r /2342q и т.п. - но это никак не проверить.
+
 			return $html;
-		}, [Controller::$parsed, $_GET]);
+		}, [Controller::$parsed, $get]);
 		
 		//var_dump(Cache::$process);
 
