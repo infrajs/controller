@@ -46,19 +46,18 @@ class Controller
 		Controller::$parsed = '';
 		Event::tik('Controller.parsed');
 		Event::fire('Controller.parsed');
-		$crumb = Crumb::getInstance();
+		
 		$query = Crumb::$href;
+		unset($_GET['t']);
 
-		$html = Access::func( function ($parsed, $query) use ($conf) {
+		$html = Access::func( function ($parsed, $get) use ($conf) {
 			header('Controller-Cache: false');
-			//Nostore::$debug=true;
 			$html = Controller::check($conf['index']);
-			$r = explode('?',$query);
+			//$crumb = Crumb::getInstance();
+			if (sizeof($get)) Cache::ignore(); //Контроллер с get параметрами на верхнем уровне ничего не кэширует из-за переполнения
 			if (isset(Crumb::$get['m'])) Cache::ignore();
-			//if ($r[0] != '/') Cache::ignore();
-			//var_dump(Nostore::is());
 			return $html;
-		}, [Controller::$parsed, $query]);
+		}, [Controller::$parsed, $_GET]);
 		
 		//var_dump(Cache::$process);
 
