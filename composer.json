@@ -6,6 +6,7 @@
 		"infrajs/phpdate":"~1",
 		"infrajs/template":"~1",
 		"infrajs/each":"~1",
+		"infrajs/env":"~1",
 		"infrajs/access":"~1",
 		"infrajs/config":"~1",
 		"infrajs/event":"~1"
