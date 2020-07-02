@@ -39,14 +39,14 @@ class Controller
 		echo $html;
 		exit;
 	}*/
-	public static $parsed = '';
+	//public static $parsed = '';
 	public static function init(){
 		$conf = Config::get('controller');
 
 		header('Controller-Cache: true');
-		Controller::$parsed = Env::getName();
-		Event::tik('Controller.parsed');
-		Event::fire('Controller.parsed');
+		$envdata = Env::get();
+		//Event::tik('Controller.parsed');
+		//Event::fire('Controller.parsed');
 		
 		//Метки которые не меняют кэш контроллера
 		$get = array_diff_key(Crumb::$get, array_flip(['t','utm_medium','utm_source','utm_content','utm_term','utm_campaign','yclid','gclid']));
@@ -54,7 +54,7 @@ class Controller
 		$r = explode('?',$_SERVER['REQUEST_URI']);
 		$path = $r[0];
 		
-		$html = Access::func( function ($parsed, $get, $path) use ($conf) {
+		$html = Access::func( function ($envdata, $get, $path) use ($conf) {
 			header('Controller-Cache: false');
 			$html = Controller::check($conf['index']);
 			
@@ -62,7 +62,7 @@ class Controller
 			//Переполнение может быть и из-за адресов /asdf /asdeasdf234r /2342q и т.п. - но это никак не проверить.
 
 			return $html;
-		}, [Controller::$parsed, $get, $path]);
+		}, [$envdata, $get, $path]);
 		
 
 		//var_dump(Cache::$process);
