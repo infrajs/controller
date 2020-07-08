@@ -222,7 +222,7 @@ Event::handler('Layer.onshow', function (&$layer) {
 		$div = null;
 	}
 	if (empty($layer['_parsed'])) $layer['_parsed'] = '';
-	$r = View::html($layer['html'], $div, $layer['_parsed']);
+	$r = View::html($layer['html'], $div, $layer['_parsed'], $layer['id']);
 	if (!$r && (!isset($layer['divcheck']) || !$layer['divcheck'])) {
 		echo 'Не найден div '.$layer['div'].' infra_html<br>';
 	}
