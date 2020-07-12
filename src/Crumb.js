@@ -207,28 +207,28 @@ Crumb.handA = function (a) {
 		
 		var is = a.getAttribute('infra');
 		if (is != 'true') return;
-
+		
 		var is = a.dataset.crumb;
 		if (is == 'false') return;
 
 		let href = a.getAttribute('href');
+		href = decodeURI(href);
 		if (!Crumb.isInternal(a.getAttribute('href'))) return;
+		
+		var r = href.split('#');
+		var r1 = r.shift();
+		var r2 = r.join('#');
+		if (r2) Crumb.anchor = r2;
+		if (r2 && location.pathname + location.search == r1) {
+			return;
+		}
+		href = r1
 
 		if (!event.defaultPrevented) { //Добавляется ли адрес в историю? Кто отменил стандартное действие тот и добавил в историю
 			event.preventDefault();
 			window.history.pushState(null, null, a.getAttribute('href'));
 		}
 
-		var r = href.split('#');
-		var r1 = r.shift();
-		var r2 = r.join('#');
-
-		// && location.pathname+location.search == href
-		if (r.length > 1 && location.pathname + location.search == r1) {
-			Crumb.anchor = href;
-			return;
-		}
-		href = decodeURI(href);
 		Crumb.a = a;
 		Crumb.go(href, true);
 		Crumb.a = false;
