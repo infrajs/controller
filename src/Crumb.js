@@ -214,16 +214,16 @@ Crumb.handA = function (a) {
 		let href = a.getAttribute('href');
 		href = decodeURI(href);
 		if (!Crumb.isInternal(a.getAttribute('href'))) return;
-		
 		var r = href.split('#');
 		var r1 = r.shift();
 		var r2 = r.join('#');
-		if (r2) Crumb.anchor = r2;
+		if (r.length) Crumb.anchor = r2;
 		if (r2 && location.pathname + location.search == r1) {
 			return;
 		}
+		if(r.length && !r1) r1 = location.pathname
 		href = r1
-
+		
 		if (!event.defaultPrevented) { //Добавляется ли адрес в историю? Кто отменил стандартное действие тот и добавил в историю
 			event.preventDefault();
 			window.history.pushState(null, null, a.getAttribute('href'));
