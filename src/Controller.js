@@ -161,12 +161,16 @@ Controller.check = (layers) => {
 			
 			Event.fire('Controller.oncheck');//момент когда доступны слои для подписки и какой-то обработки, доступен unick
 
+			//await Controller.runa(Controller.getWorkLayers(), async (layer) => {//С чего вдруг oncheck у всех слоёв.. надо только у активных
+			//	hak(layer)
+			//});
 			await Controller.runa(Controller.getWorkLayers(), async (layer) => {//С чего вдруг oncheck у всех слоёв.. надо только у активных
 				hak(layer)
 				layer['isshow'] = Event.fire('Layer.isshow', layer)
 				if (Event.fire('Layer.isshow', layer)) {
 					layer['isrest'] = Event.fire('Layer.isrest', layer)
 					if (!Event.fire('Layer.isrest', layer)) {
+						
 						await Layer.fire('show', layer)
 						Event.fire('Layer.onshow', layer);//Событие в котором вставляется html
 						//infra.fire(layer,'onshow');//своевременное выполнение Event.onext onshow в кэше html когда порядок слоёв не играет роли
@@ -209,7 +213,8 @@ function hak(layer) {
 	if (!parsed) return
 	layer.showed = true
 	layer._parsed = parsed
-	div.dataset.parsed = ''
+	delete div.dataset.parsed
+	delete div.dataset.layerid
 }
 
 /*Layer.hand('init', layer => {

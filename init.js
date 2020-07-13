@@ -271,6 +271,7 @@ Event.handler('Layer.isshow', function (layer) {//isShow учитывала за
 //========================
 Event.handler('Layer.isrest', function (layer) {//Будем проверять все пока не найдём
 	//infrajs
+	
 	if (!Controller.isWork(layer)) return true;//На случай если забежали к родителю а он не в работе	
 	
 	//if (!layer.div) return true
@@ -285,7 +286,7 @@ Event.handler('Layer.isrest', function (layer) {//Будем проверять 
 
 		return false;//Парсится родитель парсимся и мы
 	}
-
+	
 	
 	if (!layer.showed) return false;//Ещё Непоказанный слой должен перепарситься..
 	
@@ -329,7 +330,6 @@ Layer.hand('show', async layer => { //Должно идти до tpl
  	layer.counter++;
 	//if (Tpl.ignoreDOM(layer)) return;
  	layer.html = await Tpl.getHtml(layer); //До того как сработает событие самого слоя в котором уже будут обработчики вешаться
-	
 
 	if (!layer.div) return; //При перепарсивании и изменении global или parsed срабатывает ошбка на самом первом слое у которого нет div.
 	var div = document.getElementById(layer.div);
