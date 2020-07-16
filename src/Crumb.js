@@ -159,7 +159,6 @@ Crumb.go = function (href, nopushstate) {
 	href = href[0];
 	let oldanchor = Crumb.anchor
 	Crumb.anchor = anchor
-	
 	if (href == '.') {
 		href = '';
 	} else if (href[0] == '?') {//Относительная ссылка
