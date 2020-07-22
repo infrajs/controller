@@ -58,7 +58,8 @@ class Controller
 			header('Controller-Cache: false');
 			$html = Controller::check($conf['index']);
 			
-			if ($get) Cache::ignore(); //Контроллер с get параметрами на верхнем уровне ничего не кэширует из-за возможного переполнения кэша
+			Cache::ignore(); //Переполнение запарило
+			//if ($get) Cache::ignore(); //Контроллер с get параметрами на верхнем уровне ничего не кэширует из-за возможного переполнения кэша
 			//Переполнение может быть и из-за адресов /asdf /asdeasdf234r /2342q и т.п. - но это никак не проверить.
 
 			return $html;
