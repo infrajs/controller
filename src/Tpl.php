@@ -6,7 +6,6 @@ use infrajs\access\Access;
 use infrajs\template\Template;
 use infrajs\each\Each;
 use infrajs\load\Load;
-use akiyatkin\boo\MemCache;
 
 class Tpl
 {
@@ -155,11 +154,8 @@ class Tpl
 
 		//Проблема при первом session_get конект к базе и вызов session_init в следующем подключении init не вызывается
 		//но для следующего подключения нам нужно понять что есть динамика// По этому загловки отправляются в том числе и руками в скритпах  Cache-Control:no-cache
-		$level = 0;
-		if (Layer::pop($layer,'nocache')) {
-			$level = false;
-		}
-		$html = MemCache::func( function () use (&$layer) {
+		
+		$html = Access::cache('TPL', function ($row) use (&$layer) {
 			//Здесь мог быть установлен infrajs['com'] его тоже нужно вернуть/ А вот после loadTEXT мог быть кэш и ничего не установится
 			//Вызывается как для основных так и для подслойв tpls frame. Расширяется в tpltpl.prop.js
 
@@ -193,7 +189,7 @@ class Tpl
 			return $html;
 		
 		
-		}, array($row),['infrajs\\access\\Access','getDebugTime'],[], $level);//Кэш обновляемый с последней авторизацией админа определяется строкой parsed слоя
+		}, array($row));//Кэш обновляемый с последней авторизацией админа определяется строкой parsed слоя
 		return $html;
 	}
 	public static function jsoncheck(&$layer)

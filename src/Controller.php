@@ -54,16 +54,16 @@ class Controller
 		$r = explode('?',$_SERVER['REQUEST_URI']);
 		$path = $r[0];
 		
-		$html = Access::func( function ($envdata, $get, $path) use ($conf) {
+		//$html = Access::cache('Controller', function ($envdata, $get, $path) use ($conf) {
 			header('Controller-Cache: false');
 			$html = Controller::check($conf['index']);
 			
-			Cache::ignore(); //Переполнение запарило
+			//Cache::ignore(); //Переполнение запарило
 			//if ($get) Cache::ignore(); //Контроллер с get параметрами на верхнем уровне ничего не кэширует из-за возможного переполнения кэша
 			//Переполнение может быть и из-за адресов /asdf /asdeasdf234r /2342q и т.п. - но это никак не проверить.
 
-			return $html;
-		}, [$envdata, $get, $path]);
+		//	return $html;
+		//}, [$envdata, $get, $path]);
 		
 
 		//var_dump(Cache::$process);
