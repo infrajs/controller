@@ -22,17 +22,6 @@ Event::$classes['Layer'] = function (&$obj) {
 	return Layer::setId($obj);
 };
 
-Event::handler('Controller.oninit', function &() {
-	$r = null;
-	Layer::parsedAdd('parsed');
-	Layer::parsedAdd(function ($layer) {
-		if (!isset($layer['parsedtpl'])) {
-			return 'pt';
-		}
-		return Template::parse(array($layer['parsedtpl']), $layer);
-	});
-	return $r;
-});
 
 Event::handler('Layer.oninit', function &(&$layer) {
 	$r = null;
@@ -158,21 +147,6 @@ Event::handler('Layer.isshow', function (&$layer) {
 
 
 
-/**
- * У слоя созданы свойства
- * tpl, json, dataroot, tplroot, data, tplcheck, datacheck
- **/
-Event::handler('Controller.oninit', function () {
-	Layer::parsedAdd('tpl');
-	Layer::parsedAdd('json');
-	Layer::parsedAdd('dataroot');
-	Layer::parsedAdd('tplroot');
-	Layer::parsedAdd('id');
-	Layer::parsedAdd('is');
-	Layer::parsedAdd(function ($layer) { 
-		return 's';
-	});
-});
 
 Event::handler('Layer.oncheck', function (&$layer) {
 	Tpl::tplroottpl($layer);
@@ -351,8 +325,9 @@ Event::handler('Controller.oninit', function &() {
 	//Sequence::set(Template::$scope, Sequence::right('Crumb.get'), Crumb::$get);
 	//Sequence::set(Template::$scope, Sequence::right('Crumb.query'), Crumb::$query);
 	Sequence::set(Template::$scope, Sequence::right('Crumb.query'), $root->query);
-	Sequence::set(Template::$scope, Sequence::right('Crumb.params'), Crumb::$referrer);
+	Sequence::set(Template::$scope, Sequence::right('Crumb.referrer'), Crumb::$referrer);
 	Sequence::set(Template::$scope, Sequence::right('Crumb.params'), Crumb::$params);
+	Sequence::set(Template::$scope, Sequence::right('Crumb.child'), $root->child);
 	Sequence::set(Template::$scope, Sequence::right('Crumb.get'), Crumb::$get);
 	
 	return $r;

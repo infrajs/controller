@@ -1,6 +1,7 @@
 <?php
 namespace infrajs\controller;
 use infrajs\each\Each;
+use infrajs\template\Template;
 use infrajs\sequence\Sequence;
 /**
  * Функции для написания плагинов
@@ -93,3 +94,29 @@ class Layer {
 		self::$props[] = $func;
 	}
 }
+
+
+/**
+ * У слоя созданы свойства
+ * tpl, json, dataroot, tplroot, data, tplcheck, datacheck
+ **/
+
+
+	
+Layer::parsedAdd('parsed');
+Layer::parsedAdd(function ($layer) {
+	if (!isset($layer['parsedtpl'])) {
+		return 'pt';
+	}
+	return Template::parse(array($layer['parsedtpl']), $layer);
+});
+
+Layer::parsedAdd('tpl');
+Layer::parsedAdd('json');
+Layer::parsedAdd('dataroot');
+Layer::parsedAdd('tplroot');
+Layer::parsedAdd('id');
+Layer::parsedAdd('is');
+Layer::parsedAdd(function ($layer) { 
+	return 's';
+});

@@ -57,6 +57,7 @@ class Tpl
 		$proptpl = $prop.'tpl';
 		if (empty($layer[$proptpl])) return;
 		$p = $layer[$proptpl];
+		
 		$ar = is_array($p);
 		if (!$ar) {
 			$p = array($p);
@@ -77,10 +78,9 @@ class Tpl
 			//Если массив то это просто строка в виде данных
 			$data = Load::loadTEXT($data[0]);
 		} elseif (is_string($data)) {
-			
-			$data = &Load::loadJSON($data);//Забираем для текущего клиента что-то..	
+			$data = Load::loadJSON($data);//Забираем для текущего клиента что-то..	
 		}
-
+		
 		return $data;
 	}
 	public static function checkRedirect(&$layer) {

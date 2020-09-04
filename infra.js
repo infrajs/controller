@@ -10,7 +10,7 @@ localStorage.setItem('infra_counter', ++counter)
 let next = false
 Crumb.hand('change', async () => {
 	if (next) {
-		await DOM.emit('check')
+		await DOM.puff('check')
 	}
 	next = true
 })

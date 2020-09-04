@@ -16,7 +16,9 @@
 				let Layer = (await import('/vendor/infrajs/controller/src/Layer.js')).Layer
 				let View = (await import('/vendor/infrajs/view/View.js')).View
 				let Global = (await import('/vendor/infrajs/layer-global/Global.js')).Global
-
+				let div = document.getElementById('{div}')
+				let parsed = div.dataset.parsed
+				let layerid = div.dataset.layerid
 				Tpl.getHtml({
 					tpl:{~json(tpl)},
 					data:{~json(data)},
@@ -29,7 +31,8 @@
 					config:{~json(config)}
 				}).then( async html => {
 					await View.html(html, "{div}")
-					
+					div.dataset.parsed = parsed
+					div.dataset.layerid = layerid
 					let g = {~json(global)}
 					let json = {~json(json)}
 					if (g) [g].flat(2).map(n => {
@@ -40,7 +43,7 @@
 					})
 					
 					//await Load.drop('json',{~json(json)})
-					DOM.emit('load')
+					DOM.puff('load')
 				})
 			})();
 			
