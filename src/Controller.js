@@ -125,8 +125,9 @@ Controller.check = (layers) => {
 			//процесс характеризуется двумя переменными process и timer... true..true..false.....false
 			store.counter++;
 
-			await Layer.tik('show')
-			await Layer.tik('init')
+			await Layer.tick('show')
+			await Layer.tick('init')
+			await Layer.tick('hide')
 			await Controller.fire('init')
 
 			store.ismainrun = !layers;
@@ -178,6 +179,7 @@ Controller.check = (layers) => {
 					}//onchange показанный слой не реагирует на изменение адресной строки, нельзя привязывать динамику интерфейса к адресной строке, только черещ перепарсивание
 				} else if (layer.showed) {
 					//Правильная форма события (conteiner,name,obj)
+					await Layer.fire('hide', layer)
 					Event.fire('Layer.onhide', layer); //нужно для autosave
 					//infra.fire(layer,'onhide');//сбросить catalog когда скрылся слой поиска в каталоге
 				}

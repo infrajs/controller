@@ -1,5 +1,6 @@
 import { Fire } from '/vendor/akiyatkin/load/Fire.js'
 import { Event } from '/vendor/infrajs/event/Event.js'
+import { DOM } from '/vendor/akiyatkin/load/DOM.js'
 
 let Layer = { ...Fire, 
 	pop: function (layer, prop) {
