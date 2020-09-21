@@ -9,7 +9,9 @@
 		"infrajs/env":"~1",
 		"infrajs/access":"~1",
 		"infrajs/config":"~1",
-		"infrajs/event":"~1"
+		"infrajs/event":"~1",
+		"infrajs/layer-deep":"~1",
+		"infrajs/layer-showanimate":"~1"
 	},
 	"autoload": {
 		"psr-4": { "infrajs\\controller\\": "src/" }

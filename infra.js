@@ -2,8 +2,10 @@ import { Crumb } from '/vendor/infrajs/controller/src/Crumb.js'
 import { Event } from '/vendor/infrajs/event/Event.js'
 import { DOM } from '/vendor/akiyatkin/load/DOM.js'
 
+//DOM и CONTROLLER не зависимы. Контроллер инициализируется в index/infra.js?
 
 //Для onlyclient
+//ПЕРЕНОСИТСЯ в dom/infra.js?
 let counter = localStorage.getItem('infra_counter')||0
 localStorage.setItem('infra_counter', ++counter)
 
@@ -16,20 +18,22 @@ Crumb.hand('change', async () => {
 })
 
 
+//ПЕРЕНОСИТСЯ в dom/infra.js? - Мы хотим инициализировать контроллер при первом check
 Event.handler('Controller.onshow', async () => {
 	//Изменился слой на этой же странице? ИЛи дубли при взаимозависимостях
 	await DOM.emit('load')
 }, 'crumb');
 
-//Подписаться один раз и отложить
+//ПЕРЕНОСИТСЯ в index/infra.js
 DOM.once('check', async () => {
-//DOM.once('check', async () => {
+	//Подписаться один раз и отложить первый check. 
 	await import('/-collect/js')
 	await import('./init.js') //Подиски которые нужно дождаться
 })
 
 
 
+//ПЕРЕНОСИТСЯ в tags/infra.js
 let ws = new WeakSet() 
 DOM.done('load', () => {
 	Crumb.setA(document);
