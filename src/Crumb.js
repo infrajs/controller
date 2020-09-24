@@ -203,6 +203,7 @@ Crumb.handA = function (a) {
 	//nothref заменяем на infra=false
 	if (ainfra) return;//Ссылка проверена обновлять её не нужно
 	a.setAttribute('infra', 'true');
+
 	a.addEventListener('click', function (event) {
 		
 		var is = a.getAttribute('infra');
