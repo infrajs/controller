@@ -11,6 +11,7 @@
 		"infrajs/config":"~1",
 		"infrajs/event":"~1",
 		"infrajs/layer-deep":"~1",
+		"akiyatkin/load":"~1",
 		"infrajs/layer-showanimate":"~1"
 	},
 	"autoload": {
