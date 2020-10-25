@@ -27,7 +27,7 @@ Event.handler('Controller.onshow', async () => {
 //ПЕРЕНОСИТСЯ в index/infra.js
 DOM.once('check', async () => {
 	//Подписаться один раз и отложить первый check. 
-	await import('/-collect/js')
+	await import('/-collect/all.js')
 	await import('./init.js') //Подиски которые нужно дождаться
 })
 
