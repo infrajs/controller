@@ -53,7 +53,6 @@ class Controller
 		
 		$r = explode('?',$_SERVER['REQUEST_URI']);
 		$path = $r[0];
-		
 		//$html = Access::cache('Controller', function ($envdata, $get, $path) use ($conf) {
 			header('Controller-Cache: false');
 			$html = Controller::check($conf['index']);
@@ -109,7 +108,6 @@ class Controller
 	{
 		static::$layers = &$layers;
 		//Пробежка по слоям
-		
 		
 		Event::tik('Controller');
 		Event::tik('Layer');

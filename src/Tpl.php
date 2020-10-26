@@ -159,7 +159,6 @@ class Tpl
 		$html = Access::cache('TPL', function ($row) use (&$layer) {
 			//Здесь мог быть установлен infrajs['com'] его тоже нужно вернуть/ А вот после loadTEXT мог быть кэш и ничего не установится
 			//Вызывается как для основных так и для подслойв tpls frame. Расширяется в tpltpl.prop.js
-
 			if (!empty($layer['data']) || !empty($layer['json']) || !empty($layer['tpls']) || !empty($layer['tplroot'])) {
 				$tpls = Template::make($layer['tpl']);//С кэшем перепарсивания
 						
