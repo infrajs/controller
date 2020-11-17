@@ -15,7 +15,7 @@
 				let Tpl = (await import('/vendor/infrajs/controller/src/Tpl.js')).Tpl
 				let Layer = (await import('/vendor/infrajs/controller/src/Layer.js')).Layer
 				let View = (await import('/vendor/infrajs/view/View.js')).View
-				let Global = (await import('/vendor/infrajs/layer-global/Global.js')).Global
+				
 				let div = document.getElementById('{div}')
 				let parsed = div.dataset.parsed
 				let layerid = div.dataset.layerid
@@ -35,18 +35,18 @@
 					div.dataset.layerid = layerid
 					let g = {~json(global)}
 					let json = {~json(json)}
-					if (g) [g].flat(2).map(n => {
-						if (!n) return
-						var g = Global.get(n)
-						if (json) g.unloads[json] = true
-						g.layers[{id}] = Layer.getById({id})
-					})
-					
+					if (g) {
+						const { Global } = await import('/vendor/infrajs/layer-global/Global.js')
+						[g].flat(2).map(n => {
+							if (!n) return
+							var g = Global.get(n)
+							if (json) g.unloads[json] = true
+							g.layers[{id}] = Layer.getById({id})
+						})
+					}
 					//await Load.drop('json',{~json(json)})
 					DOM.puff('load')
 				})
 			})();
-			
 		}
-		
 	</script>
