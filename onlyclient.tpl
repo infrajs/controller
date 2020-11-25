@@ -37,7 +37,8 @@
 					let json = {~json(json)}
 					if (g) {
 						const { Global } = await import('/vendor/infrajs/layer-global/Global.js')
-						[g].flat(2).map(n => {
+						const ar = [g].flat(2)
+						ar.map(n => {
 							if (!n) return
 							var g = Global.get(n)
 							if (json) g.unloads[json] = true
