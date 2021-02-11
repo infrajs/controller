@@ -158,7 +158,7 @@ Controller.check = (layers) => {
 				}
 			});//разрыв нужен для того чтобы можно было наперёд определить показывается слой или нет. oncheck у всех. а потом по порядку.
 			
-			await Controller.fire('check')
+			await Controller.emit('check')
 			
 			Event.fire('Controller.oncheck');//момент когда доступны слои для подписки и какой-то обработки, доступен unick
 
