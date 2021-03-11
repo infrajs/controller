@@ -6,6 +6,7 @@ let Crumb = function () { };
 
 Crumb.emit = Fire.emit
 Crumb.hand = Fire.hand
+Crumb.done = Fire.done
 Crumb.fire = Fire.fire
 
 
