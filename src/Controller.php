@@ -143,7 +143,13 @@ class Controller
 		Event::fire('Controller.onshow');
 
 		//loader, setA, seo добавить в html, можно зациклить check
-		View::head('<script async type="module">import { Env } from "/vendor/infrajs/env/Env.js"; Env.check('.Env::json().')</script>');
+	//	View::head('<script async type="module">import { Env } from "/vendor/infrajs/env/Env.js"; Env.check('.Env::json().')</script>');
+		View::head('
+	<script type="module">
+		import { Env } from "/vendor/infrajs/env/Env.js"
+		Env.check(".Env::json().")
+	</script>
+');
 		$html = View::html();
 		//View::html('',true);
 		return $html; 
