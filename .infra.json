@@ -2,6 +2,7 @@
 	"pub":["client","index"],
 	"conf":"infrajs\\controller\\Controller",
 	"js":["infra.js"],
+	"asyncenv":true,
 	"dependencies":["event","sequence","template","each"],
 	"client":true,
 	"index":{
