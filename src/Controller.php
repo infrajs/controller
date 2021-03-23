@@ -144,12 +144,22 @@ class Controller
 
 		//loader, setA, seo добавить в html, можно зациклить check
 	//	View::head('<script async type="module">import { Env } from "/vendor/infrajs/env/Env.js"; Env.check('.Env::json().')</script>');
-		View::head('
-	<script type="module">
+		
+		if (Controller::$conf['asyncenv']) {
+			View::head('
+	<script async type="module">
 		import { Env } from "/vendor/infrajs/env/Env.js"
-		Env.check(".Env::json().")
+		Env.check('.Env::json().')
 	</script>
 ');
+		} else {
+			View::head('
+	<script type="module">
+		import { Env } from "/vendor/infrajs/env/Env.js"
+		Env.check('.Env::json().')
+	</script>
+');
+		}
 		$html = View::html();
 		//View::html('',true);
 		return $html; 
